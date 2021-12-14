@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 django = "*"
+celery = "*"
+django-allauth = "*"
 
 [dev-packages]
 

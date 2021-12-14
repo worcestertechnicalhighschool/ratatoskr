@@ -10,25 +10,27 @@
 ### Windows
 
 ```shell
-> pip3 install --user pipenv
+$ pip3 install --user pipenv
 ```
 
 Note: If there is a warning in the output while installing that says that a directory isn't in your PATH, [add that directory to your PATH](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/)
 
+Python on Windows tends to hairball PATH _very_ frequently
+
 ### Linux
 
-Install python-pipenv from your preferred package manager
+Install `python-pipenv` from your preferred package manager
 
 ## 2. Clone the repository to your preferred directory and run
 
 ```shell
-> pipenv install
+$ pipenv install
 ```
 
 ## 3. To start the server, run
 
 ```shell
-> pipenv shell
-> python manage.py migrate
-> python manage.py runserver
+$ pipenv shell
+$ python manage.py migrate
+$ python manage.py runserver
 ```

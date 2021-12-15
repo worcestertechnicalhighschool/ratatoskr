@@ -54,7 +54,7 @@ ROOT_URLCONF = 'ratatoskr.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['app/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:ratatoskr}/ratatoskr/db.sqlite3",
+            "name": "djangodb"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

@@ -6,10 +6,6 @@
 {% block body %}
     <p class="text-danger">HEY</p>
     <p>Hello World</p>
-    <div v-scope="{ count: 0 }">
-        [ count ]
-        <button @click="count++">inc</button>
-    </div>
     {% if user.is_authenticated %}
         <p>Welcome, You are logged in as {{ user.username }}</p>
     {% else %}

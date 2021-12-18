@@ -22,6 +22,7 @@ class TimeSlot(models.Model):
 
 class Reservation(models.Model):
     id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=747)
     time_slot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
     email = models.EmailField()
     # TODO: Find out how to store phone numbers

@@ -5,4 +5,4 @@
 
 # Running in a development environment
 
-Refer to [the documentation](https://github.com/worcestertechnicalhighschool/ratatoskr.wiki.git)
+Refer to [the documentation](https://github.com/worcestertechnicalhighschool/ratatoskr/wiki/Creating-a-Dev-Environment)

@@ -20,6 +20,6 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
-    path('accounts/', include('allauth.socialaccount.providers.google.urls')),
+    path('accounts/', include('allauth.socialaccount.providers.google.urls')), # This is probably not the best idea ever. Effectively only import the urls needed to do google auth
     path('logout', LogoutView.as_view()),
 ]

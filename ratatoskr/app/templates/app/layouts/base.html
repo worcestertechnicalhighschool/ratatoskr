@@ -50,9 +50,10 @@
             </div>    
         </div>
     </nav>
-
-    {% block body %}
-    {% endblock body %}
+    <main class="container">
+        {% block body %}
+        {% endblock body %}
+    </main>
     <script>
         PetiteVue.createApp({
             $delimiters: ["[", "]"]

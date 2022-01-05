@@ -6,10 +6,23 @@
 {% block head %}{% endblock head %}
 
 {% block body %}
-    <form action="{% url "create-schedule" %}" method="POST">
-        {% csrf_token %}        
-        <input type="text" name="name" />
-        <input type="datetime-local" />
-        <input type="submit" class="btn btn-primary" />
+    {% comment %} autoLockEnabled is what handles the disabled state of the auto lock date input {% endcomment %}
+    <form action="{% url "create-schedule" %}" method="POST" v-scope="{ autoLockEnabled: false }">
+        {% csrf_token %}
+        <fieldset>
+            <h5><label for="name">Name</label></h5>
+            <input type="text" name="name" />
+        </fieldset>
+        <fieldset>
+            <input type="checkbox" id="should_lock_automatically" name="should_lock_automatically" @click="autoLockEnabled = $el.checked" />
+            <label for="should_lock_automatically">Lock schedule automatically</label>
+            <div v-show="autoLockEnabled">
+                <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
+                <input type="datetime-local" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" />
+            </div>
+        </fieldset>
+        <fieldset>
+            <input type="submit" class="btn btn-primary mt-2" />
+        </fieldset>
     </form>
 {% endblock body %}

@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +35,11 @@
                         <a class="nav-link" href="#">Translate</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="#">Login</a>
+                        {% if user.is_authenticated %}
+                            {% logout_button %}
+                        {% else %}
+                            {% login_button %}
+                        {% endif %}
                       </li>
                 </ul>
             </div>    

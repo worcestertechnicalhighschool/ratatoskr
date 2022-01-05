@@ -1,0 +1,15 @@
+{% extends 'app/layouts/base.html' %}
+{% load socialaccount %}
+
+{% block title %}Create Schedule{% endblock title %}
+
+{% block head %}{% endblock head %}
+
+{% block body %}
+    <form action="{% url "create-schedule" %}" method="POST">
+        {% csrf_token %}        
+        <input type="text" name="name" />
+        <input type="datetime-local" />
+        <input type="submit" class="btn btn-primary" />
+    </form>
+{% endblock body %}

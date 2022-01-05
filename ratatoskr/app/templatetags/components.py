@@ -13,3 +13,11 @@ def login_button():
 @register.inclusion_tag("app/components/logout_button.html")
 def logout_button():
     return {}
+
+@register.inclusion_tag("app/components/schedule_card.html")
+def schedule_card(name, description, id):
+    return {
+        "name": name,
+        "description": description,
+        "id": id
+    }   

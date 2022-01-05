@@ -1,6 +1,6 @@
 
 {% load socialaccount %}
-<form action="{% url "logout" %}?next=/" method="post">
+<form class="ms-2" action="{% url "logout" %}?next=/" method="post">
     {% csrf_token %}
     <button class="btn btn-outline-secondary" type="submit">
         👉🚪 Logout

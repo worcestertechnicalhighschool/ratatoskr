@@ -15,7 +15,7 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
+        <div class="container-fluid px-5">
             <a class="navbar-brand mb-0 h1" href="{% url "index" %}">Ratatoskr</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -43,12 +43,12 @@
                         {% if user.is_authenticated %}
                             <div class="dropdown mx-2">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                    <img style="width: 40px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
+                                    <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
                                     {{ user.socialaccount_set.all.0.extra_data.name }}
                                     <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="profile-dropdown">
-                                    <li><p class="dropdown-item">Teacher</p></li>
+                                    <li><p class="dropdown-item">A D M I N</p></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="#">Your Schedules</a></li>
                                     <li><hr class="dropdown-divider"></li>

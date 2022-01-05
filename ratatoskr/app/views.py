@@ -7,5 +7,5 @@ def index(request):
 
 def create_schedule(request):
     if request.method == "POST":
-        
+        pass
     return render(request, 'app/pages/create_schedule.html', {})

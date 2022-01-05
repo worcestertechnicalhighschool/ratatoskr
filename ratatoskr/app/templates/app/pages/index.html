@@ -8,10 +8,8 @@
     <p>Hello World</p>
     {% if user.is_authenticated %}
         <p>Welcome, You are logged in as {{ user.username }}</p>
+        {% logout_button %}
     {% else %}
-        <form action="{% provider_login_url 'google' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">login lmao</button>
-        </form>
+        {% login_button %}
     {% endif %}
 {% endblock body %}

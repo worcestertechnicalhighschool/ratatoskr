@@ -21,7 +21,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="navbar-nav ms-auto flex-nowrap">
+                <ul class="navbar-nav ms-auto flex-nowrap align-items-center">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                       </li>
@@ -39,9 +39,22 @@
                           <a href="{% url "create-schedule" %}" class="btn btn-primary ms-1">+ Create a schedule</a>
                       </li>
                       {% endif %}
-                      <li class="nav-item">
+                      <li class="nav-item display-flex align-items-center">
                         {% if user.is_authenticated %}
-                            {% logout_button %}
+                            <div class="dropdown mx-2">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <img style="width: 40px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
+                                    {{ user.socialaccount_set.all.0.extra_data.name }}
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="profile-dropdown">
+                                    <li><p>Teacher</p></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Your Schedules</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">{% logout_button %}</a></li>
+                                </ul>
+                            </div>
                         {% else %}
                             {% login_button %}
                         {% endif %}

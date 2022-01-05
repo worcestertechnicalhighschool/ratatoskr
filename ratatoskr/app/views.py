@@ -10,5 +10,5 @@ def create_schedule(request):
     if not request.user.is_authenticated:
         raise PermissionDenied()
     if request.method == "POST":
-        pass
+        request.post
     return render(request, 'app/pages/create_schedule.html', {})

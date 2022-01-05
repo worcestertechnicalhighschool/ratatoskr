@@ -6,12 +6,4 @@
 {% block body %}
     <p class="text-danger">HEY</p>
     <p>Hello World</p>
-    {% if user.is_authenticated %}
-        <p>Welcome, You are logged in as {{ user.username }}</p>
-    {% else %}
-        <form action="{% provider_login_url 'google' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">login lmao</button>
-        </form>
-    {% endif %}
 {% endblock body %}

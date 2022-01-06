@@ -50,11 +50,11 @@
                               </a>
                               <ul class="dropdown-menu" aria-labelledby="profile-dropdown">
                                     {% if user.is_superuser %}
-                                        <li><spam class="dropdown-item-text">THE A D M I N</spam></li>
+                                        <li><span class="dropdown-item-text">THE A D M I N</span></li>
                                     {% elif user.is_staff %}
-                                        <li><spam class="dropdown-item-text">Staff</spam></li>
+                                        <li><span class="dropdown-item-text">Staff</span></li>
                                     {% else %}
-                                        <li><spam class="dropdown-item-text">User</spam></li>
+                                        <li><span class="dropdown-item-text">User</span></li>
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     {% if user.is_staff %}

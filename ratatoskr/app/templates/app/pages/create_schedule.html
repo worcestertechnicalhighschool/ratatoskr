@@ -19,13 +19,9 @@
                 type="checkbox"
                 id="should_lock_automatically"
                 name="should_lock_automatically"
-                @click="autoLockEnabled = $el.checked"
-                aria-expanded="false"
-                aria-controls="autoLock"
-                data-bs-toggle="collapse"
-                data-bs-target="#autoLock"/>
+                @click="autoLockEnabled = $el.checked"/>
             <label for="should_lock_automatically">Lock schedule automatically</label>
-            <div class="collapse" id="autoLock">
+            <div v-show="autoLockEnabled" id="autoLock">
                 <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
                 <input type="datetime-local" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" />
             </div>

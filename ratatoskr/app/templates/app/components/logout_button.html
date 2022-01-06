@@ -1,8 +1,8 @@
 
 {% load socialaccount %}
-<form class="ms-2" action="{% url "logout" %}?next=/" method="post">
+<form class="d-inline" action="{% url "logout" %}?next=/" method="post">
     {% csrf_token %}
-    <button class="btn btn-outline-secondary" type="submit">
-        👉🚪 Logout
+    <button class="btn btn-outline-secondary w-100" type="submit">
+        <i class="fas fa-sign-out-alt"></i> Logout
     </button>
 </form>

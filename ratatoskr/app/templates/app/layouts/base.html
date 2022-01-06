@@ -43,15 +43,25 @@
                       {% if user.is_authenticated %}
                           <div class="dropdown mx-2">
                               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    {% comment %} does it look like i want a stupid long property chain? i just want my user's gosh darn profile picture! {% endcomment %}
                                     <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
                                     {{ user.socialaccount_set.all.0.extra_data.name }}
                                     <b class="caret"></b>
                               </a>
                               <ul class="dropdown-menu" aria-labelledby="profile-dropdown">
-                                    <li><p class="dropdown-item-text">A D M I N</p></li>
+                                    {% if user.is_superuser %}
+                                        <li><spam class="dropdown-item-text">THE A D M I N</spam></li>
+                                    {% elif user.is_staff %}
+                                        <li><spam class="dropdown-item-text">Staff</spam></li>
+                                    {% else %}
+                                        <li><spam class="dropdown-item-text">User</spam></li>
+                                    {% endif %}
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#">Your Schedules</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    {% if user.is_staff %}
+                                        <li><a class="dropdown-item" href="#">Your Schedules</a></li>
+                                        <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    {% endif %}
                                     <li><span class="dropdown-item-text" href="#">{% logout_button %}</span></li>
                               </ul>
                           </div>

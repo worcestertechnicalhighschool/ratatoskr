@@ -15,9 +15,7 @@ def logout_button():
     return {}
 
 @register.inclusion_tag("app/components/schedule_card.html")
-def schedule_card(name, description, id):
+def schedule_card(schedule):
     return {
-        "name": name,
-        "description": description,
-        "id": id
+        "schedule": schedule 
     }   

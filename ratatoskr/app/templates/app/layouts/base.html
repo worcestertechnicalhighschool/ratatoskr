@@ -50,7 +50,7 @@
                                     {{ user.socialaccount_set.all.0.extra_data.name }}
                                     <b class="caret"></b>
                               </a>
-                              <ul class="dropdown-menu" aria-labelledby="profile-dropdown">
+                              <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
                                     {% if user.is_superuser %}
                                         <li><span class="dropdown-item-text">THE A D M I N</span></li>
                                     {% elif user.is_staff %}

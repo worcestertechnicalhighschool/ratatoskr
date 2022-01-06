@@ -14,11 +14,12 @@
             <input type="text" name="name" />
         </fieldset>
         <fieldset>
+            {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
             <input
                 type="checkbox"
                 id="should_lock_automatically"
                 name="should_lock_automatically"
-                @click="autoLockEnabled = $el.checked" 
+                @click="autoLockEnabled = $el.checked"
                 aria-expanded="false"
                 aria-controls="autoLock"
                 data-bs-toggle="collapse"

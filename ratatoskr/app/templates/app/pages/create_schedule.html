@@ -1,0 +1,33 @@
+{% extends 'app/layouts/base.html' %}
+{% load socialaccount %}
+
+{% block title %}Create Schedule{% endblock title %}
+
+{% block head %}{% endblock head %}
+
+{% block body %}
+    {% comment %} autoLockEnabled is what handles the disabled state of the auto lock date input {% endcomment %}
+    <form action="{% url "create-schedule" %}" method="POST" v-scope="{ autoLockEnabled: false }">
+        {% csrf_token %}
+        <fieldset>
+            <h5><label for="name">Name</label></h5>
+            <input type="text" name="name" />
+        </fieldset>
+        <fieldset>
+            {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
+            <input
+                type="checkbox"
+                id="should_lock_automatically"
+                name="should_lock_automatically"
+                @click="autoLockEnabled = $el.checked"/>
+            <label for="should_lock_automatically">Lock schedule automatically</label>
+            <div v-show="autoLockEnabled" id="autoLock">
+                <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
+                <input type="datetime-local" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" />
+            </div>
+        </fieldset>
+        <fieldset>
+            <input type="submit" class="btn btn-primary mt-2" />
+        </fieldset>
+    </form>
+{% endblock body %}

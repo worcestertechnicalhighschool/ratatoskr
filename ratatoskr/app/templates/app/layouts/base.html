@@ -44,7 +44,7 @@
                     <li class="nav-item display-flex align-items-center">
                       {% if user.is_authenticated %}
                           <div class="dropdown mx-2">
-                              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                              <a href="#" class="nav-link dropdown-toggle py-0" data-bs-toggle="dropdown">
                                     {% comment %} does it look like i want a stupid long property chain? i just want my user's gosh darn profile picture! {% endcomment %}
                                     <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
                                     {{ user.socialaccount_set.all.0.extra_data.name }}

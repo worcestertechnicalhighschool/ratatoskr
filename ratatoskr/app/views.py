@@ -7,7 +7,9 @@ import datetime
 
 # Create your views here.
 def index(request):
-    return render(request, 'app/pages/index.html', {})
+    return render(request, 'app/pages/index.html', {
+        "schedules": Schedule.objects.all()
+    })
 
 def create_schedule(request):
     if not request.user.is_authenticated:

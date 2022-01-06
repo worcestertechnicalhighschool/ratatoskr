@@ -4,6 +4,15 @@
 {% block title %}Home{% endblock title %}
 
 {% block body %}
-    <p class="text-danger">HEY</p>
-    <p>Hello World</p>
+    <h1>asdf</h1>
+    <div class="container">
+        <div class="row row-cols-lg-3">
+            {% for schedule in schedules %}
+                <div class="col">
+                    {% schedule_card schedule %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
 {% endblock body %}

@@ -1,8 +1,8 @@
 <div class="card" style="width: 18rem;">
     <div class="card-body">
         <a href="#">
-            <h5 class="card-title">{{ name }}</h5>
+            <h5 class="card-title">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</h5>
         </a>    
-        <h6 class="card-subtitle mb-2 text-muted">{{ description }}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{ schedule.name }}</h6>
     </div>
 </div>

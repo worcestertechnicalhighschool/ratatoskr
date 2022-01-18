@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.utils import dateparse, timezone
+from django.utils.timezone import make_aware
 from .models import Schedule, TimeSlot, Reservation
 import datetime
 
@@ -21,7 +22,7 @@ def create_schedule(request):
         Schedule.objects.create(
             owner = request.user,
             name = request.POST.get("name"),
-            auto_lock_after = lock_date,
+            auto_lock_after = make_aware(lock_date),
             is_locked = False
         )
 

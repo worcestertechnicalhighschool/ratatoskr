@@ -4,17 +4,28 @@
 
 {% block body %}
     <h1>{{ schedule.name }}</h1>
-    <h3>By {{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</h3>
-    <div class="card p-2">
+    <div class="card d-inline-block mb-2">
+        <div class="card-body p-2">
+            {# allauth why the hell are you like this #}
+            <img class="me-1 rounded" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="{{ user.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 35px">
+            {{ user.socialaccount_set.all.0.extra_data.name }} (<a href="mailto:{{user.email}}">{{ user.email }}</a>)
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3>Available Time Slots</h1>
+        </div>
         <div class="card-body overflow-auto" style="white-space:nowrap">
-            {% for date, group in timeslots.items %}
-                <div class="card d-inline-block w-25" style="height: 75vh">
-                    <div class="card">{{ date }}</div>
-                    {% for timeslot in group %}
-                        <div class="card">{{ timeslot.time_from }}</div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+            <div>
+                {% for date, group in timeslots.items %}
+                    <div class="card d-inline-block w-25" style="height: 75vh">
+                        <div class="card">{{ date }}</div>
+                        {% for timeslot in group %}
+                            <div class="card">{{ timeslot.time_from }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
     

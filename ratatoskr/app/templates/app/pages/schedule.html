@@ -7,4 +7,12 @@
     <h3>By {{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</h3>
     <div class="d-flex flex-direction-row flex-nowrap overflow-auto vh-75">
     </div>
+    {% for date, group in timeslots.items %}
+        <div class="card">
+            <div class="card">{{ date }}</div>
+            {% for timeslot in group %}
+                <div class="card">{{ timeslot.time_from }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 {% endblock body %}

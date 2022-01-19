@@ -33,8 +33,11 @@ def create_schedule(request):
 def schedule(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
+    b = groupby(timeslots, lambda x: x.time_from.date())
 
+    for k, group in b:
+        print(k, list(group))
     return render(request, 'app/pages/schedule.html', {
         "schedule": schedule,
-        "timeslots": groupby(timeslots, lambda x: x.time_from.date)
+        "timeslots": {k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date())}
     })

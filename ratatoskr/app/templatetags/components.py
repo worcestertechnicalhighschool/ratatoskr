@@ -19,3 +19,10 @@ def schedule_card(schedule):
     return {
         "schedule": schedule 
     }   
+
+@register.inclusion_tag("app/components/timeslot_card.html")
+def timeslot_card(date, timeslots):
+    return {
+        "date": date,
+        "timeslots": timeslots
+    }   

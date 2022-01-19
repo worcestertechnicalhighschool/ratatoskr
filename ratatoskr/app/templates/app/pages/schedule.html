@@ -1,0 +1,8 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}{{ schedule.name }}{% endblock title %}
+
+{% block body %}
+    <h1>{{ schedule.name }}</h1>
+    <h3>By {{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</h3>
+{% endblock body %}

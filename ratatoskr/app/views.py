@@ -27,3 +27,6 @@ def create_schedule(request):
         )
 
     return render(request, 'app/pages/create_schedule.html', {})
+
+def schedule(request, schedule_id):
+    return render(request, 'app/pages/schedule.html', {schedule: Schedule.objects.get(pk=schedule_id)})

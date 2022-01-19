@@ -12,11 +12,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         schedule_id = int(input("Schedule Id?: "))
+        day_delta = int(input("Day Delta?: "))
         schedule = Schedule.objects.get(pk=schedule_id)
         for i in range(1, 10):
             TimeSlot.objects.create(
                 schedule=schedule,
-                time_from = datetime.now(),
+                time_from = datetime.now() + timedelta(days=day_delta),
                 time_to = datetime.now() + timedelta(minutes=120),
                 auto_lock_after = datetime.now() + timedelta(hours=9999999),
                 is_locked = False,

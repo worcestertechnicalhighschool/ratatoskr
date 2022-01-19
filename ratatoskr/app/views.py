@@ -38,7 +38,7 @@ def schedule(request, schedule_id):
         "schedule": schedule,
         "timeslots": dict(
             sorted(
-                { k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date()) }.items()
+                { k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date()) }.items() # Group the timeslots by their time_from date
             )
         )
     })

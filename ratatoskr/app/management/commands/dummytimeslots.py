@@ -8,7 +8,7 @@ from allauth.socialaccount.models import SocialApp
 from app.models import TimeSlot, Schedule
 
 class Command(BaseCommand):
-    help = 'Helper for registering a social application. Handy if you don\'t like going clicky clicky!'
+    help = 'Delete this as soon as we have schedule submition functionality'
 
     def handle(self, *args, **options):
         schedule_id = int(input("Schedule Id?: "))

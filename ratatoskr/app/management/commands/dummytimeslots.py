@@ -18,7 +18,7 @@ class Command(BaseCommand):
             TimeSlot.objects.create(
                 schedule=schedule,
                 time_from = datetime.now() + timedelta(days=day_delta),
-                time_to = datetime.now() + timedelta(minutes=120),
+                time_to = datetime.now() + timedelta(minutes=120 + (i * 5)),
                 auto_lock_after = datetime.now() + timedelta(hours=9999999),
                 is_locked = False,
                 reservation_limit = 99999

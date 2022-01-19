@@ -5,15 +5,17 @@
 {% block body %}
     <h1>{{ schedule.name }}</h1>
     <h3>By {{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</h3>
-    <div class="d-flex flex-direction-row flex-nowrap overflow-auto vh-75">
-        {% for date, group in timeslots.items %}
-            <div class="card w-25 vh-100">
-                <div class="card">{{ date }}</div>
-                {% for timeslot in group %}
-                    <div class="card">{{ timeslot.time_from }}</div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+    <div class="card p-2">
+        <div class="card-body overflow-auto" style="white-space:nowrap">
+            {% for date, group in timeslots.items %}
+                <div class="card d-inline-block w-25" style="height: 75vh">
+                    <div class="card">{{ date }}</div>
+                    {% for timeslot in group %}
+                        <div class="card">{{ timeslot.time_from }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
     
 {% endblock body %}

@@ -5,4 +5,6 @@
 {% block body %}
     <h1>{{ schedule.name }}</h1>
     <h3>By {{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</h3>
+    <div class="d-flex flex-direction-row flex-nowrap overflow-auto vh-75">
+    </div>
 {% endblock body %}

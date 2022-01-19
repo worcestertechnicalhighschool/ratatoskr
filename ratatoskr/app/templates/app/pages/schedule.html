@@ -24,6 +24,8 @@
                             <div class="card">{{ timeslot.time_from }}</div>
                         {% endfor %}
                     </div>
+                {% empty %}
+                    <p class="m-2">Looks like there are no available timeslots...</p>
                 {% endfor %}
             </div>
         </div>

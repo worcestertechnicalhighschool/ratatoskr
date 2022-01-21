@@ -17,7 +17,7 @@
         </div>
         <div class="card-body">
             {% for date, group in timeslots.items %}
-                <a href="{% url "schedule-day" schedule.id date %}">{{ date }}</a>
+                {% timeslot_date date schedule %}
             {% empty %}
             <div class="text-center">
                 <p class="m-2">Looks like there are no available timeslots...</p>

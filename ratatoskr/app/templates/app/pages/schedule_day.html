@@ -17,9 +17,7 @@
         </div>
         <div class="card-body overflow-auto">
             {% for timeslot in timeslots %}
-                <div>
-                    {{ timeslot.time_from }}
-                </div>
+                {% timeslot_time timeslot %}
             {% endfor %}
         </div>
     </div>

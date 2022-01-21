@@ -26,3 +26,16 @@ def timeslot_card(date, timeslots):
         "date": date,
         "timeslots": timeslots
     }   
+
+@register.inclusion_tag("app/components/timeslot_date.html")
+def timeslot_date(date, schedule):
+    return {
+        "date": date,
+        "schedule": schedule
+    }   
+
+@register.inclusion_tag("app/components/timeslot_time.html")
+def timeslot_time(timeslot):
+    return {
+        "timeslot": timeslot,
+    }   

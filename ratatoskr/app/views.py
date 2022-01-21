@@ -48,4 +48,8 @@ def schedule_day(request, schedule_id, date):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
-    return HttpResponse(str(date))
+    return render(request, 'app/pages/schedule_day.html', {
+        "schedule": schedule,
+        "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
+        "date": date
+    })

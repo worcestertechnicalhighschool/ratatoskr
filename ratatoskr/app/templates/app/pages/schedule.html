@@ -18,12 +18,7 @@
         <div class="card-body overflow-auto text-nowrap">
             <div>
                 {% for date, group in timeslots.items %}
-                    <div class="card d-inline-block w-25" style="height: 75vh">
-                        <div class="card">{{ date }}</div>
-                        {% for timeslot in group %}
-                            <div class="card">{{ timeslot.time_from }}</div>
-                        {% endfor %}
-                    </div>
+                    {% timeslot_card date group %}
                 {% empty %}
                 <div class="text-center">
                     <p class="m-2">Looks like there are no available timeslots...</p>

@@ -13,18 +13,13 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h3>Available Days</h1>
+            <h3>Available Timeslots for {{ date.date }}</h1>
         </div>
-        <div class="card-body">
-            {% for date, group in timeslots.items %}
-                <a href="{% url "schedule-day" schedule.id date %}">{{ date }}</a>
-            {% empty %}
-            <div class="text-center">
-                <p class="m-2">Looks like there are no available timeslots...</p>
-                {% if user.is_staff and user == schedule.owner %}
-                    <a href="#" class="btn btn-primary">Why not create some?</a>
-                {% endif %}
-            </div>
+        <div class="card-body overflow-auto">
+            {% for timeslot in timeslots %}
+                <div>
+                    {{ timeslot.time_from }}
+                </div>
             {% endfor %}
         </div>
     </div>

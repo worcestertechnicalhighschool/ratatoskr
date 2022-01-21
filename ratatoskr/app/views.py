@@ -1,5 +1,5 @@
 from tokenize import group
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.utils import dateparse, timezone
@@ -21,12 +21,13 @@ def create_schedule(request):
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
         if request.POST.get("should_lock_automatically") == "on":
             lock_date = dateparse.parse_datetime(request.POST.get("auto_lock_after"))
-        Schedule.objects.create(
+        new_schedule = Schedule.objects.create(
             owner = request.user,
             name = request.POST.get("name"),
             auto_lock_after = make_aware(lock_date),
             is_locked = False
         )
+        return redirect("schedule", new_schedule.id)
 
     return render(request, 'app/pages/create_schedule.html', {})
 

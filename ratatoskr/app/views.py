@@ -42,3 +42,9 @@ def schedule(request, schedule_id):
             )
         )
     })
+
+def schedule_day(request, schedule_id, date):
+    schedule = Schedule.objects.get(pk=schedule_id)
+    timeslots = TimeSlot.objects.filter(schedule=schedule)
+
+    return HttpResponse(str(date))

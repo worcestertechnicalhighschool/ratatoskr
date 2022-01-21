@@ -1,10 +1,10 @@
-<div class="card d-inline-block" style="width: 18rem;">
+<div class="card d-inline-block">
     <div class="card-header">
         <strong>
             {{ date }}
         </strong>
     </div>
-    <ul class="list-group list-group-flush">
+    <ul class="list-group list-group-flush overflow-auto" style="height: 75vh">
         {% for timeslot in timeslots %}
             <li class="list-group-item">
                 <div class="card" style="width: 16rem;">

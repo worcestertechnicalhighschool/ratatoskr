@@ -33,3 +33,9 @@ def timeslot_date(timeslot, date):
         "timeslot": timeslot,
         "date": date
     }   
+
+@register.inclusion_tag("app/components/timeslot_time.html")
+def timeslot_time(timeslot):
+    return {
+        "timeslot": timeslot,
+    }   

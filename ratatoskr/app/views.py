@@ -1,3 +1,4 @@
+import re
 from sqlite3 import Time
 from tokenize import group
 from django.shortcuts import redirect, render
@@ -10,6 +11,7 @@ from .forms import TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 import datetime
 from itertools import groupby
+import pandas as pd
 
 # Create your views here.
 def index(request):
@@ -62,10 +64,28 @@ def create_timeslots(request, schedule_id):
         schedule = Schedule.objects.get(pk=schedule_id)
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
-            render(request, "app/pages/create_timeslots.html", {
+            return render(request, "app/pages/create_timeslots.html", {
                 "form": form
             })
-        redirect("schedule", schedule_id)
+        
+        dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
+        time_delta = form.cleaned_data["from_time"] - form.cleaned_data["to_time"]
+        time_delta_mins = int(time_delta.seconds / 60)
+
+        base = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
+        length = form.cleaned_data["timeslot_length"]
+        break_length = form.cleaned_data["timeslot_break"]
+        total_buffer = length + break_length
+
+        l = [i * 2 for i in range(1, 10)]
+        # To the poor student who has to maintain this code in 3 years time: Good luck lmao
+        timeslot_times = [[(i, (base + datetime.timedelta(minutes=j)).time(), (base + datetime.timedelta(minutes=j + length)).time()) for j in range(0, time_delta_mins, total_buffer)] for i in dates]
+
+        flattened = sum(timeslot_times, [])
+
+
+
+        return redirect("schedule", schedule_id)
         
     return render(request, "app/pages/create_timeslots.html", {
         "form": TimeslotGenerationForm()

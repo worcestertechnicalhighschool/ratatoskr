@@ -1,25 +1,11 @@
-{% extends 'app/layouts/base.html' %}
+{% extends 'app/layouts/schedule_base.html' %}
 
-{% block title %}{{ schedule.name }}{% endblock title %}
+{% block schedule_head %}
+    <h3>Available Timeslots for {{ date.date }}</h3>
+{% endblock schedule_head %}
 
-{% block body %}
-    <h1>{{ schedule.name }}</h1>
-    <div class="card d-inline-block mb-2">
-        <div class="card-body p-2">
-            {# allauth why the hell are you like this #}
-            <img class="me-1 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 35px">
-            {{ schedule.owner.socialaccount_set.all.0.extra_data.name }} (<a href="mailto:{{ schedule.owner.email }}">{{ schedule.owner.email }}</a>)
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <h3>Available Timeslots for {{ date.date }}</h1>
-        </div>
-        <div class="card-body overflow-auto">
-            {% for timeslot in timeslots %}
-                {% timeslot_time timeslot %}
-            {% endfor %}
-        </div>
-    </div>
-    
-{% endblock body %}
+{% block schedule_body %}
+    {% for timeslot in timeslots %}
+        {% timeslot_time timeslot %}
+    {% endfor %}
+{% endblock schedule_body %}

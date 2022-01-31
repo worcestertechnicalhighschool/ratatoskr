@@ -1,0 +1,25 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}{{ schedule.name }}{% endblock title %}
+
+{% block body %}
+    <h1>{{ schedule.name }}</h1>
+    <div class="card d-inline-block mb-2">
+        <div class="card-body p-2">
+            {# allauth why the hell are you like this #}
+            <img class="me-1 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 35px">
+            {{ schedule.owner.socialaccount_set.all.0.extra_data.name }} (<a href="mailto:{{ schedule.owner.email }}">{{ schedule.owner.email }}</a>)
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            {% block schedule_head %}
+            {% endblock schedule_head %}
+        </div>
+        <div class="card-body">
+            {% block schedule_body %}
+            {% endblock schedule_body %}
+        </div>
+    </div>
+    
+{% endblock body %}

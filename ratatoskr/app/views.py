@@ -54,5 +54,9 @@ def schedule_day(request, schedule_id, date):
         "date": date
     })
 
-def timeslot_gen(request, schedule_id):
-    return render(request, "app/pages/timeslot_gen.html")
+def create_timeslots(request, schedule_id):
+    if request.POST:
+        schedule = Schedule.objects.get(schedule_id)
+        redirect("schedule", schedule_id)
+        
+    return render(request, "app/pages/create_timeslots.html")

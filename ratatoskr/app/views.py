@@ -93,7 +93,7 @@ def create_timeslots(request, schedule_id):
         # The base plus the offset and the length of the meeting
         # Thats all I can say about this horrible thing
         # Good luck
-        timeslot_times = [[(date, (base + datetime.timedelta(minutes=minute_offset)).time(), (base + datetime.timedelta(minutes=minute_offset + length)).time()) for minute_offset in range(0, time_delta_mins+1, total_buffer)] for date in dates]
+        timeslot_times = [[(date, (base + datetime.timedelta(minutes=minute_offset)).time(), (base + datetime.timedelta(minutes=minute_offset + length)).time()) for minute_offset in range(0, time_delta_mins, total_buffer)] for date in dates]
 
         # The resulting list will be a 2d list, with each list being the timeslots for one day.
         # Each list is a list of tuples with the following data:

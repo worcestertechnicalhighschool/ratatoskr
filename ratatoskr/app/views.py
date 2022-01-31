@@ -54,5 +54,5 @@ def schedule_day(request, schedule_id, date):
         "date": date
     })
 
-def timeslot_gen(request):
+def timeslot_gen(request, schedule_id):
     return render(request, "app/pages/timeslot_gen.html")

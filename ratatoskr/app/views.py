@@ -69,19 +69,35 @@ def create_timeslots(request, schedule_id):
             })
         
         dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
+        # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
         from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
         to_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["to_time"])
         time_delta = to_time - from_time
         time_delta_mins = int(time_delta.seconds / 60)
 
+        
         base = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
         length = form.cleaned_data["timeslot_length"]
         break_length = form.cleaned_data["timeslot_break"]
         total_buffer = length + break_length
 
-        # To the poor student who has to maintain this code in 3 years time: Good luck lmao
-        timeslot_times = [[(i, (base + datetime.timedelta(minutes=j)).time(), (base + datetime.timedelta(minutes=j + length)).time()) for j in range(0, time_delta_mins+1, total_buffer)] for i in dates]
+        # To the poor student who has to maintain this code in 2 years time: Good luck lmao
+        # Listen closely, as I will attempt to explain what the heck is going on in this hellspawn of a list comprehension
+        # base, as defined earlier, will represent the start of the list of timeslots. Ignore the date component, I just made it a datetime so I can do timedelta operations on it.
+        # I iterate over every date in the date range created earlier (dates)
+        # For each of these, I use range to get every offset available for each timeslot, from 0 (no offset) to time_delta_mins (max offset)
+        # total_buffer is the combined time of the length of each timeslot and the length of the breaks between the timeslots. I use this as the skip parameter for range. This should create the timeslots with the appropriate time for the meeting and the break time in between
+        # For every available offset, I make a tuple containing:
+        # The date
+        # The base plus the offset
+        # The base plus the offset and the length of the meeting
+        # Thats all I can say about this horrible thing
+        # Good luck
+        timeslot_times = [[(date, (base + datetime.timedelta(minutes=minute_offset)).time(), (base + datetime.timedelta(minutes=minute_offset + length)).time()) for minute_offset in range(0, time_delta_mins+1, total_buffer)] for date in dates]
 
+        # The resulting list will be a 2d list, with each list being the timeslots for one day.
+        # Each list is a list of tuples with the following data:
+        # Date, time_from, time_to
         flattened = sum(timeslot_times, [])
 
         for date, time_from, time_to in flattened:

@@ -79,7 +79,6 @@ def create_timeslots(request, schedule_id):
         break_length = form.cleaned_data["timeslot_break"]
         total_buffer = length + break_length
 
-        l = [i * 2 for i in range(1, 10)]
         # To the poor student who has to maintain this code in 3 years time: Good luck lmao
         timeslot_times = [[(i, (base + datetime.timedelta(minutes=j)).time(), (base + datetime.timedelta(minutes=j + length)).time()) for j in range(0, time_delta_mins+1, total_buffer)] for i in dates]
 
@@ -88,9 +87,11 @@ def create_timeslots(request, schedule_id):
         for date, time_from, time_to in flattened:
             TimeSlot.objects.create(
                 schedule = schedule,
-                time_from = datetime.datetime.combine(date, time_from),
-                time_to = datetime.datetime.combine(date, time_to),
-                reservation_limit = form.cleaned_data["reservation_limit"]
+                time_from = make_aware(datetime.datetime.combine(date, time_from)),
+                time_to = make_aware(datetime.datetime.combine(date, time_to)),
+                reservation_limit = form.cleaned_data["openings"],
+                is_locked = False,
+                auto_lock_after = make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
             )
 
         return redirect("schedule", schedule_id)

@@ -1,9 +1,12 @@
+from sqlite3 import Time
 from tokenize import group
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.utils import dateparse, timezone
 from django.utils.timezone import make_aware
+
+from .forms import TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 import datetime
 from itertools import groupby
@@ -56,7 +59,14 @@ def schedule_day(request, schedule_id, date):
 
 def create_timeslots(request, schedule_id):
     if request.POST:
-        schedule = Schedule.objects.get(schedule_id)
+        schedule = Schedule.objects.get(pk=schedule_id)
+        form = TimeslotGenerationForm(request.POST)
+        if not form.is_valid():
+            render(request, "app/pages/create_timeslots.html", {
+                "form": form
+            })
         redirect("schedule", schedule_id)
         
-    return render(request, "app/pages/create_timeslots.html")
+    return render(request, "app/pages/create_timeslots.html", {
+        "form": TimeslotGenerationForm()
+    })

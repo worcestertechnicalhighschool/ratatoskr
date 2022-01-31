@@ -69,7 +69,9 @@ def create_timeslots(request, schedule_id):
             })
         
         dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
-        time_delta = form.cleaned_data["from_time"] - form.cleaned_data["to_time"]
+        from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
+        to_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["to_time"])
+        time_delta = to_time - from_time
         time_delta_mins = int(time_delta.seconds / 60)
 
         base = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
@@ -79,11 +81,17 @@ def create_timeslots(request, schedule_id):
 
         l = [i * 2 for i in range(1, 10)]
         # To the poor student who has to maintain this code in 3 years time: Good luck lmao
-        timeslot_times = [[(i, (base + datetime.timedelta(minutes=j)).time(), (base + datetime.timedelta(minutes=j + length)).time()) for j in range(0, time_delta_mins, total_buffer)] for i in dates]
+        timeslot_times = [[(i, (base + datetime.timedelta(minutes=j)).time(), (base + datetime.timedelta(minutes=j + length)).time()) for j in range(0, time_delta_mins+1, total_buffer)] for i in dates]
 
         flattened = sum(timeslot_times, [])
 
-
+        for date, time_from, time_to in flattened:
+            TimeSlot.objects.create(
+                schedule = schedule,
+                time_from = datetime.datetime.combine(date, time_from),
+                time_to = datetime.datetime.combine(date, time_to),
+                reservation_limit = form.cleaned_data["reservation_limit"]
+            )
 
         return redirect("schedule", schedule_id)
         

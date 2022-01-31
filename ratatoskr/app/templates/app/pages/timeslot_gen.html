@@ -1,0 +1,33 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}Create Timeslots{% endblock title %}
+
+{% block body %}
+    <form class="form" action="">
+        <fieldset>
+            <label for="date_on">On date</label>
+            <input type="date">
+        </fieldset>
+        <fieldset>
+            <label for="begin_time">Begin at</label>
+            <input type="time" step="900">
+        </fieldset>
+        <fieldset>
+            <label for="end_time">End at</label>
+            <input type="time" step="900">
+        </fieldset>
+        <fieldset>
+            <label for="timeslot_length">Each timeslot is</label>
+            <input type="number"> minutes long
+        </fieldset>
+        <fieldset>
+            <label for="timeslot_break">With a </label>
+            <input type="number"> minute long break in between each slot
+        </fieldset>
+        <fieldset>
+            <label for="openings">With</label>
+            <input type="number"> available openings
+        </fieldset>
+        <input class="btn btn-primary" type="submit" name="" id="">
+    </form>
+{% endblock body %}

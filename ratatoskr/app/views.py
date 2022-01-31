@@ -53,3 +53,6 @@ def schedule_day(request, schedule_id, date):
         "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
         "date": date
     })
+
+def timeslot_gen(request):
+    return render(request, "app/pages/timeslot_gen.html")

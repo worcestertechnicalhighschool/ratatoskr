@@ -1,7 +1,10 @@
 {% extends 'app/layouts/schedule_base.html' %}
 
 {% block schedule_head %}
-    <h3>Available Days</h1>
+    <div class="d-flex align-items-center">
+        <h3>Available Days</h3>
+        <a class="btn btn-primary ms-auto" href="{% url "create-timeslots" schedule.id %}">+ Add Timeslots</a>
+    </div>
 {% endblock schedule_head %}
 
 {% block schedule_body %}

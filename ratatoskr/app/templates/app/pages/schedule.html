@@ -9,7 +9,7 @@
 
 {% block schedule_body %}
     {% for date, group in timeslots.items %}
-        {% timeslot_date date schedule %}
+        {% timeslot_date date schedule group.0 group|last %}
     {% empty %}
     <div class="text-center">
         <p class="m-2">Looks like there are no available timeslots...</p>

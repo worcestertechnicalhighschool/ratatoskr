@@ -9,7 +9,8 @@
                 v-bind:checked="checkbox"
                 name="timeslot_date" 
                 value="{{ date|date:"c" }}" 
-                style="width: 30px; height: 30px" />
+                style="width: 30px; height: 30px"
+                @changed="checkbox = !checkbox; checked += checkbox ? 1 : -1" />
         </div>
         <div>
             <h2><a href="{% url "schedule-day" schedule.id date %}" class="text-decoration-none"> {{ date }} </a></h2>

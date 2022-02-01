@@ -1,7 +1,8 @@
-<div class="card w-25">
-    <a href="{% url "schedule-day" schedule.id date %}">
+<div class="card auto">
+    <a href="{% url "schedule-day" schedule.id date %}" class="text-decoration-none">
         <div class="card-body">
-            <strong> {{ date }} </strong>
+            <h2> {{ date }} </h2>
+            <h4>x available, j Taken, From {{ from_time.time_from.time }} to {{ to_time.time_to.time }}</h4>
         </div>
     </a>
 </div>

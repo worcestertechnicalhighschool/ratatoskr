@@ -41,13 +41,24 @@ def schedule(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
-    return render(request, 'app/pages/schedule.html', {
-        "schedule": schedule,
-        "timeslots": dict(
+    timeslots = dict(
             sorted(
                 { k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date()) }.items() # Group the timeslots by their time_from date
             )
         )
+    
+    timeslot_meta = {
+        k: {
+            "from": v[0].time_from,
+            "to": v[-1].time_to,
+            "available": 999, # TODO: Implement a way to find these stats
+            "taken": 999
+        } for k, v in timeslots.items()
+    }
+
+    return render(request, 'app/pages/schedule.html', {
+        "schedule": schedule,
+        "timeslots": timeslot_meta
     })
 
 def schedule_day(request, schedule_id, date):

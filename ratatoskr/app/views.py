@@ -83,7 +83,28 @@ def schedule_delete(request, schedule_id):
 
 # Toggles locking of timeslots
 def schedule_lock(request, schedule_id):
-    raise NotImplementedError()
+    if not request.POST:
+        raise UnsupportedOperation()
+
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+
+    if schedule.owner != request.user:
+        pass
+
+    dates = [datetime.datetime.strptime(i, '%Y-%m-%d') for i in request.POST.getlist("timeslot_date")]
+    timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
+
+    # Query with schedule to prevent someone deleting timeslots using another schedule's id
+    for date in dates:
+        for timeslot in TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).all():
+            timeslot.is_locked = not timeslot.is_locked
+            timeslot.save()
+    for id in timeslot_ids:
+        for timeslot in TimeSlot.objects.filter(schedule=schedule, pk=id).all():
+            timeslot.is_locked = not timeslot.is_locked
+            timeslot.save()
+
+    return redirect("schedule", schedule_id)
 
 
 def create_timeslots(request, schedule_id):

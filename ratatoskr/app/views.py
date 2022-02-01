@@ -1,3 +1,4 @@
+from io import UnsupportedOperation
 import re
 from sqlite3 import Time
 from tokenize import group
@@ -59,9 +60,28 @@ def schedule_day(request, schedule_id, date):
         "date": date
     })
 
+# Deletes timeslots
 def schedule_delete(request, schedule_id):
-    raise NotImplementedError()
+    if not request.POST:
+        raise UnsupportedOperation()
 
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+
+    if schedule.owner != request.user:
+        pass
+
+    dates = [datetime.datetime.strptime(i, '%Y-%m-%d') for i in request.POST.getlist("timeslot_date")]
+    timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
+
+    # Query with schedule to prevent someone deleting timeslots using another schedule's id
+    for date in dates:
+        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).delete()
+    for id in timeslot_ids:
+        TimeSlot.objects.filter(schedule=schedule, pk=id).delete()
+
+    return redirect("schedule", schedule_id)
+
+# Toggles locking of timeslots
 def schedule_lock(request, schedule_id):
     raise NotImplementedError()
 

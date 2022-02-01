@@ -1,7 +1,14 @@
 {% extends 'app/layouts/schedule_base.html' %}
 
 {% block schedule_head %}
-    <h3>Available Timeslots for {{ date.date }}</h3>
+    <div class="d-inline-flex">
+        <h3>
+            <a href="{% url 'schedule' schedule.id %}" class="ms-2 me-3">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </h3>
+    </div>
+    <h3 class="d-inline-block">Available Timeslots for {{ date.date }}</h3>
 {% endblock schedule_head %}
 
 {% block schedule_body %}

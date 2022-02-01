@@ -9,14 +9,7 @@
 
 {% block schedule_body %}
     {% for date, group in timeslots.items %}
-        <div class="card w-25">
-            <a href="{% url "schedule-day" schedule.id date %}">
-                <div class="card-body d-flex align-items-center">
-                    <input type="checkbox" style="width: 30px; height: 30px" @click="checked += $el.checked ? 1 : -1">
-                    <strong> {{ date }} </strong>
-                </div>
-            </a>
-        </div>
+        {% timeslot_date date schedule %}
     {% empty %}
     <div class="text-center">
         <p class="m-2">Looks like there are no available timeslots...</p>

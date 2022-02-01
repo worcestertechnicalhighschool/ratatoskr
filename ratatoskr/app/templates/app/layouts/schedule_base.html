@@ -12,7 +12,7 @@
         </div>
     </div>
     
-    <form v-scope="{ checked: 0 }" class="card" method="GET">
+    <form v-scope="{ checked: 0 }" class="card" method="POST">
         {% csrf_token %}
         <div class="card-header">
             {% block schedule_head %}
@@ -20,8 +20,8 @@
         </div>
         {% if user == schedule.owner %}
             <div class="w-100 ps-3 p-2 bg-light shadow-sm rounded">
-                <button class="btn btn-danger" v-bind:disabled="checked == 0"><i class="far fa-trash-alt"></i> Delete</button>
-                <button class="btn btn-warning" v-bind:disabled="checked == 0"><i class="fas fa-lock"></i> Lock/Unlock</button>
+                <button formaction="{% url 'schedule-delete' schedule.id %}" class="btn btn-danger" v-bind:disabled="checked == 0"><i class="far fa-trash-alt"></i> Delete</button>
+                <button formaction="{% url 'schedule-delete' schedule.id %}" class="btn btn-warning" v-bind:disabled="checked == 0"><i class="fas fa-lock"></i> Lock/Unlock</button>
             </div>
         {% endif %}
         <div class="card-body">

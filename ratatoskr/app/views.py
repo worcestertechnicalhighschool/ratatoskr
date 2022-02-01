@@ -59,6 +59,13 @@ def schedule_day(request, schedule_id, date):
         "date": date
     })
 
+def schedule_delete(request, schedule_id):
+    raise NotImplementedError()
+
+def schedule_lock(request, schedule_id):
+    raise NotImplementedError()
+
+
 def create_timeslots(request, schedule_id):
     if request.POST:
         schedule = Schedule.objects.get(pk=schedule_id)

@@ -100,15 +100,18 @@ def create_timeslots(request, schedule_id):
         # Date, time_from, time_to
         flattened = sum(timeslot_times, [])
 
-        for date, time_from, time_to in flattened:
-            TimeSlot.objects.create(
+        objects = [
+            TimeSlot(
                 schedule = schedule,
                 time_from = make_aware(datetime.datetime.combine(date, time_from)),
                 time_to = make_aware(datetime.datetime.combine(date, time_to)),
                 reservation_limit = form.cleaned_data["openings"],
                 is_locked = False,
                 auto_lock_after = make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
-            )
+            ) for date, time_from, time_to in flattened
+        ]
+
+        TimeSlot.objects.bulk_create(objects)
 
         return redirect("schedule", schedule_id)
         

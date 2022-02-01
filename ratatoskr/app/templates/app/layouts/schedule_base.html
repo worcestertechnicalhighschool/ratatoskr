@@ -11,10 +11,15 @@
             {{ schedule.owner.socialaccount_set.all.0.extra_data.name }} (<a href="mailto:{{ schedule.owner.email }}">{{ schedule.owner.email }}</a>)
         </div>
     </div>
-    <div class="card">
+    
+    <div v-scope="{ checked: 0 }"class="card">
         <div class="card-header">
             {% block schedule_head %}
             {% endblock schedule_head %}
+        </div>
+        <div class="w-100 ps-3 p-2 bg-light shadow-sm rounded">
+            <button href="#" class="btn btn-danger" disabled="checked > 0"><i class="far fa-trash-alt"></i> Delete</button>
+            <button href="#" class="btn btn-warning" disabled="checked > 0"><i class="fas fa-lock"></i> Lock/Unlock</button>
         </div>
         <div class="card-body">
             {% block schedule_body %}

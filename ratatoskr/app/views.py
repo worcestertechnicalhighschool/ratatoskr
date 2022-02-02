@@ -5,6 +5,7 @@ from tokenize import group
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
+from django.urls import resolve
 from django.utils import dateparse, timezone
 from django.utils.timezone import make_aware
 
@@ -90,7 +91,8 @@ def schedule_delete(request, schedule_id):
     for id in timeslot_ids:
         TimeSlot.objects.filter(schedule=schedule, pk=id).delete()
 
-    return redirect("schedule", schedule_id)
+    return redirect(request.GET["next"] or "/")
+
 
 # Toggles locking of timeslots
 def schedule_lock(request, schedule_id):
@@ -117,7 +119,7 @@ def schedule_lock(request, schedule_id):
             timeslot.is_locked = not timeslot.is_locked
         TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
 
-    return redirect("schedule", schedule_id)
+    return redirect(request.GET["next"] or "/")
 
 
 def create_timeslots(request, schedule_id):

@@ -13,6 +13,12 @@
 
 {% block schedule_body %}
     {% for timeslot in timeslots %}
-        {% timeslot_time timeslot %}
+        <div class="card">
+            <a href="#" class="text-decoration-none">
+                <div class="card-body">
+                    <h4>{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
+                </div>
+            </a>
+        </div>
     {% endfor %}
 {% endblock schedule_body %}

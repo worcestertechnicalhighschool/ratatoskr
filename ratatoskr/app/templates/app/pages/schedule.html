@@ -9,7 +9,27 @@
 
 {% block schedule_body %}
     {% for date, data in timeslots.items %}
-        {% timeslot_date date schedule data.from.time data.to.time %}
+        <div class="card auto">
+            <div class="card-body d-flex">
+                {% if schedule.owner == user %}
+                    <div
+                        class="d-flex align-items-center ms-1 me-4"
+                        v-scope="{ checkbox: false }">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="timeslot_date" 
+                        value="{{ date|date:"c" }}" 
+                        style="width: 30px; height: 30px"
+                        @change="checked += $el.checked ? 1 : -1" />
+                    </div>
+                {% endif %}
+                <div>
+                    <h2><a href="{% url "schedule-day" schedule.id date %}" class="text-decoration-none"> {{ date }} </a></h2>
+                    <h4>x available, j Taken, From {{ data.from.time }} to {{ data.to.time }}</h4>
+                </div>
+            </div>
+        </div>
     {% empty %}
     <div class="text-center">
         <p class="m-2">Looks like there are no available timeslots...</p>

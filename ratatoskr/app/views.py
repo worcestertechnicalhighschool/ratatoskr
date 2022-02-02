@@ -102,18 +102,20 @@ def schedule_lock(request, schedule_id):
     if schedule.owner != request.user:
         pass
 
-    dates = [datetime.datetime.strptime(i, '%Y-%m-%d') for i in request.POST.getlist("timeslot_date")]
+    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
 
     # Query with schedule to prevent someone deleting timeslots using another schedule's id
     for date in dates:
-        for timeslot in TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).all():
+        timeslots = TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).all()
+        for timeslot in timeslots:
             timeslot.is_locked = not timeslot.is_locked
-            timeslot.save()
+        TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
     for id in timeslot_ids:
-        for timeslot in TimeSlot.objects.filter(schedule=schedule, pk=id).all():
+        timeslots = TimeSlot.objects.filter(schedule=schedule, pk=id).all()
+        for timeslot in timeslots:
             timeslot.is_locked = not timeslot.is_locked
-            timeslot.save()
+        TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
 
     return redirect("schedule", schedule_id)
 

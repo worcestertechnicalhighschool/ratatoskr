@@ -9,7 +9,7 @@
 
 {% block schedule_body %}
     {% for date, data in timeslots.items %}
-        {% timeslot_date date schedule data.from.date data.to.date %}
+        {% timeslot_date date schedule data.from.time data.to.time %}
     {% empty %}
     <div class="text-center">
         <p class="m-2">Looks like there are no available timeslots...</p>

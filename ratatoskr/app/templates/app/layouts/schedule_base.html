@@ -30,7 +30,13 @@
                     }
                 </script>
                 <button class="btn btn-primary" type="button" @click="selectAll(checkboxes)">
-                    <input type="checkbox" v-bind:checked="checkboxes.length == checked && checkboxes.length != 0" style="width: 15px; height: 15px;" />
+                    <div class="border border-light d-inline-flex m-0 mt-1 me-1 p-0 rounded">
+                        <input
+                            class="text-danger form-check-input p-0 m-0"
+                            type="checkbox"
+                            v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"
+                            style="width: 15px; height: 15px;" />
+                    </div>
                     Select All
                 </button>
                 <button onclick="return confirm(`Are you sure you want to delete these timeslots?`)" formaction="{% url 'schedule-delete' schedule.id %}" class="btn btn-danger" v-bind:disabled="checked == 0"><i class="far fa-trash-alt"></i> Delete</button>

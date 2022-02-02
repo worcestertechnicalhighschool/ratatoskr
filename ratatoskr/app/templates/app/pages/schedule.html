@@ -8,8 +8,8 @@
 {% endblock schedule_head %}
 
 {% block schedule_body %}
-    {% for date, group in timeslots.items %}
-        {% timeslot_date date schedule group.0 group|last %}
+    {% for date, data in timeslots.items %}
+        {% timeslot_date date schedule data.from.time data.to.time %}
     {% empty %}
     <div class="text-center">
         <p class="m-2">Looks like there are no available timeslots...</p>

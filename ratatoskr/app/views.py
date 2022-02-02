@@ -1,3 +1,4 @@
+from io import UnsupportedOperation
 import re
 from sqlite3 import Time
 from tokenize import group
@@ -40,13 +41,24 @@ def schedule(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
-    return render(request, 'app/pages/schedule.html', {
-        "schedule": schedule,
-        "timeslots": dict(
+    timeslots = dict(
             sorted(
                 { k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date()) }.items() # Group the timeslots by their time_from date
             )
         )
+    
+    timeslot_meta = {
+        k: {
+            "from": v[0].time_from,
+            "to": v[-1].time_to,
+            "available": 999, # TODO: Implement a way to find these stats
+            "taken": 999
+        } for k, v in timeslots.items()
+    }
+
+    return render(request, 'app/pages/schedule.html', {
+        "schedule": schedule,
+        "timeslots": timeslot_meta
     })
 
 def schedule_day(request, schedule_id, date):
@@ -58,6 +70,55 @@ def schedule_day(request, schedule_id, date):
         "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
         "date": date
     })
+
+# Deletes timeslots
+def schedule_delete(request, schedule_id):
+    if not request.POST:
+        raise UnsupportedOperation()
+
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+
+    if schedule.owner != request.user:
+        pass
+
+    dates = [datetime.datetime.strptime(i, '%Y-%m-%d') for i in request.POST.getlist("timeslot_date")]
+    timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
+
+    # Query with schedule to prevent someone deleting timeslots using another schedule's id
+    for date in dates:
+        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).delete()
+    for id in timeslot_ids:
+        TimeSlot.objects.filter(schedule=schedule, pk=id).delete()
+
+    return redirect("schedule", schedule_id)
+
+# Toggles locking of timeslots
+def schedule_lock(request, schedule_id):
+    if not request.POST:
+        raise UnsupportedOperation()
+
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+
+    if schedule.owner != request.user:
+        pass
+
+    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
+    timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
+
+    # Query with schedule to prevent someone deleting timeslots using another schedule's id
+    for date in dates:
+        timeslots = TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).all()
+        for timeslot in timeslots:
+            timeslot.is_locked = not timeslot.is_locked
+        TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
+    for id in timeslot_ids:
+        timeslots = TimeSlot.objects.filter(schedule=schedule, pk=id).all()
+        for timeslot in timeslots:
+            timeslot.is_locked = not timeslot.is_locked
+        TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
+
+    return redirect("schedule", schedule_id)
+
 
 def create_timeslots(request, schedule_id):
     if request.POST:

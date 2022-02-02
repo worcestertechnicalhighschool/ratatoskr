@@ -1,4 +1,8 @@
+from functools import reduce
 from django.template.defaulttags import register
+
+def ctx(c):
+    return reduce(lambda a, b: a | b, c, {})
 
 @register.inclusion_tag("app/components/test.html")
 def test_component(echo):
@@ -27,9 +31,9 @@ def timeslot_card(date, timeslots):
         "timeslots": timeslots
     }   
 
-@register.inclusion_tag("app/components/timeslot_date.html")
-def timeslot_date(date, schedule, from_time, to_time):
-    return {
+@register.inclusion_tag("app/components/timeslot_date.html", takes_context=True)
+def timeslot_date(context, date, schedule, from_time, to_time):
+    return ctx(context) | {
         "date": date,
         "schedule": schedule,
         "from_time": from_time,

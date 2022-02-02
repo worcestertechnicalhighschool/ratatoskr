@@ -36,5 +36,9 @@
                 </div>
             </a>
         </div>
+    {% empty %}
+        <div class="pt-2">
+            <p class="text-center"> It seems that there are no timeslots for this day...</p>
+        </div>
     {% endfor %}
 {% endblock schedule_body %}

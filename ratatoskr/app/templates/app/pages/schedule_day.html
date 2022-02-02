@@ -14,9 +14,12 @@
 {% block schedule_body %}
     {% for timeslot in timeslots %}
         <div class="card">
-            <a href="#" class="text-decoration-none">
+            <a href="#" class="text-decoration-none stretched-link">
                 <div class="card-body">
-                    <h4>{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
+                    <div class="d-flex">
+                        <h4 class="">{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
+                        <a href="#" class="btn btn-primary ms-auto">Reserve <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
                 </div>
             </a>
         </div>

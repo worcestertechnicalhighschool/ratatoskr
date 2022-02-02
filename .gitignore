@@ -138,3 +138,7 @@ GitHub.sublime-settings
 
 # pipenv
 Pipfile.lock
+
+# SCSS/SASS/CSS
+*.css
+*.css.map

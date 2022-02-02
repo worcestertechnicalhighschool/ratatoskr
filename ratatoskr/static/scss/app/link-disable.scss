@@ -1,0 +1,6 @@
+@use "../bootstrap/variables";
+
+a.disabled {
+    color: $secondary;
+    pointer-events: none;
+}

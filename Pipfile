@@ -9,6 +9,8 @@ celery = "*"
 django-allauth = "*"
 fontawesomefree = "*"
 pandas = "*"
+libsass = "*"
+django-sass-processor = "*"
 
 [dev-packages]
 

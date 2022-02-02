@@ -53,7 +53,8 @@ def schedule(request, schedule_id):
             "from": v[0].time_from,
             "to": v[-1].time_to,
             "available": 999, # TODO: Implement a way to find these stats
-            "taken": 999
+            "taken": 999,
+            "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
     }
 

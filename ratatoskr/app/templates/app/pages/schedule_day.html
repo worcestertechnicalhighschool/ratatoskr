@@ -14,7 +14,13 @@
 {% block schedule_body %}
     {% for timeslot in timeslots %}
         <div class="card d-flex">
-            <div class="card-body d-flex">
+            <div
+                class="card-body d-flex"
+                {% if timeslot.is_locked %}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="This timeslot is locked"
+                {% endif %}>
                 {% if schedule.owner == user %}
                     <div
                         class="d-flex align-items-center ms-1 me-4"
@@ -33,11 +39,7 @@
                         <h4>{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
                     </a>
                     {% if timeslot.is_locked %}
-                        <i
-                            class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="This timeslot is locked"></i>
+                        <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
                     {% endif %}
                     <a href="#" class="btn btn-primary ms-auto {% if timeslot.is_locked %}disabled{% endif %}">Reserve <i class="fas fa-arrow-right ms-1"></i></a>
                 </div>

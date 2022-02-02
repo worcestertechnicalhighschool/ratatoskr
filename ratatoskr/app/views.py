@@ -81,7 +81,7 @@ def schedule_delete(request, schedule_id):
     if schedule.owner != request.user:
         pass
 
-    dates = [datetime.datetime.strptime(i, '%Y-%m-%d') for i in request.POST.getlist("timeslot_date")]
+    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
 
     # Query with schedule to prevent someone deleting timeslots using another schedule's id

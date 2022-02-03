@@ -15,7 +15,8 @@
 {% endblock schedule_head %}
 
 {% block schedule_body %}
-    <img src="{% static 'assets/ratatoskr.jpg' %}" alt="">
+    <h2>Please fill in the following information</h2>
+    <h5>The email you put in will recieve a confirmation email</h5>
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}

@@ -110,7 +110,7 @@ def schedule_edit(request, schedule_id):
         case "delete":
             timeslots.delete()
 
-    return redirect(request.GET["next"] or "/")
+    return redirect(request.GET.get("next") or "/")
 
 def create_timeslots(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)

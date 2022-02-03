@@ -10,6 +10,7 @@ urlpatterns = [
     path('schedule/<int:schedule_id>', views.schedule, name='schedule'),
     path('schedule/<int:schedule_id>/delete', views.schedule_delete, name='schedule-delete'),
     path('schedule/<int:schedule_id>/lock', views.schedule_lock, name='schedule-lock'),
+    path('schedule/<int:schedule_id>/unlock', views.schedule_lock, name='schedule-unlock'),
     path('schedule/<int:schedule_id>/<datetime:date>', views.schedule_day, name='schedule-day'),
     path('schedule/<int:schedule_id>/create-timeslots', views.create_timeslots, name='create-timeslots'),
 ]

@@ -11,6 +11,7 @@ fontawesomefree = "*"
 pandas = "*"
 libsass = "*"
 django-sass-processor = "*"
+django-mathfilters = "*"
 
 [dev-packages]
 

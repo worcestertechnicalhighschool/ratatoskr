@@ -1,3 +1,4 @@
+import email
 from functools import reduce
 from io import UnsupportedOperation
 import operator
@@ -11,7 +12,7 @@ from django.urls import resolve
 from django.utils import dateparse, timezone
 from django.utils.timezone import make_aware
 
-from .forms import TimeslotGenerationForm
+from .forms import ReservationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 import datetime
 from itertools import groupby
@@ -49,13 +50,13 @@ def schedule(request, schedule_id):
                 { k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date()) }.items() # Group the timeslots by their time_from date
             )
         )
-    
+
     timeslot_meta = {
         k: {
             "from": v[0].time_from,
             "to": v[-1].time_to,
-            "available": 999, # TODO: Implement a way to find these stats
-            "taken": 999,
+            "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]), # TODO: Implement a way to find these stats
+            "taken": sum([i.reservation_set.count() for i in v]),
             "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
     }
@@ -82,7 +83,7 @@ def schedule_edit(request, schedule_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
 
     if schedule.owner != request.user:
-        pass
+        raise PermissionDenied()
 
     dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     ids = [int(i) for i in request.POST.getlist("timeslot_id")]
@@ -109,11 +110,15 @@ def schedule_edit(request, schedule_id):
         case "delete":
             timeslots.delete()
 
-    return redirect(request.GET["next"] or "/")
+    return redirect(request.GET.get("next") or "/")
 
 def create_timeslots(request, schedule_id):
+    schedule = Schedule.objects.get(pk=schedule_id)
+
+    if schedule.owner != request.user:
+        raise PermissionDenied()
+
     if request.POST:
-        schedule = Schedule.objects.get(pk=schedule_id)
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
             return render(request, "app/pages/create_timeslots.html", {
@@ -145,7 +150,17 @@ def create_timeslots(request, schedule_id):
         # The base plus the offset and the length of the meeting
         # Thats all I can say about this horrible thing
         # Good luck
-        timeslot_times = [[(date, (base + datetime.timedelta(minutes=minute_offset)).time(), (base + datetime.timedelta(minutes=minute_offset + length)).time()) for minute_offset in range(0, time_delta_mins, total_buffer)] for date in dates]
+        timeslot_times = [
+            [
+                (
+                    date,
+                    (base + datetime.timedelta(minutes=minute_offset)).time(),
+                    (base + datetime.timedelta(minutes=minute_offset + length)).time()
+                ) 
+                for minute_offset in range(0, time_delta_mins, total_buffer)
+            ]
+            for date in dates
+        ]
 
         # The resulting list will be a 2d list, with each list being the timeslots for one day.
         # Each list is a list of tuples with the following data:
@@ -169,4 +184,36 @@ def create_timeslots(request, schedule_id):
         
     return render(request, "app/pages/create_timeslots.html", {
         "form": TimeslotGenerationForm()
+    })
+
+def reserve_timeslot(request, schedule_id, date, timeslot_id):
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
+    reservations = Reservation.objects.filter(time_slot=timeslot).count()
+    if timeslot.is_locked or reservations >= timeslot.reservation_limit:
+        raise PermissionDenied()
+    if request.POST:
+        reservation_form = ReservationForm(request.POST)
+        if not reservation_form.is_valid():
+            return render(request, "app/pages/reserve_timeslot.html", {
+                "schedule": schedule,
+                "timeslot": timeslot,
+                "form": reservation_form 
+            })
+        Reservation.objects.create(
+            time_slot=timeslot,
+            comment=reservation_form.cleaned_data["comment"],
+            email=reservation_form.cleaned_data["email"],
+            name=reservation_form.cleaned_data["name"],
+        )
+        return redirect("reserve-confirmed")
+    return render(request, "app/pages/reserve_timeslot.html", {
+        "schedule": schedule,
+        "timeslot": timeslot,
+        "form": ReservationForm() 
+    })
+
+def reserve_confirmed(request):
+    return render(request, "app/pages/reserve_confirmed.html", {
+        
     })

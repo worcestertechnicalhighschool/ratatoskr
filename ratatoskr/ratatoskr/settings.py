@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'app',
     'fontawesomefree',
-    'sass_processor'
+    'sass_processor',
+    "mathfilters"
 ]
 
 STATICFILES_FINDERS = [
@@ -135,7 +136,7 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / 'static'
 
-SASS_PROCESSOR_ROOT = STATIC_ROOT / 'scss'
+SASS_PROCESSOR_ROOT = STATIC_ROOT
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

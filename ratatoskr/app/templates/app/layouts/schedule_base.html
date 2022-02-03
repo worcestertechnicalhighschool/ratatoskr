@@ -12,63 +12,17 @@
         </div>
     </div>
     
-    <form v-scope="{ checked: 0 }" class="card" method="POST" action="{% url 'schedule-edit' schedule.id %}?next={{ request.path }}">
-        {% csrf_token %}
+    <div class="card">
         <div class="card-header">
             {% block schedule_head %}
             {% endblock schedule_head %}
         </div>
-        {% if user == schedule.owner %}
-            <div class="w-100 ps-3 p-2 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
-                <script>
-                    function selectAll(checkboxes) {
-                        // If some checkboxes are checked, click the ones that are unchecked
-                        if (!checkboxes.every((x, _, a) => x.checked == a[0].checked))
-                            checkboxes.filter(x => !x.checked).forEach(x => x.click())
-                        else // Click all the checkboxes
-                            checkboxes.forEach(x => x.click())
-                    }
-                </script>
-                <button class="btn btn-primary" type="button" @click="selectAll(checkboxes)">
-                    <div class="border border-light d-inline-flex m-0 mt-1 me-1 p-0 rounded">
-                        <input
-                            class="text-danger form-check-input p-0 m-0"
-                            type="checkbox"
-                            v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"
-                            style="width: 15px; height: 15px;" />
-                    </div>
-                    Select All
-                </button>
-                <button
-                    onclick="return confirm(`Are you sure you want to delete these timeslots?`)"
-                    name="action"
-                    value="delete"
-                    class="btn btn-danger"
-                    v-bind:disabled="checked == 0">
-                    <i class="far fa-trash-alt"></i> Delete
-                </button>
-                <button
-                    onclick="return confirm(`Are you sure you want to lock these timeslots?`)"
-                    name="action"
-                    value="lock"
-                    class="btn btn-warning"
-                    v-bind:disabled="checked == 0">
-                    <i class="fas fa-lock"></i> Lock
-                </button>
-                <button
-                    onclick="return confirm(`Are you sure you want to unlock these timeslots?`)"
-                    name="action"
-                    value="unlock"
-                    class="btn btn-success"
-                    v-bind:disabled="checked == 0">
-                    <i class="fas fa-unlock"></i> Unlock
-                </button>
+        {% block schedule_card %}
+            <div class="card-body" id="timeslot-body">
+                {% block schedule_body %}
+                {% endblock schedule_body %}
             </div>
-        {% endif %}
-        <div class="card-body" id="timeslot-body">
-            {% block schedule_body %}
-            {% endblock schedule_body %}
-        </div>
-    </form>
+        {% endblock schedule_card %}
+    </div>
     
 {% endblock body %}

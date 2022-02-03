@@ -16,3 +16,10 @@ class TimeslotGenerationForm(forms.Form):
         # if st > end :
         #      raise forms.ValidationError('The start time must be earlier than the end time.')
         return cleaned_data
+
+class ReservationForm(forms.Form):
+    name = forms.CharField(max_length=747)
+    email = forms.EmailField()
+    comment = forms.CharField(max_length=256)
+    # TODO: Find out how to store phone numbers
+    #phone = models.PhoneNumberField()

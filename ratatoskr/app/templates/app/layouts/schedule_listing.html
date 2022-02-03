@@ -1,7 +1,15 @@
 {% extends 'app/layouts/schedule_base.html' %}
 
 {% block schedule_card %}
-    <form v-scope="{ checked: 0 }" class="m-0 p-0" method="POST" action="{% url 'schedule-edit' schedule.id %}?next={{ request.path }}">
+    <form
+        v-scope="{ 
+            checked: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]'))
+                        .filter(x => x.checked)
+                        .length
+        }"
+        class="m-0 p-0"
+        method="POST"
+        action="{% url 'schedule-edit' schedule.id %}?next={{ request.path }}">
         {% csrf_token %}
         {% if user == schedule.owner %}
             <div class="w-100 ps-3 p-2 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">

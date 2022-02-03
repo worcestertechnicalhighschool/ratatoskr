@@ -11,5 +11,5 @@ urlpatterns = [
     path('schedule/<int:schedule_id>/edit', views.schedule_edit, name='schedule-edit'),
     path('schedule/<int:schedule_id>/<datetime:date>', views.schedule_day, name='schedule-day'),
     path('schedule/<int:schedule_id>/create-timeslots', views.create_timeslots, name='create-timeslots'),
-    path('schedule/<int:schedule_id>/<datetime:date>/<int:timeslot_id>', views.reserve_timeslot, name='reserve-timeslot'),
+    path('schedule/<int:schedule_id>/<datetime:date>/reserve/<int:timeslot_id>', views.reserve_timeslot, name='reserve-timeslot'),
 ]

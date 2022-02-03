@@ -35,13 +35,13 @@
                     </div>
                 {% endif %}
                 <div class="d-flex flex-grow-1">
-                    <a href="#" class="text-decoration-none {% if timeslot.is_locked %}disabled{% endif %}">
+                    <a href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}" class="text-decoration-none {% if timeslot.is_locked %}disabled{% endif %}">
                         <h4>{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
                     </a>
                     {% if timeslot.is_locked %}
                         <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
                     {% endif %}
-                    <a href="#" class="btn btn-primary ms-auto {% if timeslot.is_locked %}disabled{% endif %}">Reserve <i class="fas fa-arrow-right ms-1"></i></a>
+                    <a href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}" class="btn btn-primary ms-auto {% if timeslot.is_locked %}disabled{% endif %}">Reserve <i class="fas fa-arrow-right ms-1"></i></a>
                 </div>
             </div>
         </div>

@@ -178,6 +178,8 @@ def create_timeslots(request, schedule_id):
 def reserve_timeslot(request, schedule_id, date, timeslot_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
     timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
+    if timeslot.is_locked:
+        raise PermissionDenied()
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,
         "timeslot": timeslot

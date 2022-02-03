@@ -17,7 +17,7 @@
         <div class="card d-flex">
             <div
                 class="card-body d-flex"
-                {% if timeslot.is_locked %}
+                {% if timeslot.locked or timeslot.reservation_set.count %}
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="This timeslot is locked"

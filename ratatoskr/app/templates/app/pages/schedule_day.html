@@ -46,6 +46,7 @@
                     {% endif %}
                     <a
                         href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}"
+                        style="width: 20%"
                         class="btn btn-primary ms-auto {% if timeslot.locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}disabled{% endif %}">
                         Reserve ({{ timeslot.reservation_limit|sub:timeslot.reservation_set.count }} slot{{ timeslot.reservation_limit|sub:timeslot.reservation_set.count|pluralize }} left)
                         <i class="fas fa-arrow-right ms-1"></i>

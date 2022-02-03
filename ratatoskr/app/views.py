@@ -82,7 +82,7 @@ def schedule_edit(request, schedule_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
 
     if schedule.owner != request.user:
-        pass
+        raise PermissionDenied()
 
     dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     ids = [int(i) for i in request.POST.getlist("timeslot_id")]
@@ -173,4 +173,12 @@ def create_timeslots(request, schedule_id):
         
     return render(request, "app/pages/create_timeslots.html", {
         "form": TimeslotGenerationForm()
+    })
+
+def reserve_timeslot(request, schedule_id, date, timeslot_id):
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
+    return render(request, "app/pages/reserve_timeslot.html", {
+        "schedule": schedule,
+        "timeslot": timeslot
     })

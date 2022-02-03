@@ -112,8 +112,12 @@ def schedule_edit(request, schedule_id):
     return redirect(request.GET["next"] or "/")
 
 def create_timeslots(request, schedule_id):
+    schedule = Schedule.objects.get(pk=schedule_id)
+
+    if schedule.owner != request.user:
+        raise PermissionDenied()
+
     if request.POST:
-        schedule = Schedule.objects.get(pk=schedule_id)
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
             return render(request, "app/pages/create_timeslots.html", {

@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'app',
     'fontawesomefree',
-    'sass_processor'
+    'sass_processor',
+    "mathfilters"
 ]
 
 STATICFILES_FINDERS = [

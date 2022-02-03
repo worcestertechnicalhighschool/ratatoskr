@@ -1,4 +1,6 @@
+from functools import reduce
 from io import UnsupportedOperation
+import operator
 import re
 from sqlite3 import Time
 from tokenize import group
@@ -86,20 +88,23 @@ def schedule_edit(request, schedule_id):
     ids = [int(i) for i in request.POST.getlist("timeslot_id")]
 
     # Query the timeslot table with all the data given
-    timeslot_date_query = [TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for date in dates]
-    timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
     # The "|"(union) operator effectively combines the two queries
-    timeslots = (timeslot_date_query | timeslot_id_query).distinct()
+    # I use a reduce to merge a list of queries into one singular query, using said union opeartor
+    timeslot_date_query = [TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for date in dates]
+    timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
+    timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
+    timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
+    timeslots = (timeslot_date_query | timeslot_id_query)
     all_timeslots = timeslots.all()
 
-    match request.GET["action"]:
+    match request.POST["action"]:
         case "lock":
             for timeslot in all_timeslots:
                 timeslot.is_locked = True
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
         case "unlock":
             for timeslot in all_timeslots:
-                timeslot.is_locked = True
+                timeslot.is_locked = False
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
         case "delete":
             timeslots.delete()

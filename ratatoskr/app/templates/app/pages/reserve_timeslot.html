@@ -1,4 +1,5 @@
 {% extends 'app/layouts/schedule_base.html' %}
+{% load static %}
 
 {% block title %}{{ schedule.name }} | Reservation{% endblock title %}
 
@@ -14,5 +15,10 @@
 {% endblock schedule_head %}
 
 {% block schedule_body %}
-    
+    <img src="{% static 'assets/ratatoskr.jpg' %}" alt="">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary">Reserve</button>
+    </form>
 {% endblock schedule_body %}

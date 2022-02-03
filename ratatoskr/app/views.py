@@ -11,7 +11,7 @@ from django.urls import resolve
 from django.utils import dateparse, timezone
 from django.utils.timezone import make_aware
 
-from .forms import TimeslotGenerationForm
+from .forms import ReservationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 import datetime
 from itertools import groupby
@@ -72,6 +72,7 @@ def schedule_day(request, schedule_id, date):
     return render(request, 'app/pages/schedule_day.html', {
         "schedule": schedule,
         "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
+        "reservations": Reservation.objects.count(),
         "date": date
     })
 
@@ -182,5 +183,6 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
         raise PermissionDenied()
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,
-        "timeslot": timeslot
+        "timeslot": timeslot,
+        "form": ReservationForm() 
     })

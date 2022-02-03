@@ -11,7 +11,6 @@
         class="m-0 p-0"
         method="POST"
         action="{% url 'schedule-edit' schedule.id %}?next={{ request.path }}">
-        ${checked}
         {% csrf_token %}
         <script>
             function onChanged(shiftClicked) {

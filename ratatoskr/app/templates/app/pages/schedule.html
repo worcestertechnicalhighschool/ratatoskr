@@ -23,6 +23,7 @@
                         name="timeslot_date" 
                         value="{{ date|date:"c" }}" 
                         style="width: 30px; height: 30px"
+                        @click.shift="shiftClicked.push($el)"
                         @change="checked += $el.checked ? 1 : -1" />
                     </div>
                 {% endif %}

@@ -1,3 +1,4 @@
+import email
 from functools import reduce
 from io import UnsupportedOperation
 import operator
@@ -72,7 +73,6 @@ def schedule_day(request, schedule_id, date):
     return render(request, 'app/pages/schedule_day.html', {
         "schedule": schedule,
         "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
-        "reservations": Reservation.objects.count(),
         "date": date
     })
 
@@ -179,10 +179,31 @@ def create_timeslots(request, schedule_id):
 def reserve_timeslot(request, schedule_id, date, timeslot_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
     timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
-    if timeslot.is_locked:
+    reservations = Reservation.objects.filter(time_slot=timeslot).count()
+    if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
+    if request.POST:
+        reservation_form = ReservationForm(request.POST)
+        if not reservation_form.is_valid():
+            return render(request, "app/pages/reserve_timeslot.html", {
+                "schedule": schedule,
+                "timeslot": timeslot,
+                "form": reservation_form 
+            })
+        Reservation.objects.create(
+            time_slot=timeslot,
+            comment=reservation_form.cleaned_data["comment"],
+            email=reservation_form.cleaned_data["email"],
+            name=reservation_form.cleaned_data["name"],
+        )
+        return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,
         "timeslot": timeslot,
         "form": ReservationForm() 
+    })
+
+def reserve_confirmed(request):
+    return render(request, "app/pages/reserve_confirmed.html", {
+        
     })

@@ -14,27 +14,36 @@
 {% block schedule_body %}
     {% for timeslot in timeslots %}
         <div class="card d-flex">
-            <a href="#" class="text-decoration-none">
-                <div class="card-body d-flex">
-                    {% if schedule.owner == user %}
-                        <div
-                            class="d-flex align-items-center ms-1 me-4"
-                            v-scope="{ checkbox: false }">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="timeslot_id" 
-                            value="{{ timeslot.id }}" 
-                            style="width: 30px; height: 30px"
-                            @change="checked += $el.checked ? 1 : -1" />
-                        </div>
-                    {% endif %}
-                    <div class="d-flex flex-grow-1">
-                        <h4 class="">{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
-                        <a href="#" class="btn btn-primary ms-auto">Reserve <i class="fas fa-arrow-right ms-1"></i></a>
+            <div
+                class="card-body d-flex"
+                {% if timeslot.is_locked %}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="This timeslot is locked"
+                {% endif %}>
+                {% if schedule.owner == user %}
+                    <div
+                        class="d-flex align-items-center ms-1 me-4"
+                        v-scope="{ checkbox: false }">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="timeslot_id" 
+                        value="{{ timeslot.id }}" 
+                        style="width: 30px; height: 30px"
+                        @change="checked += $el.checked ? 1 : -1" />
                     </div>
+                {% endif %}
+                <div class="d-flex flex-grow-1">
+                    <a href="#" class="text-decoration-none {% if timeslot.is_locked %}disabled{% endif %}">
+                        <h4>{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
+                    </a>
+                    {% if timeslot.is_locked %}
+                        <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
+                    {% endif %}
+                    <a href="#" class="btn btn-primary ms-auto {% if timeslot.is_locked %}disabled{% endif %}">Reserve <i class="fas fa-arrow-right ms-1"></i></a>
                 </div>
-            </a>
+            </div>
         </div>
     {% empty %}
         <div class="pt-2">

@@ -1,4 +1,6 @@
+from functools import reduce
 from io import UnsupportedOperation
+import operator
 import re
 from sqlite3 import Time
 from tokenize import group
@@ -53,7 +55,8 @@ def schedule(request, schedule_id):
             "from": v[0].time_from,
             "to": v[-1].time_to,
             "available": 999, # TODO: Implement a way to find these stats
-            "taken": 999
+            "taken": 999,
+            "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
     }
 
@@ -72,8 +75,7 @@ def schedule_day(request, schedule_id, date):
         "date": date
     })
 
-# Deletes timeslots
-def schedule_delete(request, schedule_id):
+def schedule_edit(request, schedule_id):
     if not request.POST:
         raise UnsupportedOperation()
 
@@ -83,44 +85,31 @@ def schedule_delete(request, schedule_id):
         pass
 
     dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
-    timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
+    ids = [int(i) for i in request.POST.getlist("timeslot_id")]
 
-    # Query with schedule to prevent someone deleting timeslots using another schedule's id
-    for date in dates:
-        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).delete()
-    for id in timeslot_ids:
-        TimeSlot.objects.filter(schedule=schedule, pk=id).delete()
+    # Query the timeslot table with all the data given
+    # The "|"(union) operator effectively combines the two queries
+    # I use a reduce to merge a list of queries into one singular query, using said union opeartor
+    timeslot_date_query = [TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for date in dates]
+    timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
+    timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
+    timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
+    timeslots = (timeslot_date_query | timeslot_id_query)
+    all_timeslots = timeslots.all()
 
-    return redirect(request.GET["next"] or "/")
-
-
-# Toggles locking of timeslots
-def schedule_lock(request, schedule_id):
-    if not request.POST:
-        raise UnsupportedOperation()
-
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
-
-    if schedule.owner != request.user:
-        pass
-
-    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
-    timeslot_ids = [int(i) for i in request.POST.getlist("timeslot_id")]
-
-    # Query with schedule to prevent someone deleting timeslots using another schedule's id
-    for date in dates:
-        timeslots = TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))).all()
-        for timeslot in timeslots:
-            timeslot.is_locked = not timeslot.is_locked
-        TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
-    for id in timeslot_ids:
-        timeslots = TimeSlot.objects.filter(schedule=schedule, pk=id).all()
-        for timeslot in timeslots:
-            timeslot.is_locked = not timeslot.is_locked
-        TimeSlot.objects.bulk_update(timeslots, ['is_locked'])
+    match request.POST["action"]:
+        case "lock":
+            for timeslot in all_timeslots:
+                timeslot.is_locked = True
+            TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
+        case "unlock":
+            for timeslot in all_timeslots:
+                timeslot.is_locked = False
+            TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
+        case "delete":
+            timeslots.delete()
 
     return redirect(request.GET["next"] or "/")
-
 
 def create_timeslots(request, schedule_id):
     if request.POST:

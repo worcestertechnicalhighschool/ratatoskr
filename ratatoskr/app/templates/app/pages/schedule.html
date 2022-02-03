@@ -3,7 +3,9 @@
 {% block schedule_head %}
     <div class="d-flex align-items-center">
         <h3>Available Days</h3>
-        <a class="btn btn-primary ms-auto" href="{% url "create-timeslots" schedule.id %}">+ Add Timeslots</a>
+        {% if schedule.owner == user %}
+            <a class="btn btn-primary ms-auto" href="{% url "create-timeslots" schedule.id %}">+ Add Timeslots</a>
+        {% endif %}
     </div>
 {% endblock schedule_head %}
 

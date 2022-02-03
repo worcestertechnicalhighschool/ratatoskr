@@ -87,13 +87,15 @@
 
     <script>
         // nya~
-        PetiteVue.createApp({
-            $delimiters: ["[", "]"]
-        }).mount()
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        window.onload = () => {
+            PetiteVue.createApp({
+                $delimiters: ["[", "]"]
+            }).mount()
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        }
     </script>
 </body>
 </html>

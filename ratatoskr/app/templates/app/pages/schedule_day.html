@@ -32,6 +32,7 @@
                         name="timeslot_id" 
                         value="{{ timeslot.id }}" 
                         style="width: 30px; height: 30px"
+                        @click.shift="shiftClicked.push($el)"
                         @change="checked += $el.checked ? 1 : -1" />
                     </div>
                 {% endif %}

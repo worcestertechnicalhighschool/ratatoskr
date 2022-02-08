@@ -54,6 +54,7 @@
 <script>
 
   document.addEventListener('DOMContentLoaded', function() {
+    var d = new Date();
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'timeGridWeek',
@@ -61,7 +62,12 @@
       slotMaxTime: "14:00:00",
       slotDuration: "00:15:00",
       weekends: false,
-      allDaySlot: false
+      allDaySlot: false,
+      validRange: function(nowDate) {
+        return {
+          start: nowDate
+        };
+      }
     });
     calendar.render();
     calendarEl.querySelector(".fc-toolbar").classList.add("card-header");

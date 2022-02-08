@@ -11,6 +11,9 @@ from django.core.exceptions import PermissionDenied
 from django.urls import resolve
 from django.utils import dateparse, timezone
 from django.utils.timezone import make_aware
+import json
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .forms import ReservationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
@@ -79,7 +82,7 @@ def schedule(request, schedule_id):
 
     return render(request, 'app/pages/schedule.html', {
         "schedule": schedule,
-        "timeslots": timeslot_meta
+        "timeslots": serializers.serialize("json", TimeSlot.objects.filter(schedule=schedule))
     })
 
 

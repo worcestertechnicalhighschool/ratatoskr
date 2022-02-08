@@ -51,7 +51,10 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
 
+{{ timeslots|json_script:"timeslots_data" }}
+
 <script>
+  var timeslots = JSON.parse(JSON.parse(document.getElementById('timeslots_data').textContent));
 
   document.addEventListener('DOMContentLoaded', function() {
     var d = new Date();
@@ -70,6 +73,17 @@
       }
     });
     calendar.render();
+
+    timeslots.forEach((timeslot) => {
+        var data = {
+            "start": new Date(timeslot["fields"]["time_from"]),
+            "end": new Date(timeslot["fields"]["time_to"]),
+            "locked": timeslot["fields"]["is_locked"],
+            "limit": timeslot["fields"]["reservation_limit"]
+        };
+        calendar.addEvent(data);
+    });
+
     calendarEl.querySelector(".fc-toolbar").classList.add("card-header");
     calendarEl.querySelector(".fc-timegrid").style.margin = "10px";
   });

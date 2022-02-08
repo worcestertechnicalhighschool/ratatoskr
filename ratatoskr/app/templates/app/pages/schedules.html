@@ -1,0 +1,26 @@
+{% extends 'app/layouts/base.html' %}
+{% block title %}My Schedules{% endblock title %}
+
+{% load socialaccount %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center px-4">
+        <h1>My Schedules</h1>
+        <a href="/create-schedule"><i class='bx bx-plus-circle' style="font-size: 30px; color: var(--bs-primary)"></i></a>
+    </div>
+    <hr />
+    <div class="container">
+        {% if schedules %}
+        <div class="row row-cols-lg-3">
+            {% for schedule in schedules %}
+                <div class="col mb-3">
+                    {% schedule_card schedule %}
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-center pt-4">It looks like you don't have any schedules, ready to <a href="/create-schedule">get started</a>?</p>
+        {% endif %}
+    </div>
+
+{% endblock body %}

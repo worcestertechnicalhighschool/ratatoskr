@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ratatoskr - {% block title %}{% endblock title %}</title>
+    <title>{% block title %}{% endblock title %} | Ratatoskr</title>
     {% comment %} Styles {% endcomment %}
     <link rel="stylesheet" href="{% sass_src 'scss/style.scss' %}">
     <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -20,79 +20,18 @@
     {% endblock head %}
 </head>
 <body id="body-pd">
-    <!-- Old Navbar
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow mb-3">
-        <div class="container-fluid px-5 ">
-            <a class="navbar-brand mb-0 h1" href="{% url "index" %}">ratatoskr</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="navbar-nav ms-auto flex-nowrap align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Translate</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a href="{% url "create-schedule" %}" class="btn btn-primary ms-1">+ Create a schedule</a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item display-flex align-items-center ms-1">
-                      {% if user.is_authenticated %}
-                          <div class="dropdown mx-2">
-                              <a href="#" class="nav-link dropdown-toggle py-0" data-bs-toggle="dropdown">
-                                    {% comment %} does it look like i want a stupid long property chain? i just want my user's gosh darn profile picture! {% endcomment %}
-                                    <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
-                                    {{ user.socialaccount_set.all.0.extra_data.name }}
-                                    <b class="caret"></b>
-                              </a>
-                              <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
-                                    {% if user.is_superuser %}
-                                        <li><span class="dropdown-item-text">THE A D M I N</span></li>
-                                    {% elif user.is_staff %}
-                                        <li><span class="dropdown-item-text">Staff</span></li>
-                                    {% else %}
-                                        <li><span class="dropdown-item-text">User</span></li>
-                                    {% endif %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    {% if user.is_staff %}
-                                        <li><a class="dropdown-item" href="#">Your Schedules</a></li>
-                                        <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    {% endif %}
-                                    <li><span class="dropdown-item-text" href="#">{% logout_button %}</span></li>
-                              </ul>
-                          </div>
-                      {% else %}
-                          {% login_button %}
-                      {% endif %}
-                    </li>
-                </ul>
-            </div>    
-        </div>
-    </nav>-->
-
     <div class="l-navbar" id="nav-bar">
      <nav class="nav">
         <div>
            <a href="#" class="nav_logo header_toggle"> <i class='bx bx-menu nav_logo-icon' id="header-toggle"></i> <span class="nav_logo-name">Ratatoskr</span> </a>
            <div class="nav_list">
-               <a href="#" class="nav_link active"> <i class='bx bx-search nav_icon'></i> <span class="nav_name">Find Teacher</span> </a>
+               <a href="/" class="nav_link {% if request.path == "/" %}active{% endif %}"> <i class='bx bx-search nav_icon'></i> <span class="nav_name">Find Teacher</span> </a>
                {% if user.is_authenticated and "worcesterschools.net" in user.email and "student." not in user.email %}
-                   <a href="#" class="nav_link"> <i class='bx bxs-calendar-alt nav_icon'></i> <span class="nav_name">My Schedules</span> </a>
-                   <a href="#" class="nav_link"> <i class='bx bxs-timer nav_icon'></i> <span class="nav_name">Upcoming Meetings</span> </a>
+                   <a href="/schedules" class="nav_link {% if request.path == "/schedules/" %}active{% endif %}"> <i class='bx bxs-calendar-alt nav_icon'></i> <span class="nav_name">My Schedules</span> </a>
+                   <a href="/upcoming" class="nav_link {% if request.path == "/upcoming/" %}active{% endif %}"> <i class='bx bxs-timer nav_icon'></i> <span class="nav_name">Upcoming Meetings</span> </a>
                {% endif %}
-               <a href="#" class="nav_link"> <i class='bx bx-help-circle nav_icon'></i> <span class="nav_name">Help</span> </a>
-               <a href="#" class="nav_link"> <i class='bx bx-cog nav_icon'></i> <span class="nav_name">Settings</span> </a>
+               <a href="/help" class="nav_link {% if request.path == "/help/" %}active{% endif %}"> <i class='bx bx-help-circle nav_icon'></i> <span class="nav_name">Help</span> </a>
+               <a href="/settings" class="nav_link {% if request.path == "/settings/" %}active{% endif %}"> <i class='bx bx-cog nav_icon'></i> <span class="nav_name">Settings</span> </a>
            </div>
         </div>
 
@@ -101,12 +40,12 @@
                 <p class="nav_link fw-bold" style="color: var(--white-color) !important"><img class="rounded me-2" style="width: 20px;" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset=""> Hello, {{ user.first_name }}!</p>
                  <form class="d-inline" action="{% url "logout" %}?next=/" method="post">
                     {% csrf_token %}
-                    <button class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Sign Out</span> </button>
+                    <button class="button-blank nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Sign Out</span> </button>
                  </form>
              {% else %}
              <form class="d-inline" action="{% provider_login_url "google" %}" method="post">
                 {% csrf_token %}
-                <button class="nav_link" type="submit">
+                <button class="button-blank nav_link" type="submit">
                     <i class='bx bx-log-in nav_icon'></i> <span class="nav_name">Sign In</span>
                 </button>
              </form>
@@ -115,12 +54,14 @@
      </nav>
   </div>
 
-    <main class="container mb-5 height-100">
+    <main class="container my-5 height-100">
         {% block body %}
         {% endblock body %}
     </main>
 
-    <!--<script>
+    <!--
+    No clue what this does...
+    <script>
         // nya~
         window.onload = () => {
             PetiteVue.createApp({
@@ -134,21 +75,17 @@
     </script>-->
     <script>
          document.addEventListener("DOMContentLoaded", function(event) {
-             const showNavbar = (toggleId, navId, bodyId) => {
-                 const toggle = document.getElementById(toggleId),
-                 nav = document.getElementById(navId),
-                 bodypd = document.getElementById(bodyId)
+            const toggle = document.getElementById('header-toggle');
+            const nav = document.getElementById('nav-bar');
+            const body = document.querySelector('body');
 
-                 if(toggle && nav && bodypd) {
-                    toggle.addEventListener('click', () => {
-                         nav.classList.toggle('show')
-                         toggle.classList.toggle('bx-x')
-                         bodypd.classList.toggle('body-pd')
-                    });
-                }
+            if (toggle && nav && body) {
+                toggle.addEventListener('click', () => {
+                    nav.classList.toggle('show');
+                    toggle.classList.toggle('bx-x');
+                    body.classList.toggle('body-pd');
+                });
             }
-
-            showNavbar('header-toggle','nav-bar','body-pd');
          });
       </script>
     </body>

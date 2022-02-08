@@ -18,11 +18,24 @@ import datetime
 from itertools import groupby
 import pandas as pd
 
+
 # Create your views here.
 def index(request):
     return render(request, 'app/pages/index.html', {
         "schedules": Schedule.objects.all()
     })
+
+
+def view_self_schedules(request):
+    if not request.user.is_authenticated \
+            or "student." in request.user.email \
+            or not "worcesterschools.net" in request.user.email:
+        raise PermissionDenied()
+    else:
+        return render(request, "app/pages/schedules.html", {
+            "schedules": Schedule.objects.filter(owner=request.user)
+        })
+
 
 def create_schedule(request):
     if not request.user.is_authenticated:
@@ -32,30 +45,33 @@ def create_schedule(request):
         if request.POST.get("should_lock_automatically") == "on":
             lock_date = dateparse.parse_datetime(request.POST.get("auto_lock_after"))
         new_schedule = Schedule.objects.create(
-            owner = request.user,
-            name = request.POST.get("name"),
-            auto_lock_after = make_aware(lock_date),
-            is_locked = False
+            owner=request.user,
+            name=request.POST.get("name"),
+            auto_lock_after=make_aware(lock_date),
+            is_locked=False
         )
         return redirect("schedule", new_schedule.id)
 
     return render(request, 'app/pages/create_schedule.html', {})
+
 
 def schedule(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
     timeslots = dict(
-            sorted(
-                { k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date()) }.items() # Group the timeslots by their time_from date
-            )
+        sorted(
+            {k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date())}.items()
+            # Group the timeslots by their time_from date
         )
+    )
 
     timeslot_meta = {
         k: {
             "from": v[0].time_from,
             "to": v[-1].time_to,
-            "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]), # TODO: Implement a way to find these stats
+            "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]),
+            # TODO: Implement a way to find these stats
             "taken": sum([i.reservation_set.count() for i in v]),
             "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
@@ -66,6 +82,7 @@ def schedule(request, schedule_id):
         "timeslots": timeslot_meta
     })
 
+
 def schedule_day(request, schedule_id, date):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
@@ -75,6 +92,7 @@ def schedule_day(request, schedule_id, date):
         "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
         "date": date
     })
+
 
 def schedule_edit(request, schedule_id):
     if not request.POST:
@@ -91,7 +109,9 @@ def schedule_edit(request, schedule_id):
     # Query the timeslot table with all the data given
     # The "|"(union) operator effectively combines the two queries
     # I use a reduce to merge a list of queries into one singular query, using said union opeartor
-    timeslot_date_query = [TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for date in dates]
+    timeslot_date_query = [
+        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for
+        date in dates]
     timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
     timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
     timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
@@ -112,6 +132,7 @@ def schedule_edit(request, schedule_id):
 
     return redirect(request.GET.get("next") or "/")
 
+
 def create_timeslots(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
 
@@ -124,7 +145,7 @@ def create_timeslots(request, schedule_id):
             return render(request, "app/pages/create_timeslots.html", {
                 "form": form
             })
-        
+
         dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
         # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
         from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
@@ -132,7 +153,6 @@ def create_timeslots(request, schedule_id):
         time_delta = to_time - from_time
         time_delta_mins = int(time_delta.seconds / 60)
 
-        
         base = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
         length = form.cleaned_data["timeslot_length"]
         break_length = form.cleaned_data["timeslot_break"]
@@ -156,7 +176,7 @@ def create_timeslots(request, schedule_id):
                     date,
                     (base + datetime.timedelta(minutes=minute_offset)).time(),
                     (base + datetime.timedelta(minutes=minute_offset + length)).time()
-                ) 
+                )
                 for minute_offset in range(0, time_delta_mins, total_buffer)
             ]
             for date in dates
@@ -169,22 +189,23 @@ def create_timeslots(request, schedule_id):
 
         objects = [
             TimeSlot(
-                schedule = schedule,
-                time_from = make_aware(datetime.datetime.combine(date, time_from)),
-                time_to = make_aware(datetime.datetime.combine(date, time_to)),
-                reservation_limit = form.cleaned_data["openings"],
-                is_locked = False,
-                auto_lock_after = make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
+                schedule=schedule,
+                time_from=make_aware(datetime.datetime.combine(date, time_from)),
+                time_to=make_aware(datetime.datetime.combine(date, time_to)),
+                reservation_limit=form.cleaned_data["openings"],
+                is_locked=False,
+                auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
             ) for date, time_from, time_to in flattened
         ]
 
         TimeSlot.objects.bulk_create(objects)
 
         return redirect("schedule", schedule_id)
-        
+
     return render(request, "app/pages/create_timeslots.html", {
         "form": TimeslotGenerationForm()
     })
+
 
 def reserve_timeslot(request, schedule_id, date, timeslot_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
@@ -198,7 +219,7 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
             return render(request, "app/pages/reserve_timeslot.html", {
                 "schedule": schedule,
                 "timeslot": timeslot,
-                "form": reservation_form 
+                "form": reservation_form
             })
         Reservation.objects.create(
             time_slot=timeslot,
@@ -210,10 +231,23 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,
         "timeslot": timeslot,
-        "form": ReservationForm() 
+        "form": ReservationForm()
     })
+
 
 def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {
-        
+
     })
+
+
+def upcoming_meetings(request):
+    return render(request, "app/pages/upcoming.html", {})
+
+
+def help_page(request):
+    return render(request, "app/pages/help.html", {})
+
+
+def settings(request):
+    return render(request, "app/pages/settings.html", {})

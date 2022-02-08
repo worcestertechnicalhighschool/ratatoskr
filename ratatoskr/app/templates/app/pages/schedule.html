@@ -9,7 +9,8 @@
     </div>
 {% endblock schedule_head %}
 
-{% block schedule_body %}
+<!--
+{% block schedule_body1 %}
     {% for date, data in timeslots.items %}
         <div class="card auto">
             <div class="card-body d-flex">
@@ -44,4 +45,31 @@
         {% endif %}
     </div>
     {% endfor %}
+{% endblock schedule_body1 %}-->
+
+{% block schedule_body %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'timeGridWeek',
+      slotMinTime: "07:00:00",
+      slotMaxTime: "14:00:00",
+      slotDuration: "00:15:00",
+      weekends: false,
+      allDaySlot: false
+    });
+    calendar.render();
+    calendarEl.querySelector(".fc-toolbar").classList.add("card-header");
+    calendarEl.querySelector(".fc-timegrid").style.margin = "10px";
+  });
+
+</script>
+
+<div id='calendar' class="card"></div>
+<br><br>
 {% endblock schedule_body %}

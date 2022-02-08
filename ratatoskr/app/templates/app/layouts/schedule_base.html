@@ -11,18 +11,10 @@
             {{ schedule.owner.socialaccount_set.all.0.extra_data.name }} (<a href="mailto:{{ schedule.owner.email }}">{{ schedule.owner.email }}</a>)
         </div>
     </div>
-    
-    <div class="card">
-        <div class="card-header">
-            {% block schedule_head %}
-            {% endblock schedule_head %}
-        </div>
-        {% block schedule_card %}
-            <div class="card-body" id="timeslot-body">
-                {% block schedule_body %}
-                {% endblock schedule_body %}
-            </div>
-        {% endblock schedule_card %}
+
+    <div>
+        {% block schedule_body %}
+        {% endblock schedule_body %}
     </div>
     
 {% endblock body %}

@@ -21,8 +21,8 @@
                     <input
                         class="form-check-input"
                         type="checkbox"
-                        name="timeslot_date" 
-                        value="{{ date|date:"c" }}" 
+                        name="timeslot_date"
+                        value="{{ date|date:"c" }}"
                         style="width: 30px; height: 30px"
                         @click.shift="shiftClicked.push($el)"
                         @change="checked += $el.checked ? 1 : -1" />
@@ -48,6 +48,12 @@
 {% endblock schedule_body1 %}-->
 
 {% block schedule_body %}
+<style>
+/* Grammar is very important to me... */
+.fc-today-button {
+    text-transform: capitalize !important;
+}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
 
@@ -64,6 +70,33 @@
       slotMinTime: "07:00:00",
       slotMaxTime: "14:00:00",
       slotDuration: "00:15:00",
+      eventClick: function(ev) {
+
+      },
+      customButtons: {
+        newTimeslot: {
+          text: '+ New Timeslot',
+          click: function() {
+            var date = new Date();
+            date.setUTCMinutes(0);
+            date.setSeconds(0);
+
+            calendar.addEvent({
+                "backgroundColor": "#f8f9fa",
+                "borderColor": "#ffc107",
+                "textColor": "#000000",
+                "id": "DRAFT_" + crypto.randomUUID(),
+                "start": date,
+                "end": new Date(date.getTime() + (30 * 60 * 1000)),
+                "editable": true
+            });
+          }
+        }
+      },
+      headerToolbar: {
+        left: 'title',
+        right: 'newTimeslot today prev,next'
+      },
       weekends: false,
       allDaySlot: false,
       validRange: function(nowDate) {
@@ -75,10 +108,25 @@
     calendar.render();
 
     timeslots.forEach((timeslot) => {
+        // TODO: Temporary variable stuff.
+        let isLocked = timeslot["fields"]["is_locked"];
+        let isAvailable = true;
+        var backgroundColor = "#0d6efd";
+        var borderColor = "#fff";
+        var textColor = "#000000";
+
+        if (!isAvailable) {
+            backgroundColor = "#dc3545";
+        }
+        if (isLocked) {
+            backgroundColor = "#ffc107";
+        }
+
         var data = {
             "start": new Date(timeslot["fields"]["time_from"]),
             "end": new Date(timeslot["fields"]["time_to"]),
-            "locked": timeslot["fields"]["is_locked"],
+            "editable": true,
+            "locked": isLocked,
             "limit": timeslot["fields"]["reservation_limit"]
         };
         calendar.addEvent(data);

@@ -1,25 +1,20 @@
-import email
+import datetime
+import json
 from functools import reduce
 from io import UnsupportedOperation
-import operator
-import re
-from sqlite3 import Time
-from tokenize import group
-from django.shortcuts import redirect, render
+from itertools import groupby
+
+import pandas as pd
 from django.http import HttpResponse
-from django.core.exceptions import PermissionDenied
-from django.urls import resolve
-from django.utils import dateparse, timezone
-from django.utils.timezone import make_aware
-import json
 from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect, render
+from django.utils import dateparse
+from django.utils.timezone import make_aware
+from django.views.decorators.http import require_http_methods
 
 from .forms import ReservationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
-import datetime
-from itertools import groupby
-import pandas as pd
 
 
 # Create your views here.
@@ -84,6 +79,25 @@ def schedule(request, schedule_id):
         "schedule": schedule,
         "timeslots": serializers.serialize("json", TimeSlot.objects.filter(schedule=schedule))
     })
+
+
+@require_http_methods(["POST"])
+def update_schedule(request, schedule_id):
+    schedule = Schedule.objects.get(pk=schedule_id)
+    timeslots = TimeSlot.objects.filter(schedule=schedule)
+
+    raw_bd = request.body.decode('utf-8')
+    content = json.loads(raw_bd)
+
+    for timeslot in content:
+        if "DRAFT" in timeslot["id"]:
+            # This is a new timeslot, must add.
+            pass
+        else:
+            # This timeslot already exists, and you need to know if it has changed at all.
+            pass
+
+    return HttpResponse(status=201)
 
 
 def schedule_day(request, schedule_id, date):

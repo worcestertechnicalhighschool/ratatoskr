@@ -53,6 +53,12 @@
 .fc-today-button {
     text-transform: capitalize !important;
 }
+
+/* ...so is color. */
+.fc-changes-button {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
@@ -91,11 +97,25 @@
                 "editable": true
             });
           }
+        },
+        changes: {
+          text: 'Save Changes',
+          click: function() {
+            console.log(JSON.stringify(calendar.getEvents()));
+            const response = fetch(window.location.href + "/update", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': "application/json",
+                    "X-CSRFToken": document.querySelector("input[name='csrfmiddlewaretoken']").value
+                },
+                body: JSON.stringify(calendar.getEvents())
+            });
+          }
         }
       },
       headerToolbar: {
         left: 'title',
-        right: 'newTimeslot today prev,next'
+        right: 'changes newTimeslot today prev,next'
       },
       weekends: false,
       allDaySlot: false,
@@ -127,6 +147,7 @@
             "end": new Date(timeslot["fields"]["time_to"]),
             "editable": true,
             "locked": isLocked,
+            "id": timeslot["pk"],
             "limit": timeslot["fields"]["reservation_limit"]
         };
         calendar.addEvent(data);
@@ -138,6 +159,7 @@
 
 </script>
 
+{% csrf_token %}
 <div id='calendar' class="card"></div>
 <br><br>
 {% endblock schedule_body %}

@@ -102,13 +102,15 @@
           text: 'Save Changes',
           click: function() {
             console.log(JSON.stringify(calendar.getEvents()));
-            const response = fetch(window.location.href + "/update", {
+            fetch(window.location.href + "/update", {
                 method: 'POST',
                 headers: {
                     'Content-Type': "application/json",
                     "X-CSRFToken": document.querySelector("input[name='csrfmiddlewaretoken']").value
                 },
                 body: JSON.stringify(calendar.getEvents())
+            }).then(function (response) {
+                location.reload();
             });
           }
         }

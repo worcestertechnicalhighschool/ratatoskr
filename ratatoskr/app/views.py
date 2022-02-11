@@ -90,11 +90,10 @@ def update_schedule(request, schedule_id):
     content = json.loads(raw_bd)
 
     for timeslot in content:
-        if "DRAFT" in timeslot["id"]:
+        date_f = datetime.datetime.strptime(timeslot["start"], "%Y-%m-%dT%H:%M:%S.%f%z")
+        date_t = datetime.datetime.strptime(timeslot["end"], "%Y-%m-%dT%H:%M:%S.%f%z")
+        if "DRAFT" in timeslot["id"] or not TimeSlot.objects.filter(pk=timeslot["id"]).exists():
             # This is a new timeslot, must add.
-
-            date_f = datetime.datetime.strptime(timeslot["start"], "%Y-%m-%dT%H:%M:%S.%f%z")
-            date_t = datetime.datetime.strptime(timeslot["end"], "%Y-%m-%dT%H:%M:%S.%f%z")
             timeslot_db = TimeSlot(
                 schedule=schedule,
                 time_from=date_f,
@@ -104,10 +103,14 @@ def update_schedule(request, schedule_id):
                 auto_lock_after=(datetime.datetime.now() + datetime.timedelta(days=500000))
             )
             timeslot_db.save()
-            pass
         else:
             # This timeslot already exists, and you need to know if it has changed at all.
-            pass
+            TimeSlot.objects.filter(pk=timeslot["id"]).update(
+                time_from=date_f,
+                time_to=date_t,
+                reservation_limit=1,  # TODO: fix this
+                is_locked=False  # TODO: fix this
+            )
 
     return HttpResponse(status=201)
 

@@ -59,6 +59,21 @@
     background-color: #198754 !important;
     border-color: #198754 !important;
 }
+
+.fc-changes-button:disabled, .fc-changes-button[disabled] {
+    background-color: #ced4da !important;
+    border-color: #ced4da !important;
+}
+
+.event-unsaved {
+    background-color: #f8f9fa !important;
+    border-color: #dc3545 !important;
+    color: #000000 !important;
+}
+
+.event-unsaved * {
+    color: #000000 !important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet" />
@@ -79,6 +94,10 @@
       eventClick: function(ev) {
 
       },
+      eventDrop: function(ev) {
+        ev.el.classList.add("event-unsaved");
+        document.querySelector(".fc-changes-button").disabled = false;
+      },
       customButtons: {
         newTimeslot: {
           text: '+ New Timeslot',
@@ -96,6 +115,8 @@
                 "end": new Date(date.getTime() + (30 * 60 * 1000)),
                 "editable": true
             });
+
+            findChangedEvents();
           }
         },
         changes: {
@@ -155,7 +176,55 @@
         calendar.addEvent(data);
     });
 
+    const originalEvs = calendar.getEvents();
+
+    function events_equal(ol, ne) {
+        return (ol["start"].getTime() === ne["start"].getTime()) &&
+            (ol["end"].getTime() === ne["end"].getTime());
+    }
+
+    function findChangedEvents() {
+        let newEvs = calendar.getEvents();
+        var changedEvents = [];
+        var unchangedEvents = [];
+        console.log("Finding events...");
+
+        originalEvs.forEach((o_ev) => {
+            newEvs.forEach((n_ev) => {
+                console.log("Comparing "+o_ev["id"]+" and "+n_ev["id"]+"...");
+                if (events_equal(o_ev, n_ev) && o_ev["id"] == n_ev["id"]) {
+                    console.log("Unchanged!");
+                    unchangedEvents.push(n_ev);
+                } else if (!events_equal(o_ev, n_ev) && o_ev["id"] == n_ev["id"]) {
+                    console.log("Changed!");
+                    changedEvents.push(n_ev);
+                }
+            });
+        });
+
+        changedEvents.forEach((ev) => {
+            let event_el = calendar.getEventById(ev["id"]);
+            console.log(event_el);
+            event_el.backgroundColor = "#f8f9fa";
+            event_el.borderColor = "#ffc107";
+            event_el.textColor = "#000000";
+
+            calendar.removeEvent(event_el);
+            calendar.addEvent(event_el);
+        });
+
+        unchangedEvents.forEach((ev) => {
+            let event_el = calendar.getEventById(ev["id"]);
+            event_el.backgroundColor = "#dc3545";
+            event_el.borderColor = "#dc3545";
+            event_el.textColor = "#ffffff";
+        });
+
+        return changedEvents;
+    }
+
     calendarEl.querySelector(".fc-toolbar").classList.add("card-header");
+    calendarEl.querySelector(".fc-changes-button").disabled = true;
     calendarEl.querySelector(".fc-timegrid").style.margin = "10px";
   });
 

@@ -1,17 +1,13 @@
 import datetime
-import json
 from functools import reduce
 from io import UnsupportedOperation
 from itertools import groupby
 
 import pandas as pd
-from django.http import HttpResponse
-from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
-from django.views.decorators.http import require_http_methods
 
 from .forms import ReservationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
@@ -77,42 +73,8 @@ def schedule(request, schedule_id):
 
     return render(request, 'app/pages/schedule.html', {
         "schedule": schedule,
-        "timeslots": serializers.serialize("json", TimeSlot.objects.filter(schedule=schedule))
+        "timeslots": timeslot_meta
     })
-
-
-@require_http_methods(["POST"])
-def update_schedule(request, schedule_id):
-    schedule = Schedule.objects.get(pk=schedule_id)
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
-
-    raw_bd = request.body.decode('utf-8')
-    content = json.loads(raw_bd)
-
-    for timeslot in content:
-        date_f = datetime.datetime.strptime(timeslot["start"], "%Y-%m-%dT%H:%M:%S.%f%z")
-        date_t = datetime.datetime.strptime(timeslot["end"], "%Y-%m-%dT%H:%M:%S.%f%z")
-        if "DRAFT" in timeslot["id"] or not TimeSlot.objects.filter(pk=timeslot["id"]).exists():
-            # This is a new timeslot, must add.
-            timeslot_db = TimeSlot(
-                schedule=schedule,
-                time_from=date_f,
-                time_to=date_t,
-                reservation_limit=1,  # TODO: fix this
-                is_locked=False,  # TODO: fix this
-                auto_lock_after=(datetime.datetime.now() + datetime.timedelta(days=500000))
-            )
-            timeslot_db.save()
-        else:
-            # This timeslot already exists, and you need to know if it has changed at all.
-            TimeSlot.objects.filter(pk=timeslot["id"]).update(
-                time_from=date_f,
-                time_to=date_t,
-                reservation_limit=1,  # TODO: fix this
-                is_locked=False  # TODO: fix this
-            )
-
-    return HttpResponse(status=201)
 
 
 def schedule_day(request, schedule_id, date):
@@ -271,15 +233,3 @@ def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {
 
     })
-
-
-def upcoming_meetings(request):
-    return render(request, "app/pages/upcoming.html", {})
-
-
-def help_page(request):
-    return render(request, "app/pages/help.html", {})
-
-
-def settings(request):
-    return render(request, "app/pages/settings.html", {})

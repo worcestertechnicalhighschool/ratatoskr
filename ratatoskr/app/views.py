@@ -20,17 +20,6 @@ def index(request):
     })
 
 
-def view_self_schedules(request):
-    if not request.user.is_authenticated \
-            or "student." in request.user.email \
-            or not "worcesterschools.net" in request.user.email:
-        raise PermissionDenied()
-    else:
-        return render(request, "app/pages/schedules.html", {
-            "schedules": Schedule.objects.filter(owner=request.user)
-        })
-
-
 def create_schedule(request):
     if not request.user.is_authenticated:
         raise PermissionDenied()

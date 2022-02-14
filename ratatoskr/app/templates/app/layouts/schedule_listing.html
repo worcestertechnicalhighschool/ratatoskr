@@ -12,34 +12,10 @@
         method="POST"
         action="{% url 'schedule-edit' schedule.id %}?next={{ request.path }}">
         {% csrf_token %}
-        <script>
-            function onChanged(shiftClicked) {
-                if (shiftClicked.length != 2)
-                    return
-                const checkboxes = Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]'))
-                const [checkA, checkB] = shiftClicked
-                const [indexA, indexB] = [checkboxes.indexOf(checkA), checkboxes.indexOf(checkB)].sort()
-                const checks = checkboxes.slice(indexA+1, indexB)
-                if (!checks.every((x, _, a) => x.checked == a[0].checked))
-                    checks.filter(x => !x.checked).forEach(x => x.click())
-                else
-                    checks.forEach(x => x.click())
-                shiftClicked.pop()
-                shiftClicked.pop()
-            }
-        </script>
+        
         <div v-effect="onChanged(shiftClicked); "></div>
         {% if user == schedule.owner %}
             <div class="w-100 ps-3 p-2 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
-                <script>
-                    function selectAll(checkboxes) {
-                        // If some checkboxes are checked, click the ones that are unchecked
-                        if (!checkboxes.every((x, _, a) => x.checked == a[0].checked))
-                            checkboxes.filter(x => !x.checked).forEach(x => x.click())
-                        else // Click all the checkboxes
-                            checkboxes.forEach(x => x.click())
-                    }
-                </script>
                 <button class="btn btn-primary" type="button" @click="selectAll(checkboxes)">
                     <div class="border border-light d-inline-flex m-0 mt-1 me-1 p-0 rounded">
                         <input
@@ -82,3 +58,29 @@
         </div>
     </form>
 {% endblock schedule_card %}
+
+{% block scripts %}
+<script>
+    function selectAll(checkboxes) {
+        // If some checkboxes are checked, click the ones that are unchecked
+        if (!checkboxes.every((x, _, a) => x.checked == a[0].checked))
+            checkboxes.filter(x => !x.checked).forEach(x => x.click())
+        else // Click all the checkboxes
+            checkboxes.forEach(x => x.click())
+    }
+    function onChanged(shiftClicked) {
+        if (shiftClicked.length != 2)
+            return
+        const checkboxes = Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]'))
+        const [checkA, checkB] = shiftClicked
+        const [indexA, indexB] = [checkboxes.indexOf(checkA), checkboxes.indexOf(checkB)].sort()
+        const checks = checkboxes.slice(indexA+1, indexB)
+        if (!checks.every((x, _, a) => x.checked == a[0].checked))
+            checks.filter(x => !x.checked).forEach(x => x.click())
+        else
+            checks.forEach(x => x.click())
+        shiftClicked.pop()
+        shiftClicked.pop()
+    }
+</script>
+{% endblock scripts %}

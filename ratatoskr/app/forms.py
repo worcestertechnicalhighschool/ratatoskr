@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
+from numpy import require
 
 class TimeslotGenerationForm(forms.Form):
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
@@ -32,5 +33,5 @@ class ScheduleCreationForm(forms.Form):
 
 class ScheduleEditForm(forms.Form):
     action = forms.CharField()
-    timeslot_date = SimpleArrayField(forms.TimeField())
-    timeslot_id = SimpleArrayField(forms.TimeField())
+    timeslot_date = SimpleArrayField(forms.TimeField(required=False), required=False)
+    timeslot_id = SimpleArrayField(forms.IntegerField(required=False), required=False)

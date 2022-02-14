@@ -23,3 +23,8 @@ class ReservationForm(forms.Form):
     comment = forms.CharField(max_length=256)
     # TODO: Find out how to store phone numbers
     #phone = models.PhoneNumberField()
+
+class ScheduleCreationForm(forms.Form):
+    name = forms.CharField(max_length=64)
+    should_lock_automatically = forms.BooleanField()
+    auto_lock_after = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}), required=False)

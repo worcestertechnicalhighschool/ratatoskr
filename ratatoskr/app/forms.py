@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
-from numpy import require
 
 class TimeslotGenerationForm(forms.Form):
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))

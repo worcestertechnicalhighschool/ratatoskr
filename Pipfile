@@ -13,7 +13,6 @@ libsass = "*"
 django-sass-processor = "*"
 django-mathfilters = "*"
 numpy = "*"
-psycopg2 = "*"
 
 [dev-packages]
 

@@ -2,7 +2,6 @@ import datetime
 from functools import reduce
 from io import UnsupportedOperation
 from itertools import groupby
-from django.http import HttpResponseBadRequest
 
 import pandas as pd
 from django.core.exceptions import PermissionDenied, BadRequest
@@ -10,7 +9,11 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 
+<<<<<<< HEAD
 from .forms import ReservationForm, ScheduleCreationForm, ScheduleEditForm, TimeslotGenerationForm
+=======
+from .forms import ReservationForm, TimeslotGenerationForm
+>>>>>>> parent of 21a9718 (Make and implement schedule edit form)
 from .models import Schedule, TimeSlot, Reservation
 
 
@@ -99,6 +102,8 @@ def schedule_edit(request, schedule_id):
     
     dates = form.cleaned_data["timeslot_date"]
     ids = form.cleaned_data["timeslot_id"]
+    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
+    ids = [int(i) for i in request.POST.getlist("timeslot_id")]
 
     # Query the timeslot table with all the data given
     # The "|"(union) operator effectively combines the two queries
@@ -112,7 +117,7 @@ def schedule_edit(request, schedule_id):
     timeslots = (timeslot_date_query | timeslot_id_query)
     all_timeslots = timeslots.all()
 
-    match form.cleaned_data["action"]:
+    match request.POST["action"]:
         case "lock":
             for timeslot in all_timeslots:
                 timeslot.is_locked = True

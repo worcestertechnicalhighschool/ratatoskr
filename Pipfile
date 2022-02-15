@@ -13,6 +13,9 @@ libsass = "*"
 django-sass-processor = "*"
 django-mathfilters = "*"
 numpy = "*"
+sqlalchemy = "*"
+django-celery-beat = "*"
+django-celery-results = "*"
 
 [dev-packages]
 

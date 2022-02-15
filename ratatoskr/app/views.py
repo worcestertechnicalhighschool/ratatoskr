@@ -2,6 +2,8 @@ import datetime
 from functools import reduce
 from io import UnsupportedOperation
 from itertools import groupby
+from django.http import HttpResponse
+from django.core.mail import send_mail
 
 import pandas as pd
 from django.core.exceptions import PermissionDenied, BadRequest
@@ -9,7 +11,9 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 
-from .forms import ReservationForm, ScheduleCreationForm, ScheduleEditForm, TimeslotGenerationForm
+from ratatoskr.celery import debug_task, send_mail_task
+
+from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 
 
@@ -31,8 +35,8 @@ def create_schedule(request):
                 "errors": form.errors
             }) # TODO: Render form errors in template or something
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
-        if form.cleaned_data["should_lock_automatically"]:
-            lock_date = form.cleaned_data["auto_lock_after"]
+        if form.cleaned_data.get("should_lock_automatically"):
+            lock_date = form.cleaned_data.get("auto_lock_after")
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
@@ -228,3 +232,13 @@ def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {
 
     })
+
+def test(request):
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'from@example.com',
+        ['to@example.com'],
+        fail_silently=False,
+    )
+    return HttpResponse("aaaaa")

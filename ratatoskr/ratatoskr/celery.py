@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 # Set the default Django settings module for the 'celery' program
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ratatoskr.settings')
 
-app = Celery('ratatoskr')
+app = Celery('app')
 
 # Using a string here means the worker doesn't have to serialize the conifiguration
 # object to child processes. 

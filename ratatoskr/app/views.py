@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 
-from .forms import ReservationForm, ScheduleCreationForm, ScheduleEditForm, TimeslotGenerationForm
+from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 
 

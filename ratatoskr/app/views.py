@@ -9,11 +9,7 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 
-<<<<<<< HEAD
 from .forms import ReservationForm, ScheduleCreationForm, ScheduleEditForm, TimeslotGenerationForm
-=======
-from .forms import ReservationForm, TimeslotGenerationForm
->>>>>>> parent of 21a9718 (Make and implement schedule edit form)
 from .models import Schedule, TimeSlot, Reservation
 
 
@@ -96,12 +92,6 @@ def schedule_edit(request, schedule_id):
     if schedule.owner != request.user:
         raise PermissionDenied()
 
-    form = ScheduleEditForm(request.POST)
-    if not form.is_valid():
-        raise BadRequest(form.errors)
-    
-    dates = form.cleaned_data["timeslot_date"]
-    ids = form.cleaned_data["timeslot_id"]
     dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     ids = [int(i) for i in request.POST.getlist("timeslot_id")]
 

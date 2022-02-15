@@ -1,5 +1,6 @@
 import os 
 from celery import Celery
+from django.core.mail import send_mail
 
 # Set the default Django settings module for the 'celery' program
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ratatoskr.settings')
@@ -18,3 +19,13 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+@app.task(bind=True)
+def send_mail_task(self, kwargs):
+    send_mail(
+        kwargs['subject'],
+        kwargs['message'],
+        kwargs['from_email'],
+        kwargs['to_email'],
+        fail_silently=kwargs['fail_silently'],
+    )

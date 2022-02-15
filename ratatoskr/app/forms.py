@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.postgres.forms import SimpleArrayField
 
 class TimeslotGenerationForm(forms.Form):
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
@@ -23,3 +24,8 @@ class ReservationForm(forms.Form):
     comment = forms.CharField(max_length=256)
     # TODO: Find out how to store phone numbers
     #phone = models.PhoneNumberField()
+
+class ScheduleCreationForm(forms.Form):
+    name = forms.CharField(max_length=64)
+    should_lock_automatically = forms.BooleanField()
+    auto_lock_after = forms.TimeField(widget=forms.DateTimeInput(attrs={'type': 'time'}), required=False)

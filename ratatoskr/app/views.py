@@ -4,12 +4,12 @@ from io import UnsupportedOperation
 from itertools import groupby
 
 import pandas as pd
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 
-from .forms import ReservationForm, TimeslotGenerationForm
+from .forms import ReservationForm, ScheduleCreationForm, ScheduleEditForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 
 
@@ -24,12 +24,18 @@ def create_schedule(request):
     if not request.user.is_authenticated:
         raise PermissionDenied()
     if request.method == "POST":
+        form = ScheduleCreationForm(request.POST)
+        valid = form.is_valid()
+        if not form.is_valid():
+            render(request, 'app/pages/create_schedule.html', {
+                "errors": form.errors
+            }) # TODO: Render form errors in template or something
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
-        if request.POST.get("should_lock_automatically") == "on":
-            lock_date = dateparse.parse_datetime(request.POST.get("auto_lock_after"))
+        if form.cleaned_data["should_lock_automatically"]:
+            lock_date = form.cleaned_data["auto_lock_after"]
         new_schedule = Schedule.objects.create(
             owner=request.user,
-            name=request.POST.get("name"),
+            name=form.cleaned_data["name"],
             auto_lock_after=make_aware(lock_date),
             is_locked=False
         )

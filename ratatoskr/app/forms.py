@@ -33,5 +33,5 @@ class ScheduleCreationForm(forms.Form):
 
 class ScheduleEditForm(forms.Form):
     action = forms.CharField()
-    timeslot_date = SimpleArrayField(forms.TimeField(required=False), required=False)
+    timeslot_date = SimpleArrayField(forms.DateField(required=False), required=False)
     timeslot_id = SimpleArrayField(forms.IntegerField(required=False), required=False)

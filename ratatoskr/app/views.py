@@ -5,7 +5,7 @@ from itertools import groupby
 from django.http import HttpResponseBadRequest
 
 import pandas as pd
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
@@ -95,9 +95,10 @@ def schedule_edit(request, schedule_id):
 
     form = ScheduleEditForm(request.POST)
     if not form.is_valid():
-        raise HttpResponseBadRequest(form.errors)
-    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in form.cleaned_data["timeslot_date"]]
-    ids = [int(i) for i in form.cleaned_data["timeslot_id"]]
+        raise BadRequest(form.errors)
+    
+    dates = form.cleaned_data["timeslot_date"]
+    ids = form.cleaned_data["timeslot_id"]
 
     # Query the timeslot table with all the data given
     # The "|"(union) operator effectively combines the two queries

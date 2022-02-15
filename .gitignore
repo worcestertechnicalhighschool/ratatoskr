@@ -142,3 +142,6 @@ Pipfile.lock
 # SCSS/SASS/CSS
 *.css
 *.css.map
+
+# celery
+celerybeat-schedule

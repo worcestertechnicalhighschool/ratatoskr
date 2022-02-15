@@ -11,7 +11,7 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 
-from ratatoskr.celery import send_mail_task
+from ratatoskr.celery import debug_task, send_mail_task
 
 from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
@@ -220,16 +220,14 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
-        send_mail_task.apply_async(
-            eta=datetime.datetime.now(),
-            args=[{
-                "to": [reservation_form.cleaned_data["email"]],
-                "from": "noreply@techhigh.us",
-                "subject": "Your meeting has started",
-                "message": "you are late idiot",
-                "fail_silently": False
-            }]
-        )
+        debug_task.delay(2)
+        # send_mail_task.apply_async(
+        #     to_email=[reservation_form.cleaned_data["email"]],
+        #     from_email= "noreply@techhigh.us",
+        #     subject= "Your meeting has started",
+        #     message= "you are late idiot",
+        #     fail_silently= False
+        # )
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,

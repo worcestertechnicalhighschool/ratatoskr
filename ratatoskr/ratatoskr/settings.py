@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'app',
     'fontawesomefree',
     'sass_processor',
-    "mathfilters"
+    "mathfilters",
+    "django_celery_beat",
+    "django_celery_results"
 ]
 
 STATICFILES_FINDERS = [
@@ -157,5 +159,19 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
+    }
+}
+
+# Celery
+
+CELERY_TIMEZONE = "America/New_York"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
     }
 }

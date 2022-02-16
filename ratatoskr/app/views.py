@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
+from app.calendarutil import build_calendar_api
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -234,11 +235,5 @@ def reserve_confirmed(request):
     })
 
 def test(request):
-    send_mail(
-        'Subject here',
-        'Here is the message.',
-        'from@example.com',
-        ['to@example.com'],
-        fail_silently=False,
-    )
+    something = build_calendar_api(request.user)
     return HttpResponse("aaaaa")

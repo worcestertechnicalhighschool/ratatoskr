@@ -7,6 +7,7 @@ from allauth.socialaccount.models import SocialAccount
 class Schedule(models.Model):
     id = models.AutoField(primary_key=True)
     calendar_id = models.CharField(max_length=1024)
+    calendar_meet_data = models.JSONField()
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     is_locked = models.BooleanField()
@@ -29,8 +30,3 @@ class Reservation(models.Model):
     # TODO: Find out how to store phone numbers
     #phone = models.PhoneNumberField()
     comment = models.CharField(max_length=256)
-
-class ScheduleMeetingData(models.Model):
-    id = models.AutoField(primary_key=True)
-    schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
-    meet_data = models.JSONField()

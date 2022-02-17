@@ -13,7 +13,7 @@ from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
 from numpy import byte
 
-from .models import Reservation, Schedule, ScheduleMeetingData, TimeSlot
+from .models import Reservation, Schedule, TimeSlot
 
 # Notes:
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
@@ -55,7 +55,8 @@ def build_calendar_client(user: User):
     return build('calendar', 'v3', credentials=credentials)
 
 # Gets the calendar associated with the schedule
-def create_calendar_for_schedule(schedule: Schedule) -> tuple[ScheduleMeetingData, str]:
+# Returns conferenceData and calendarId to be saved in the schedule model
+def create_calendar_for_schedule(schedule: Schedule) -> tuple[dict, str]:
     client = build_calendar_client(schedule.owner)
     calendar_body = {
         'summary': f'Ratatoskr: {schedule.name}',
@@ -89,18 +90,18 @@ def create_calendar_for_schedule(schedule: Schedule) -> tuple[ScheduleMeetingDat
     conf_data = event["conferenceData"]
     
     # Delete the dummy event, we don't need it
-    # client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
-    return ScheduleMeetingData(schedule=schedule, meet_data=conf_data), calendar_id
+    client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    return conf_data, calendar_id
 
 def update_timeslot_events(timeslot: TimeSlot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
-    conf_data = ScheduleMeetingData.objects.get(schedule=timeslot.schedule).meet_data
+    conf_data = timeslot.schedule.calendar_meet_data
 
     event_body = {
         "summary": f"Ratatoskr: {timeslot.schedule.name}",
-        "location": "Peak of Yggdrasil",
+        "location": "Atop Yggdrasil",
         "description": "Event relayed to you by Ratatoskr 🐭.",
         "start": {
             "dateTime": timeslot.time_from.replace(tzinfo=pytz.timezone("EST")).isoformat(),
@@ -115,6 +116,6 @@ def update_timeslot_events(timeslot: TimeSlot) -> None:
     }
     try:
         client.events().get(calendarId=calendar_id, eventId=event_id).execute()
-        client.events().patch(calendarId=calendar_id, eventId=event_id, body=event_body).execute()
+        client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1, body=event_body).execute()
     except HttpError: # Aaand pray that we don't get a random timed-out error
-        client.events().insert(calendarId=calendar_id, body=event_body).execute()
+        client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()

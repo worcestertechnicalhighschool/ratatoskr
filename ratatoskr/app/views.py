@@ -49,9 +49,8 @@ def create_schedule(request):
                 auto_lock_after=make_aware(lock_date),
                 is_locked=False,
             )
-            (meeting_data, new_schedule.calendar_id) = create_calendar_for_schedule(new_schedule)
+            (new_schedule.calendar_meet_data, new_schedule.calendar_id) = create_calendar_for_schedule(new_schedule)
             new_schedule.save()
-            meeting_data.save()
         except Exception as exc:
             raise RuntimeError() from exc
         return redirect("schedule", new_schedule.id)

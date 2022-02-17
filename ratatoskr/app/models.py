@@ -28,3 +28,8 @@ class Reservation(models.Model):
     # TODO: Find out how to store phone numbers
     #phone = models.PhoneNumberField()
     comment = models.CharField(max_length=256)
+
+class ScheduleMeetingData(models.Model):
+    id = models.AutoField(primary_key=True)
+    schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
+    meet_data = models.JSONField()

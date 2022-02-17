@@ -1,11 +1,12 @@
 
+import uuid
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
 
-from .models import Reservation, Schedule, TimeSlot
+from .models import Reservation, Schedule, ScheduleMeetingData, TimeSlot
 
 # Notes:
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
@@ -57,6 +58,38 @@ def get_calendar(schedule: Schedule) -> dict:
             'conferenceProperties': ["hangoutsMeet"],
             'id': calendar_id
         }
+        dummy_event_body = {
+            "summary": "Ratatoskr Dummy Event",
+            "location": "Yggdrasil",
+            "description": "This event was only supposed to exist for a short time. If this event happened to stay, you are free to delete it.",
+            "start": {
+                "dateTime": "1999-02-01T00:00:00-05:00",
+                "timeZone": "America/New_York",
+            },
+            "end": {
+                "dateTime": "1999-01-01T1:00:00-05:00",
+                "timeZone": "America/New_York",
+            },
+            "conferenceData": {
+                "createRequest": {
+                    "requestId": str(uuid.uuid5()),
+                    "conferenceSolutionKey": {"type": "hangoutsMeet"},
+                }
+            },
+            "attendees": [],
+            "reminders": {"useDefault": True},
+        }
         calendar = client.calendars().insert(body=calendar_body)
+        event = calendar.events().insert(calendarId=calendar_id, body=dummy_event_body)
+        conf_data = event["conferenceData"]
+        ScheduleMeetingData.objects.create(
+            schedule=schedule,
+            meet_data=conf_data
+        )
+        calendar.events().delete(calendarId=calendar_id, eventId=event["id"])
+
     return calendar
 
+def update_schedule_events(schedule: Schedule):
+    client = build_calendar_client(schedule.owner)
+    

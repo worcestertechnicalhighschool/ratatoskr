@@ -1,4 +1,5 @@
 
+import base64
 import uuid
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -12,12 +13,12 @@ from .models import Reservation, Schedule, ScheduleMeetingData, TimeSlot
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
 
 # Template strings for the IDs for each of our calendar elements
-# The ID+DomainName method for generating IDs for our calendar elements should be unique enough so it doesn't clash with any other IDs
+# The name+ID method for generating IDs for our calendar elements should be unique enough so it doesn't clash with any other IDs
 # AutoIncrement fields in SQL never return previous numbers, so we should also be safe in that regard too.
 
-CALENDAR_ID_PREFIX = "ratatoskr"
-CALENDAR_SCHEDULE_ID = CALENDAR_ID_PREFIX + "{schedule_id}"                      # Ex: "ratatoskr9824"
-CALENDAR_TIMESLOT_EVENT_ID = CALENDAR_ID_PREFIX + "{timeslot_id}in{schedule_id}#"    # Ex: "ratatoskr74343at9824"
+CALENDAR_ID_PREFIX = base64.b32encode(bytearray("ratatoskr.techhigh.us", 'ascii')).decode('utf8') # e9gq8rbmdxtppwheehjp6u38d5kpgbknec
+CALENDAR_SCHEDULE_ID = CALENDAR_ID_PREFIX + "{schedule_id}"
+CALENDAR_TIMESLOT_EVENT_ID = CALENDAR_ID_PREFIX + "{timeslot_id}in{schedule_id}#"
 
 def build_schedule_id(schedule: Schedule) -> str:
     return CALENDAR_SCHEDULE_ID % {
@@ -29,7 +30,6 @@ def build_timeslot_event_id(timeslot: TimeSlot) -> str:
         "schedule_id": timeslot.id,
         "timeslot_id": timeslot.schedule.id
     }
-
 
 # Builds the calendar api using the User's api tokens
 def build_calendar_client(user: User):

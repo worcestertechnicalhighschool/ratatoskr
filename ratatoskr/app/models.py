@@ -6,6 +6,7 @@ from allauth.socialaccount.models import SocialAccount
 
 class Schedule(models.Model):
     id = models.AutoField(primary_key=True)
+    calendar_id = models.CharField(max_length=1024)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     is_locked = models.BooleanField()

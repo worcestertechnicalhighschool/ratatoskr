@@ -73,7 +73,6 @@ def schedule(request, schedule_id):
             "from": v[0].time_from,
             "to": v[-1].time_to,
             "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]),
-            # TODO: Implement a way to find these stats
             "taken": sum([i.reservation_set.count() for i in v]),
             "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()

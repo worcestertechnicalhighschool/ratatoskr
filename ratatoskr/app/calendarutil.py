@@ -5,6 +5,7 @@ import hashlib
 from django.utils.timezone import make_aware
 from pydoc import cli
 import uuid
+import pytz
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
@@ -22,8 +23,8 @@ from .models import Reservation, Schedule, ScheduleMeetingData, TimeSlot
 # AutoIncrement fields in SQL never return previous numbers, so we should also be safe in that regard too.
 
 CALENDAR_ID_SUFFIX = "ratatoskr.techhigh.us"
-CALENDAR_SCHEDULE_ID = "{schedule_id}" + CALENDAR_ID_SUFFIX
-CALENDAR_TIMESLOT_EVENT_ID = "{timeslot_id}@{schedule_id}#" + CALENDAR_ID_SUFFIX
+CALENDAR_SCHEDULE_ID = "%(schedule_id)s" + CALENDAR_ID_SUFFIX
+CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 
 def hashify(string: str) -> str:
     return hashlib.sha1(bytes(string, "ascii")).hexdigest().lower()
@@ -54,7 +55,7 @@ def build_calendar_client(user: User):
     return build('calendar', 'v3', credentials=credentials)
 
 # Gets the calendar associated with the schedule
-def create_calendar_for_schedule(schedule: Schedule) -> None:
+def create_calendar_for_schedule(schedule: Schedule) -> tuple[ScheduleMeetingData, str]:
     client = build_calendar_client(schedule.owner)
     calendar_body = {
         'summary': f'Ratatoskr: {schedule.name}',
@@ -83,36 +84,29 @@ def create_calendar_for_schedule(schedule: Schedule) -> None:
     }
     calendar = client.calendars().insert(body=calendar_body).execute()
     calendar_id = calendar['id']
-    schedule.calendar_id = calendar_id
-    schedule.save()
     # We are going to create a dummy event to get some conference data to use with other events on the same calendar
     event = client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=dummy_event_body).execute()
     conf_data = event["conferenceData"]
-    ScheduleMeetingData.objects.create(
-        schedule=schedule,
-        meet_data=conf_data
-    )
+    
     # Delete the dummy event, we don't need it
-    client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    # client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    return ScheduleMeetingData(schedule=schedule, meet_data=conf_data), calendar_id
 
 def update_timeslot_events(timeslot: TimeSlot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
     conf_data = ScheduleMeetingData.objects.get(schedule=timeslot.schedule).meet_data
-    x = timeslot.time_from.isoformat()
 
     event_body = {
         "summary": f"Ratatoskr: {timeslot.schedule.name}",
         "location": "Peak of Yggdrasil",
-        "description": "Event manifested by the Ratatoskr Meeting System.",
+        "description": "Event relayed to you by Ratatoskr 🐭.",
         "start": {
-            "dateTime": timeslot.time_from.isoformat(),
-            "timeZone": "UTC"
+            "dateTime": timeslot.time_from.replace(tzinfo=pytz.timezone("EST")).isoformat(),
         },
         "end": {
-            "dateTime": timeslot.time_to.isoformat(),
-            "timeZone": "UTC"
+            "dateTime": timeslot.time_to.replace(tzinfo=pytz.timezone("EST")).isoformat(),
         },
         "conferenceData": conf_data,
         "attendees": [{"email": r.email} for r in timeslot.reservation_set.all()],

@@ -41,16 +41,18 @@ def create_schedule(request):
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
         if form.cleaned_data.get("should_lock_automatically"):
             lock_date = form.cleaned_data.get("auto_lock_after")
-        new_schedule = Schedule.objects.create(
-            owner=request.user,
-            name=form.cleaned_data["name"],
-            auto_lock_after=make_aware(lock_date),
-            is_locked=False
-        )
+        
         try:
-            create_calendar_for_schedule(new_schedule)
+            new_schedule = Schedule(
+                owner=request.user,
+                name=form.cleaned_data["name"],
+                auto_lock_after=make_aware(lock_date),
+                is_locked=False,
+            )
+            (meeting_data, new_schedule.calendar_id) = create_calendar_for_schedule(new_schedule)
+            new_schedule.save()
+            meeting_data.save()
         except Exception as exc:
-            new_schedule.delete()
             raise RuntimeError() from exc
         return redirect("schedule", new_schedule.id)
     return render(request, 'app/pages/create_schedule.html', {})

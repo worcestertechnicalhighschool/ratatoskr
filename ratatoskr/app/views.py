@@ -11,6 +11,9 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 from app.calendarutil import build_calendar_client
+from ratatoskr.app.calendarutil import create_calendar_for_schedule, update_timeslot_events
+from googleapiclient.errors import HttpError
+
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -44,6 +47,11 @@ def create_schedule(request):
             auto_lock_after=make_aware(lock_date),
             is_locked=False
         )
+        try:
+            create_calendar_for_schedule(new_schedule)
+        except HttpError as exc:
+            new_schedule.delete()
+            raise RuntimeError() from exc
         return redirect("schedule", new_schedule.id)
 
     return render(request, 'app/pages/create_schedule.html', {})
@@ -215,12 +223,17 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        Reservation.objects.create(
+        reserve = Reservation.objects.create(
             time_slot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
+        try:
+            update_timeslot_events(timeslot)
+        except HttpError as exc:
+            reserve.delete()
+            raise RuntimeError() from exc
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,

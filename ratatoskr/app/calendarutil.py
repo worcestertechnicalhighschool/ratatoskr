@@ -1,5 +1,6 @@
 
 import base64
+from pydoc import cli
 import uuid
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -47,7 +48,7 @@ def build_calendar_client(user: User):
     return build('calendar', 'v3', credentials=credentials)
 
 # Gets the calendar associated with the schedule
-def create_calendar_for_schedule(schedule: Schedule) -> dict:
+def create_calendar_for_schedule(schedule: Schedule) -> None:
     client = build_calendar_client(schedule.owner)
     calendar_id = build_schedule_id(schedule)
     calendar_body = {
@@ -89,6 +90,29 @@ def create_calendar_for_schedule(schedule: Schedule) -> dict:
     # Delete the dummy event, we don't need it
     calendar.events().delete(calendarId=calendar_id, eventId=event["id"])
 
-def update_schedule_events(schedule: Schedule):
-    client = build_calendar_client(schedule.owner)
-    
+def update_timeslot_events(timeslot: TimeSlot) -> None:
+    client = build_calendar_client(timeslot.schedule.owner)
+    calendar_id = build_schedule_id(timeslot.schedule)
+    event_id = build_timeslot_event_id(timeslot)
+    conf_data = ScheduleMeetingData.objects.get(schedule=timeslot.schedule).meet_data
+    event_body = {
+        "summary": f"Ratatoskr: {timeslot.schedule.name}",
+        "location": "Peak of Yggdrasil",
+        "description": "Event manifested by the Ratatoskr Meeting System.",
+        "start": {
+            "dateTime": timeslot.time_from.isodate(),
+            "timeZone": "America/New_York",
+        },
+        "end": {
+            "dateTime": timeslot.time_to.isodate(),
+            "timeZone": "America/New_York",
+        },
+        "conferenceData": conf_data,
+        "attendees": [{"email": r.email} for r in timeslot.reservation_set.all()],
+        "reminders": {"useDefault": True},
+    }
+    try:
+        client.events().get(calendarId=calendar_id, eventId=event_id)
+        client.events().patch(calendarId=calendar_id, eventId=event_id, body=event_body)
+    except HttpError: # Aaand pray that we don't get a random timed-out error
+        client.events().insert(calendarId=calendar_id, eventId=event_id, body=event_body)

@@ -14,9 +14,9 @@ from .models import Reservation, Schedule, TimeSlot
 # The ID+DomainName method for generating IDs for our calendar elements should be unique enough so it doesn't clash with any other IDs
 # AutoIncrement fields in SQL never return previous numbers, so we should also be safe in that regard too.
 
-CALENDAR_ID_SUFFIX = "ratatoskr.techhigh.us"
-CALENDAR_SCHEDULE_ID = "{schedule_id}#" + CALENDAR_ID_SUFFIX                        # Ex: "9824#ratatoskr.techhigh.us"
-CALENDAR_TIMESLOT_EVENT_ID = "{timeslot_id}@{schedule_id}#" + CALENDAR_ID_SUFFIX    # Ex: "74343@9824#ratatoskr.techhigh.us"
+CALENDAR_ID_PREFIX = "ratatoskr"
+CALENDAR_SCHEDULE_ID = CALENDAR_ID_PREFIX + "{schedule_id}"                      # Ex: "ratatoskr9824"
+CALENDAR_TIMESLOT_EVENT_ID = CALENDAR_ID_PREFIX + "{timeslot_id}in{schedule_id}#"    # Ex: "ratatoskr74343at9824"
 
 def build_schedule_id(schedule: Schedule) -> str:
     return CALENDAR_SCHEDULE_ID % {

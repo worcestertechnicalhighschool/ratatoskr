@@ -18,22 +18,16 @@ from .models import Reservation, Schedule, TimeSlot
 # Notes:
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
 
-# Template strings for the IDs for each of our calendar elements
-# The name+ID method for generating IDs for our calendar elements should be unique enough so it doesn't clash with any other IDs
-# AutoIncrement fields in SQL never return previous numbers, so we should also be safe in that regard too.
+# The IDs we generate for calendar events are created in a way that it links to their timeslot
+# So in order to get the event associated with a timeslot, all we need is the timeslot's data, and we don't need to store the ID on the database
 
+# Effectively we construct a string that identifies the timeslot and pass it through SHA-1 to reduce the chance of collision and...
+# comply with the base32 rule for event ids
 CALENDAR_ID_SUFFIX = "ratatoskr.techhigh.us"
-CALENDAR_SCHEDULE_ID = "%(schedule_id)s" + CALENDAR_ID_SUFFIX
 CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 
 def hashify(string: str) -> str:
     return hashlib.sha1(bytes(string, "ascii")).hexdigest().lower()
-
-def build_schedule_id(schedule: Schedule) -> str:
-    built_string = CALENDAR_SCHEDULE_ID % {
-        "schedule_id": schedule.id
-    }
-    return hashify(built_string)
 
 def build_timeslot_event_id(timeslot: TimeSlot) -> str:
     built_string = CALENDAR_TIMESLOT_EVENT_ID % {
@@ -54,7 +48,7 @@ def build_calendar_client(user: User):
         client_secret=google_app.secret) 
     return build('calendar', 'v3', credentials=credentials)
 
-# Gets the calendar associated with the schedule
+# Creates a calendar for the given schedule
 # Returns conferenceData and calendarId to be saved in the schedule model
 def create_calendar_for_schedule(schedule: Schedule) -> tuple[dict, str]:
     client = build_calendar_client(schedule.owner)
@@ -93,7 +87,9 @@ def create_calendar_for_schedule(schedule: Schedule) -> tuple[dict, str]:
     client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
     return conf_data, calendar_id
 
-def update_timeslot_events(timeslot: TimeSlot) -> None:
+# Updates the calendar event associated with the timeslot
+# If the event does not exist, this function will create one
+def update_timeslot_event(timeslot: TimeSlot, reservation: Reservation) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
@@ -110,12 +106,34 @@ def update_timeslot_events(timeslot: TimeSlot) -> None:
             "dateTime": timeslot.time_to.replace(tzinfo=pytz.timezone("EST")).isoformat(),
         },
         "conferenceData": conf_data,
-        "attendees": [{"email": r.email} for r in timeslot.reservation_set.all()],
-        "reminders": {"useDefault": True},
+        "attendees": [
+            {
+                "email": r.email,
+                "display_name": r.name,
+                "comment": r.comment
+            } for r in timeslot.reservation_set.all()
+        ],
+        "reminders": {
+            "useDefault": False,
+            "overrides": [
+                {
+                    "method": "email",
+                    "minutes": 60 * 60 * 24 * 2 # Two days
+                },
+                {
+                    "method": "email",
+                    "minutes": 60 * 60 * 24 # One day
+                },
+                {
+                    "method": "email",
+                    "minutes": 10 # 10 minutes
+                }
+            ]
+        },
         "id": event_id
     }
     try:
-        client.events().get(calendarId=calendar_id, eventId=event_id).execute()
+        # Will fail with 404 if the event does not exist
         client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1, body=event_body).execute()
-    except HttpError: # Aaand pray that we don't get a random timed-out error
+    except HttpError: # And if the event doesn't exist, we create a new event.
         client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()

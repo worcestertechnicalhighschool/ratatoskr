@@ -11,7 +11,7 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 from app.calendarutil import build_calendar_client
-from app.calendarutil import create_calendar_for_schedule, update_timeslot_events
+from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
 
 
@@ -222,17 +222,17 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        reserve = Reservation(
+        reserve = Reservation.objects.create(
             time_slot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
         try:
-            update_timeslot_events(timeslot)
+            update_timeslot_event(timeslot, reserve)
         except Exception as exc:
+            reserve.delete()
             raise RuntimeError() from exc
-        reserve.save()
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,

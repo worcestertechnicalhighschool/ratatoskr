@@ -42,17 +42,12 @@ def create_schedule(request):
         if form.cleaned_data.get("should_lock_automatically"):
             lock_date = form.cleaned_data.get("auto_lock_after")
         
-        try:
-            new_schedule = Schedule(
-                owner=request.user,
-                name=form.cleaned_data["name"],
-                auto_lock_after=make_aware(lock_date),
-                is_locked=False,
-            )
-            (new_schedule.calendar_meet_data, new_schedule.calendar_id) = create_calendar_for_schedule(new_schedule)
-            new_schedule.save()
-        except Exception as exc:
-            raise RuntimeError() from exc
+        new_schedule = Schedule.objects.create(
+            owner=request.user,
+            name=form.cleaned_data["name"],
+            auto_lock_after=make_aware(lock_date),
+            is_locked=False,
+        )
         return redirect("schedule", new_schedule.id)
     return render(request, 'app/pages/create_schedule.html', {})
 
@@ -228,11 +223,6 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
-        try:
-            update_timeslot_event(timeslot, reserve)
-        except Exception as exc:
-            reserve.delete()
-            raise RuntimeError() from exc
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,

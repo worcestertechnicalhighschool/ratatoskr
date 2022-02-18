@@ -13,8 +13,6 @@ from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
 from numpy import byte
 
-from .models import Reservation, Schedule, TimeSlot
-
 # Notes:
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
 
@@ -29,7 +27,7 @@ CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SU
 def hashify(string: str) -> str:
     return hashlib.sha1(bytes(string, "ascii")).hexdigest().lower()
 
-def build_timeslot_event_id(timeslot: TimeSlot) -> str:
+def build_timeslot_event_id(timeslot) -> str:
     built_string = CALENDAR_TIMESLOT_EVENT_ID % {
         "schedule_id": timeslot.schedule.id,
         "timeslot_id": timeslot.id
@@ -37,7 +35,7 @@ def build_timeslot_event_id(timeslot: TimeSlot) -> str:
     return hashify(built_string)
 
 # Builds the calendar api using the User's api tokens
-def build_calendar_client(user: User):
+def build_calendar_client(user):
     token = SocialToken.objects.get(account__user=user, account__provider='google')
     google_app = SocialApp.objects.get(provider="google")
     credentials = Credentials(
@@ -50,7 +48,7 @@ def build_calendar_client(user: User):
 
 # Creates a calendar for the given schedule
 # Returns conferenceData and calendarId to be saved in the schedule model
-def create_calendar_for_schedule(schedule: Schedule) -> tuple[dict, str]:
+def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     client = build_calendar_client(schedule.owner)
     calendar_body = {
         'summary': f'Ratatoskr: {schedule.name}',
@@ -89,7 +87,7 @@ def create_calendar_for_schedule(schedule: Schedule) -> tuple[dict, str]:
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
-def update_timeslot_event(timeslot: TimeSlot, reservation: Reservation) -> None:
+def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)

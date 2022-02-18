@@ -136,7 +136,7 @@ def update_timeslot_event(timeslot, reservation) -> None:
     except HttpError: # And if the event doesn't exist, we create a new event.
         client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
 
-def delete_timeslot_calendar(timeslot) -> None:
+def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     client.events().delete(
         calendarId=timeslot.schedule.calendar_id,

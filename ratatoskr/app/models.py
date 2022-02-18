@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
 
-from .calendarutil import create_calendar_for_schedule, delete_timeslot_calendar, update_timeslot_event
+from .calendarutil import create_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
 
 # Create your models here.
 
@@ -43,4 +43,4 @@ class Reservation(models.Model):
 
 @receiver(models.signals.post_delete, sender=TimeSlot)
 def on_timeslot_delete(sender, instance, **kwargs):
-    delete_timeslot_calendar(instance)
+    delete_timeslot_event(instance)

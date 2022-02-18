@@ -118,11 +118,11 @@ def update_timeslot_event(timeslot: TimeSlot, reservation: Reservation) -> None:
             "overrides": [
                 {
                     "method": "email",
-                    "minutes": 60 * 60 * 24 * 2 # Two days
+                    "minutes": 60 * 24 * 2 # Two days
                 },
                 {
                     "method": "email",
-                    "minutes": 60 * 60 * 24 # One day
+                    "minutes": 60 * 24 # One day
                 },
                 {
                     "method": "email",

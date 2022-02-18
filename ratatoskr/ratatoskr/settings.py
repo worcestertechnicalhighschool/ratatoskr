@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -150,14 +150,17 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
 
+SOCIALACCOUNT_STORE_TOKENS = True
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
             'profile',
             'email',
+            'https://www.googleapis.com/auth/calendar'
         ],
         'AUTH_PARAMS': {
-            'access_type': 'online',
+            'access_type': 'offline',
         }
     }
 }

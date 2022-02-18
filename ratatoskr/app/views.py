@@ -10,6 +10,10 @@ from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
+from app.calendarutil import build_calendar_client
+from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
+from googleapiclient.errors import HttpError
+
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -37,14 +41,14 @@ def create_schedule(request):
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
         if form.cleaned_data.get("should_lock_automatically"):
             lock_date = form.cleaned_data.get("auto_lock_after")
+        
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
             auto_lock_after=make_aware(lock_date),
-            is_locked=False
+            is_locked=False,
         )
         return redirect("schedule", new_schedule.id)
-
     return render(request, 'app/pages/create_schedule.html', {})
 
 
@@ -64,7 +68,6 @@ def schedule(request, schedule_id):
             "from": v[0].time_from,
             "to": v[-1].time_to,
             "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]),
-            # TODO: Implement a way to find these stats
             "taken": sum([i.reservation_set.count() for i in v]),
             "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
@@ -214,7 +217,7 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        Reservation.objects.create(
+        reserve = Reservation.objects.create(
             time_slot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
@@ -234,11 +237,5 @@ def reserve_confirmed(request):
     })
 
 def test(request):
-    send_mail(
-        'Subject here',
-        'Here is the message.',
-        'from@example.com',
-        ['to@example.com'],
-        fail_silently=False,
-    )
+    something = build_calendar_client(request.user)
     return HttpResponse("aaaaa")

@@ -87,7 +87,7 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
-def update_timeslot_event(timeslot) -> None:
+def update_timeslot_event(timeslot, reservation) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
@@ -107,9 +107,9 @@ def update_timeslot_event(timeslot) -> None:
         "attendees": [
             {
                 "email": r.email,
-                "display_name": r.name,
+                "displayName": r.name,
                 "comment": r.comment
-            } for r in timeslot.reservation_set.all()
+            } for r in list(timeslot.reservation_set.all()) + [reservation]
         ],
         "reminders": {
             "useDefault": False,
@@ -135,3 +135,10 @@ def update_timeslot_event(timeslot) -> None:
         client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1, body=event_body).execute()
     except HttpError: # And if the event doesn't exist, we create a new event.
         client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
+
+def delete_timeslot_calendar(timeslot) -> None:
+    client = build_calendar_client(timeslot.schedule.owner)
+    client.events().delete(
+        calendarId=timeslot.schedule.calendar_id,
+        eventId=build_timeslot_event_id(timeslot)
+    ).execute()

@@ -5,7 +5,11 @@
 
 {% block body %}
     <div class="d-flex justify-content-between align-items-center px-4">
+        {% if is_owner %}
         <h1>My Schedules</h1>
+        {% else %}
+        <h1>{{ owner.first_name }}'s Schedules</h1>
+        {% endif %}
         <a href="{% url "create-schedule" %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>
     </div>
     <hr />

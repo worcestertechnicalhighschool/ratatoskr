@@ -11,6 +11,7 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 from app.calendarutil import build_calendar_client
+from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
@@ -83,13 +84,14 @@ def schedule(request, schedule_id):
 
 
 @require_http_methods(["GET"])
-def my_schedules(request, user_id):
+def user_schedules(request, user_id):
     if not request.user.is_authenticated:
         raise PermissionDenied()
     else:
         return render(request, "app/pages/schedules.html", {
             "schedules": Schedule.objects.filter(owner=user_id),
-            "is_owner": request.user.id == user_id
+            "is_owner": request.user.id == user_id,
+            "owner": User.objects.get(id=user_id)
         })
 
 

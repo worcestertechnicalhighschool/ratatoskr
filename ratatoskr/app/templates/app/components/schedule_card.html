@@ -1,11 +1,11 @@
 <div class="card card-hover-shadow">
     <div class="card-body">
-        <a href="{% url 'schedule' schedule.id %}" class="text-muted text-decoration-none">
+        <a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">
             <div class="d-flex flex-row align-items-center">
                 <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.get_full_name }}'s profile picture" style="width: 20px">
                 <h6 class="card-subtitle" style="margin-top: unset !important;">{{ schedule.owner.get_full_name }}</h6>
             </div>
         </a>
-        <h3 class="card-title mt-3">{{ schedule.name }}</h3>
+        <a href="{% url 'schedule' schedule.id %}" class="text-decoration-none text-dark"><h3 class="card-title mt-3">{{ schedule.name }}</h3></a>
     </div>
 </div>

@@ -4,16 +4,16 @@
 {% load socialaccount %}
 
 {% block body %}
-    <h1>asdf</h1>
+    <h1 class="px-4">All Schedules</h1>
+    <hr />
     <div class="container">
         <div class="row row-cols-lg-3">
             {% for schedule in schedules %}
-                <div class="col mb-3">
+            <div class="col mb-3">
                     {% schedule_card schedule %}
                 </div>
             {% endfor %}
         </div>
     </div>
-    <hr />
 
 {% endblock body %}

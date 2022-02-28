@@ -11,6 +11,7 @@ from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
 from app.calendarutil import build_calendar_client
+from django.views.decorators.http import require_http_methods
 from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
 
@@ -21,13 +22,14 @@ from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 
 
-# Create your views here.
+@require_http_methods(["GET"])
 def index(request):
     return render(request, 'app/pages/index.html', {
         "schedules": Schedule.objects.all()
     })
 
 
+@require_http_methods(["GET", "POST"])
 def create_schedule(request):
     if not request.user.is_authenticated:
         raise PermissionDenied()
@@ -52,6 +54,7 @@ def create_schedule(request):
     return render(request, 'app/pages/create_schedule.html', {})
 
 
+@require_http_methods(["GET"])
 def schedule(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
@@ -79,6 +82,18 @@ def schedule(request, schedule_id):
     })
 
 
+@require_http_methods(["GET"])
+def my_schedules(request, user_id):
+    if not request.user.is_authenticated:
+        raise PermissionDenied()
+    else:
+        return render(request, "app/pages/schedules.html", {
+            "schedules": Schedule.objects.filter(owner=user_id),
+            "is_owner": request.user.id == user_id
+        })
+
+
+@require_http_methods(["GET"])
 def schedule_day(request, schedule_id, date):
     schedule = Schedule.objects.get(pk=schedule_id)
     timeslots = TimeSlot.objects.filter(schedule=schedule)
@@ -90,10 +105,8 @@ def schedule_day(request, schedule_id, date):
     })
 
 
+@require_http_methods(["POST"])
 def schedule_edit(request, schedule_id):
-    if not request.POST:
-        raise UnsupportedOperation()
-
     schedule = Schedule.objects.filter(pk=schedule_id).get()
 
     if schedule.owner != request.user:
@@ -129,6 +142,7 @@ def schedule_edit(request, schedule_id):
     return redirect(request.GET.get("next") or "/")
 
 
+@require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule_id):
     schedule = Schedule.objects.get(pk=schedule_id)
 
@@ -203,6 +217,7 @@ def create_timeslots(request, schedule_id):
     })
 
 
+@require_http_methods(["GET", "POST"])
 def reserve_timeslot(request, schedule_id, date, timeslot_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
     timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
@@ -231,6 +246,7 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
     })
 
 
+@require_http_methods(["GET"])
 def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {
 

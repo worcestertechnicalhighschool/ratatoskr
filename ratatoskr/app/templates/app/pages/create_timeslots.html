@@ -14,7 +14,7 @@
                 <h2 class="mt-2">Create Timeslots</h2>
             </div>
             <div class="card-body">
-                <form method="POST">
+                <form method="POST" v-scope="{ multipleTimeslots: true }">
                     {% csrf_token %}
                     <div class="row g-2">
                         <div class="mb-3 col">
@@ -36,21 +36,28 @@
                             <input type="time" class="form-control" id="to_time" name="to_time">
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="timeslot_length" class="form-label">Timeslot Length</label>
-                        <input type="number" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length">
-                        <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="multiple_timeslots" @click="multipleTimeslots = $el.checked" checked>
+                      <label class="form-check-label" for="multiple_timeslots" v-html="multipleTimeslots ? 'Single Timeslot' : 'Multiple Timeslots'"></label>
                     </div>
-                    <div class="mb-3">
-                        <label for="timeslot_break" class="form-label">Timeslot Break</label>
-                        <input type="number" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break">
-                        <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
+                    <div v-bind:style="{ display: multipleTimeslots ? 'none' : 'block' }">
+                        <div class="mb-3">
+                            <label for="timeslot_length" class="form-label">Timeslot Length</label>
+                            <input type="number" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length">
+                            <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="timeslot_break" class="form-label">Timeslot Break</label>
+                            <input type="number" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break">
+                            <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="openings" class="form-label">Openings</label>
                         <input type="number" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings">
                         <div id="openingsHelp" class="form-text">The number of openings for each timeslot.</div>
                     </div>
+
                     <fieldset class="text-center">
                         <button class="btn btn-primary w-50" type="submit">Create</button>
                     </fieldset>

@@ -4,12 +4,4 @@
 @import "bootstrap/bootstrap.scss";
 // Append style overrides after Bootstrap
 @import "app/link-disable.scss";
-
-.card-hover-shadow {
-    transition: box-shadow 0.1s ease-in-out;
-
-    &:hover {
-        cursor: pointer;
-        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    }
-}
+@import "app/card.scss";

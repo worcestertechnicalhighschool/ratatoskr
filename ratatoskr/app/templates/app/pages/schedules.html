@@ -1,0 +1,34 @@
+{% extends 'app/layouts/base.html' %}
+{% block title %}My Schedules{% endblock title %}
+
+{% load socialaccount %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center px-4">
+        {% if is_owner %}
+        <h1>My Schedules</h1>
+        {% else %}
+        <h1>{{ owner.first_name }}'s Schedules</h1>
+        {% endif %}
+        <a href="{% url "create-schedule" %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>
+    </div>
+    <hr />
+    <div class="container">
+        {% if schedules %}
+        <div class="row row-cols-lg-3">
+            {% for schedule in schedules %}
+                <div class="col mb-3">
+                    {% schedule_card schedule %}
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            {% if is_owner %}
+            <p class="text-center pt-4">It looks like you don't have any schedules, ready to <a href="/create-schedule">get started</a>?</p>
+            {% else %}
+            <p class="text-center pt-4">This user doesn't have any schedules yet.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+{% endblock body %}

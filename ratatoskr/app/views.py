@@ -16,7 +16,6 @@ from django.views.decorators.http import require_http_methods
 from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
 
-
 from ratatoskr.celery import debug_task, send_mail_task
 
 from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
@@ -40,11 +39,11 @@ def create_schedule(request):
         if not form.is_valid():
             render(request, 'app/pages/create_schedule.html', {
                 "errors": form.errors
-            }) # TODO: Render form errors in template or something
+            })  # TODO: Render form errors in template or something
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
         if form.cleaned_data.get("should_lock_automatically"):
             lock_date = form.cleaned_data.get("auto_lock_after")
-        
+
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
@@ -154,9 +153,7 @@ def create_timeslots(request, schedule_id):
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
-            return render(request, "app/pages/create_timeslots.html", {
-                "form": form
-            })
+            return render(request, "app/pages/create_timeslots.html", {"errors": form.errors})
 
         dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
         # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
@@ -214,9 +211,7 @@ def create_timeslots(request, schedule_id):
 
         return redirect("schedule", schedule_id)
 
-    return render(request, "app/pages/create_timeslots.html", {
-        "form": TimeslotGenerationForm()
-    })
+    return render(request, "app/pages/create_timeslots.html", {})
 
 
 @require_http_methods(["GET", "POST"])
@@ -253,6 +248,7 @@ def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {
 
     })
+
 
 def test(request):
     something = build_calendar_client(request.user)

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 
+
 class TimeslotGenerationForm(forms.Form):
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
@@ -18,12 +19,14 @@ class TimeslotGenerationForm(forms.Form):
         #      raise forms.ValidationError('The start time must be earlier than the end time.')
         return cleaned_data
 
+
 class ReservationForm(forms.Form):
     name = forms.CharField(max_length=747)
     email = forms.EmailField()
     comment = forms.CharField(max_length=256)
     # TODO: Find out how to store phone numbers
-    #phone = models.PhoneNumberField()
+    # phone = models.PhoneNumberField()
+
 
 class ScheduleCreationForm(forms.Form):
     name = forms.CharField(max_length=64)

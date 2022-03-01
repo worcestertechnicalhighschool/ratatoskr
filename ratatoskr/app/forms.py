@@ -7,8 +7,9 @@ class TimeslotGenerationForm(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     from_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}))
     to_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}))
-    timeslot_length = forms.IntegerField()
-    timeslot_break = forms.IntegerField()
+    single_timeslot = forms.BooleanField(initial=False, required=False)
+    timeslot_length = forms.IntegerField(required=False)
+    timeslot_break = forms.IntegerField(required=False)
     openings = forms.IntegerField()
 
     def clean(self):

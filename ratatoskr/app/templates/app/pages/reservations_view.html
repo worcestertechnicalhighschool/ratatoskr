@@ -26,7 +26,17 @@
         </h2>
         <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#reservation-list">
           <div class="accordion-body">
-            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="delete" class="btn btn-danger">
+                <i class="fa-solid fa-xmark"></i> Cancel Reservation
+            </button>
+            <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ reservation.email }}`;">
+                <i class="fa-solid fa-envelope"></i> Email
+            </button><br>
+            <p class="mt-4">
+                <b>Name</b>&nbsp;&nbsp;{{ reservation.name }}<br>
+                <b>Email</b>&nbsp;&nbsp;{{ reservation.email }}<br>
+                <b>Comments</b>&nbsp;&nbsp;{{ reservation.comment }}
+            </p>
           </div>
         </div>
       </div>

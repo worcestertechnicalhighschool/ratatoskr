@@ -26,17 +26,21 @@
         </h2>
         <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#reservation-list">
           <div class="accordion-body">
-            <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="delete" class="btn btn-danger">
-                <i class="fa-solid fa-xmark"></i> Cancel Reservation
-            </button>
-            <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ reservation.email }}`;">
-                <i class="fa-solid fa-envelope"></i> Email
-            </button><br>
-            <p class="mt-4">
-                <b>Name</b>&nbsp;&nbsp;{{ reservation.name }}<br>
-                <b>Email</b>&nbsp;&nbsp;{{ reservation.email }}<br>
-                <b>Comments</b>&nbsp;&nbsp;{{ reservation.comment }}
-            </p>
+            <form method="POST" action="" class="m-0 p-0">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ reservation.id }}">
+                <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
+                    <i class="fa-solid fa-xmark"></i> Cancel Reservation
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ reservation.email }}`;">
+                    <i class="fa-solid fa-envelope"></i> Email
+                </button><br>
+                <p class="mt-4">
+                    <b>Name</b>&nbsp;&nbsp;{{ reservation.name }}<br>
+                    <b>Email</b>&nbsp;&nbsp;{{ reservation.email }}<br>
+                    <b>Comments</b>&nbsp;&nbsp;{{ reservation.comment }}
+                </p>
+            </form>
           </div>
         </div>
       </div>

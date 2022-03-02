@@ -262,6 +262,13 @@ def view_reservations(request, schedule_id, date, timeslot_id):
     timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
     reservations = Reservation.objects.filter(time_slot=timeslot)
 
+    if request.POST:
+        # Just in case there will be more actions in the future.
+        match request.POST["action"]:
+            case "cancel":
+                Reservation.objects.filter(pk=request.POST["id"]).delete()
+                update_timeslot_event(timeslot)
+
     return render(request, "app/pages/reservations_view.html", {
         "timeslot": timeslot,
         "schedule": schedule,

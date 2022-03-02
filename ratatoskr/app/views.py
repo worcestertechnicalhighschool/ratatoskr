@@ -164,7 +164,7 @@ def create_timeslots(request, schedule_id):
 
         base = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
 
-        if form.cleaned_data["single_timeslot"]:
+        if not form.cleaned_data["multiple_timeslots"]:
             TimeSlot(
                 schedule=schedule,
                 time_from=make_aware(from_time),

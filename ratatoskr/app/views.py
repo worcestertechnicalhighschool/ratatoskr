@@ -16,7 +16,6 @@ from django.views.decorators.http import require_http_methods
 from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
 
-
 from ratatoskr.celery import debug_task, send_mail_task
 
 from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
@@ -40,11 +39,11 @@ def create_schedule(request):
         if not form.is_valid():
             render(request, 'app/pages/create_schedule.html', {
                 "errors": form.errors
-            }) # TODO: Render form errors in template or something
+            })  # TODO: Render form errors in template or something
         lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
         if form.cleaned_data.get("should_lock_automatically"):
             lock_date = form.cleaned_data.get("auto_lock_after")
-        
+
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
@@ -154,69 +153,75 @@ def create_timeslots(request, schedule_id):
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
-            return render(request, "app/pages/create_timeslots.html", {
-                "form": form
-            })
+            return render(request, "app/pages/create_timeslots.html", {"errors": form.errors})
 
         dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
         # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
         from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
-        to_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["to_time"])
+        to_time = datetime.datetime.combine(form.cleaned_data["to_date"], form.cleaned_data["to_time"])
         time_delta = to_time - from_time
         time_delta_mins = int(time_delta.seconds / 60)
 
         base = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
-        length = form.cleaned_data["timeslot_length"]
-        break_length = form.cleaned_data["timeslot_break"]
-        total_buffer = length + break_length
 
-        # To the poor student who has to maintain this code in 2 years time: Good luck lmao
-        # Listen closely, as I will attempt to explain what the heck is going on in this hellspawn of a list comprehension
-        # base, as defined earlier, will represent the start of the list of timeslots. Ignore the date component, I just made it a datetime so I can do timedelta operations on it.
-        # I iterate over every date in the date range created earlier (dates)
-        # For each of these, I use range to get every offset available for each timeslot, from 0 (no offset) to time_delta_mins (max offset)
-        # total_buffer is the combined time of the length of each timeslot and the length of the breaks between the timeslots. I use this as the skip parameter for range. This should create the timeslots with the appropriate time for the meeting and the break time in between
-        # For every available offset, I make a tuple containing:
-        # The date
-        # The base plus the offset
-        # The base plus the offset and the length of the meeting
-        # Thats all I can say about this horrible thing
-        # Good luck
-        timeslot_times = [
-            [
-                (
-                    date,
-                    (base + datetime.timedelta(minutes=minute_offset)).time(),
-                    (base + datetime.timedelta(minutes=minute_offset + length)).time()
-                )
-                for minute_offset in range(0, time_delta_mins, total_buffer)
-            ]
-            for date in dates
-        ]
-
-        # The resulting list will be a 2d list, with each list being the timeslots for one day.
-        # Each list is a list of tuples with the following data:
-        # Date, time_from, time_to
-        flattened = sum(timeslot_times, [])
-
-        objects = [
+        if not form.cleaned_data["multiple_timeslots"]:
             TimeSlot(
                 schedule=schedule,
-                time_from=make_aware(datetime.datetime.combine(date, time_from)),
-                time_to=make_aware(datetime.datetime.combine(date, time_to)),
+                time_from=make_aware(from_time),
+                time_to=make_aware(to_time),
                 reservation_limit=form.cleaned_data["openings"],
                 is_locked=False,
                 auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
-            ) for date, time_from, time_to in flattened
-        ]
+            ).save()
+        else:
+            length = form.cleaned_data["timeslot_length"]
+            break_length = form.cleaned_data["timeslot_break"]
+            total_buffer = length + break_length
 
-        TimeSlot.objects.bulk_create(objects)
+            # To the poor student who has to maintain this code in 2 years time: Good luck lmao Listen closely,
+            # as I will attempt to explain what the heck is going on in this hellspawn of a list comprehension base,
+            # as defined earlier, will represent the start of the list of timeslots. Ignore the date component,
+            # I just made it a datetime so I can do timedelta operations on it. I iterate over every date in the date
+            # range created earlier (dates) For each of these, I use range to get every offset available for each
+            # timeslot, from 0 (no offset) to time_delta_mins (max offset) total_buffer is the combined time of the
+            # length of each timeslot and the length of the breaks between the timeslots. I use this as the skip
+            # parameter for range. This should create the timeslots with the appropriate time for the meeting and the
+            # break time in between For every available offset, I make a tuple containing: The date The base plus the
+            # offset The base plus the offset and the length of the meeting Thats all I can say about this horrible
+            # thing Good luck
+            timeslot_times = [
+                [
+                    (
+                        date,
+                        (base + datetime.timedelta(minutes=minute_offset)).time(),
+                        (base + datetime.timedelta(minutes=minute_offset + length)).time()
+                    )
+                    for minute_offset in range(0, time_delta_mins, total_buffer)
+                ]
+                for date in dates
+            ]
+
+            # The resulting list will be a 2d list, with each list being the timeslots for one day.
+            # Each list is a list of tuples with the following data:
+            # Date, time_from, time_to
+            flattened = sum(timeslot_times, [])
+
+            objects = [
+                TimeSlot(
+                    schedule=schedule,
+                    time_from=make_aware(datetime.datetime.combine(date, time_from)),
+                    time_to=make_aware(datetime.datetime.combine(date, time_to)),
+                    reservation_limit=form.cleaned_data["openings"],
+                    is_locked=False,
+                    auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
+                ) for date, time_from, time_to in flattened
+            ]
+
+            TimeSlot.objects.bulk_create(objects)
 
         return redirect("schedule", schedule_id)
 
-    return render(request, "app/pages/create_timeslots.html", {
-        "form": TimeslotGenerationForm()
-    })
+    return render(request, "app/pages/create_timeslots.html", {})
 
 
 @require_http_methods(["GET", "POST"])
@@ -253,6 +258,7 @@ def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {
 
     })
+
 
 def test(request):
     something = build_calendar_client(request.user)

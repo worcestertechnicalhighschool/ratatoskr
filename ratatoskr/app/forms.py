@@ -24,7 +24,7 @@ class TimeslotGenerationForm(forms.Form):
 class ReservationForm(forms.Form):
     name = forms.CharField(max_length=747)
     email = forms.EmailField()
-    comment = forms.CharField(max_length=256)
+    comment = forms.CharField(max_length=256, initial="", required=False)
     # TODO: Find out how to store phone numbers
     # phone = models.PhoneNumberField()
 

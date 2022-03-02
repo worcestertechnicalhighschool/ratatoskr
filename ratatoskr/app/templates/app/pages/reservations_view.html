@@ -1,0 +1,38 @@
+{% extends 'app/layouts/schedule_base.html' %}
+{% load static %}
+
+{% block title %}{{ schedule.name }}'s Reservations{% endblock title %}
+
+{% block schedule_head %}
+    <div class="d-inline-flex p-2">
+        <h3 class="mb-0">
+            <a href="{% url 'schedule-day' schedule.id timeslot.time_from.date|date:'c' %}" class="ms-2 me-3">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </h3>
+    </div>
+    <h3 class="d-inline-block mb-0">Reservations for {{ timeslot.time_from }} to {{ timeslot.time_to }}</h3>
+{% endblock schedule_head %}
+
+{% block schedule_body %}
+    {% if reservations %}
+    <div class="accordion" id="reservation-list">
+      {% for reservation in reservations %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}" aria-controls="collapse-{{ forloop.counter }}">
+            {{ reservation.name }}
+          </button>
+        </h2>
+        <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#reservation-list">
+          <div class="accordion-body">
+            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-center mt-3">It looks like nobody has reserved a slot yet...</p>
+    {% endif %}
+{% endblock schedule_body %}

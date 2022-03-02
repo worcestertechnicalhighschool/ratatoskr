@@ -253,6 +253,22 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
     })
 
 
+@require_http_methods(["GET", "POST"])
+def view_reservations(request, schedule_id, date, timeslot_id):
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+    if schedule.owner.id != request.user.id:
+        raise PermissionDenied()
+
+    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
+    reservations = Reservation.objects.filter(time_slot=timeslot)
+
+    return render(request, "app/pages/reservations_view.html", {
+        "timeslot": timeslot,
+        "schedule": schedule,
+        "reservations": reservations
+    })
+
+
 @require_http_methods(["GET"])
 def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {

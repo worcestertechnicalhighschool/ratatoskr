@@ -2,14 +2,14 @@
 {% load mathfilters %}
 
 {% block schedule_head %}
-    <div class="d-inline-flex">
-        <h3>
+    <div class="d-inline-flex p-2">
+        <h3 class="mb-0">
             <a href="{% url 'schedule' schedule.id %}" class="ms-2 me-3">
                 <i class="fas fa-chevron-left"></i>
             </a>
         </h3>
     </div>
-    <h3 class="d-inline-block">Available Timeslots for {{ date.date }}</h3>
+    <h3 class="d-inline-block mb-0">Available Timeslots for {{ date.date }}</h3>
 {% endblock schedule_head %}
 
 {% block schedule_body %}
@@ -20,7 +20,7 @@
                 {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
-                    title="This timeslot is is_locked"
+                    title="This timeslot is locked."
                 {% endif %}>
                 {% if schedule.owner == user %}
                     <div
@@ -36,15 +36,24 @@
                         @change="checked += $el.checked ? 1 : -1" />
                     </div>
                 {% endif %}
-                <div class="d-flex flex-grow-1">
+                <div class="d-flex flex-grow-1 align-items-center">
                     <a
                         href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}"
                         class="text-decoration-none {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}disabled{% endif %}">
-                        <h4>{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
+                        <h4 class="mb-0">{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
                     </a>
                     {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}
                         <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
                     {% endif %}
+                    {% if schedule.owner == user %}
+                    <a
+                        href="{% url 'view-reservations' schedule.id timeslot.time_from.date timeslot.id %}"
+                        style="width: 20%"
+                        class="btn btn-primary ms-auto {% if timeslot.reservation_set.count < 1 %}disabled{% endif %}">
+                        View {{ timeslot.reservation_set.count }} Reserved Slot{{ timeslot.reservation_set.count|pluralize }}
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
                     <a
                         href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}"
                         style="width: 20%"
@@ -52,6 +61,7 @@
                         Reserve ({{ timeslot.reservation_limit|sub:timeslot.reservation_set.count }} slot{{ timeslot.reservation_limit|sub:timeslot.reservation_set.count|pluralize }} left)
                         <i class="fas fa-arrow-right ms-1"></i>
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -276,6 +276,27 @@ def view_reservations(request, schedule_id, date, timeslot_id):
     })
 
 
+@require_http_methods(["GET", "POST"])
+def view_schedule_reservations(request, schedule_id):
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+    if schedule.owner.id != request.user.id:
+        raise PermissionDenied()
+
+    timeslots = TimeSlot.objects.filter(schedule=schedule)
+    reservations = dict(
+        filter(lambda elem: elem[0] >= datetime.date.today(), dict(
+                sorted(
+                    {k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date())}.items()
+                )
+            ).items()
+        )
+    )
+    print(reservations)
+
+    return render(request, "app/pages/reservations_view_schedule.html",
+                  {"schedule": schedule, "timeslots": reservations})
+
+
 @require_http_methods(["GET"])
 def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {

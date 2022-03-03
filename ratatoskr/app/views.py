@@ -283,18 +283,12 @@ def view_schedule_reservations(request, schedule_id):
         raise PermissionDenied()
 
     timeslots = TimeSlot.objects.filter(schedule=schedule)
-    reservations = dict(
-        filter(lambda elem: elem[0] >= datetime.date.today(), dict(
-                sorted(
-                    {k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date())}.items()
-                )
-            ).items()
-        )
-    )
-    print(reservations)
+    reservations = [{"timeslot": t, "reservations": Reservation.objects.filter(time_slot=t)} for t in timeslots]
+    sorted_reservations = list(filter(lambda x: len(x["reservations"]) > 0, reservations))
+    print(sorted_reservations)
 
     return render(request, "app/pages/reservations_view_schedule.html",
-                  {"schedule": schedule, "timeslots": reservations})
+                  {"schedule": schedule, "timeslots": timeslots})
 
 
 @require_http_methods(["GET"])

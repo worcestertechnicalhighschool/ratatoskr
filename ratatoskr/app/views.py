@@ -282,13 +282,32 @@ def view_schedule_reservations(request, schedule_id):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
+    if request.POST:
+        # Just in case there will be more actions in the future.
+        match request.POST["action"]:
+            case "cancel":
+                reservation = Reservation.objects.filter(pk=request.POST["id"]).get()
+                timeslot = reservation.time_slot
+                reservation.delete()
+                update_timeslot_event(timeslot)
+
     timeslots = TimeSlot.objects.filter(schedule=schedule)
-    reservations = [{"timeslot": t, "reservations": Reservation.objects.filter(time_slot=t)} for t in timeslots]
-    sorted_reservations = list(filter(lambda x: len(x["reservations"]) > 0, reservations))
-    print(sorted_reservations)
+
+    # This is the most bizarre bit of Python that I've ever written.
+    reservations = sorted(
+        {k: list(v) for k, v in groupby(
+            list(
+                filter(
+                    lambda x: len(x["reservations"]) > 0 and x["timeslot"].time_from.date() >= datetime.date.today(),
+                    [{"timeslot": t, "reservations": Reservation.objects.filter(time_slot=t)} for t in timeslots]
+                )
+            ),
+            lambda x: x["timeslot"].time_from.date()
+        )}.items()
+    )
 
     return render(request, "app/pages/reservations_view_schedule.html",
-                  {"schedule": schedule, "timeslots": timeslots})
+                  {"schedule": schedule, "timeslots": reservations})
 
 
 @require_http_methods(["GET"])

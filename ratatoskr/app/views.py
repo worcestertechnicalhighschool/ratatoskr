@@ -253,6 +253,63 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
     })
 
 
+@require_http_methods(["GET", "POST"])
+def view_reservations(request, schedule_id, date, timeslot_id):
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+    if schedule.owner.id != request.user.id:
+        raise PermissionDenied()
+
+    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
+    reservations = Reservation.objects.filter(time_slot=timeslot)
+
+    if request.POST:
+        # Just in case there will be more actions in the future.
+        match request.POST["action"]:
+            case "cancel":
+                Reservation.objects.filter(pk=request.POST["id"]).delete()
+                update_timeslot_event(timeslot)
+
+    return render(request, "app/pages/reservations_view.html", {
+        "timeslot": timeslot,
+        "schedule": schedule,
+        "reservations": reservations
+    })
+
+
+@require_http_methods(["GET", "POST"])
+def view_schedule_reservations(request, schedule_id):
+    schedule = Schedule.objects.filter(pk=schedule_id).get()
+    if schedule.owner.id != request.user.id:
+        raise PermissionDenied()
+
+    if request.POST:
+        # Just in case there will be more actions in the future.
+        match request.POST["action"]:
+            case "cancel":
+                reservation = Reservation.objects.filter(pk=request.POST["id"]).get()
+                timeslot = reservation.time_slot
+                reservation.delete()
+                update_timeslot_event(timeslot)
+
+    timeslots = TimeSlot.objects.filter(schedule=schedule)
+
+    # This is the most bizarre bit of Python that I've ever written.
+    reservations = sorted(
+        {k: list(v) for k, v in groupby(
+            list(
+                filter(
+                    lambda x: len(x["reservations"]) > 0 and x["timeslot"].time_from.date() >= datetime.date.today(),
+                    [{"timeslot": t, "reservations": Reservation.objects.filter(time_slot=t)} for t in timeslots]
+                )
+            ),
+            lambda x: x["timeslot"].time_from.date()
+        )}.items()
+    )
+
+    return render(request, "app/pages/reservations_view_schedule.html",
+                  {"schedule": schedule, "timeslots": reservations})
+
+
 @require_http_methods(["GET"])
 def reserve_confirmed(request):
     return render(request, "app/pages/reserve_confirmed.html", {

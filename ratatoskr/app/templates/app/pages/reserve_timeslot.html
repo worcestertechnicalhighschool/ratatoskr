@@ -4,22 +4,32 @@
 {% block title %}{{ schedule.name }} | Reservation{% endblock title %}
 
 {% block schedule_head %}
-    <div class="d-inline-flex">
-        <h3>
+    <div class="d-inline-flex p-2">
+        <h3 class="mb-0">
             <a href="{% url 'schedule-day' schedule.id timeslot.time_from.date|date:'c' %}" class="ms-2 me-3">
                 <i class="fas fa-chevron-left"></i>
             </a>
         </h3>
     </div>
-    <h3 class="d-inline-block">Reserving timeslot from {{ timeslot.time_from }} to {{ timeslot.time_to }}</h3>
+    <h3 class="d-inline-block mb-0">Reserving timeslot from {{ timeslot.time_from }} to {{ timeslot.time_to }}</h3>
 {% endblock schedule_head %}
 
 {% block schedule_body %}
-    <h2>Please fill in the following information</h2>
-    <h5>The email you put in will recieve a confirmation email</h5>
     <form action="" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary">Reserve</button>
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">You'll receive a confirmation email at this address.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="comments">Comments</label>
+            <input type="text" class="form-control" id="comments" name="comment">
+          </div>
+          <button class="btn btn-primary">Reserve</button>
     </form>
 {% endblock schedule_body %}

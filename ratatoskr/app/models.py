@@ -4,7 +4,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
 from googleapiclient.errors import HttpError
 
-from .calendarutil import create_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
+from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
 
 # Create your models here.
 
@@ -41,6 +41,10 @@ def on_schedule_create(sender, instance, **kwargs):
     if instance.pk is not None:
         return
     (instance.calendar_meet_data, instance.calendar_id) = create_calendar_for_schedule(instance)
+
+@receiver(models.signals.post_delete, sender=Schedule)
+def on_schedule_delete(sender, instance, **kwargs):
+    delete_calendar_for_schedule(instance)
 
 @receiver(models.signals.post_save, sender=Reservation)
 def on_reservation_create(sender, instance, **kwargs):

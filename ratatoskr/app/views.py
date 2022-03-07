@@ -34,7 +34,6 @@ def create_schedule(request):
         raise PermissionDenied()
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
-        valid = form.is_valid()
         if not form.is_valid():
             render(request, 'app/pages/create_schedule.html', {
                 "errors": form.errors
@@ -54,8 +53,7 @@ def create_schedule(request):
 
 
 @require_http_methods(["GET"])
-def schedule(request, schedule_id):
-    schedule = Schedule.objects.get(pk=schedule_id)
+def schedule(request, schedule):
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
     timeslots = dict(
@@ -94,8 +92,7 @@ def user_schedules(request, user_id):
 
 
 @require_http_methods(["GET"])
-def schedule_day(request, schedule_id, date):
-    schedule = Schedule.objects.get(pk=schedule_id)
+def schedule_day(request, schedule, date):
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
     return render(request, 'app/pages/schedule_day.html', {
@@ -106,8 +103,7 @@ def schedule_day(request, schedule_id, date):
 
 
 @require_http_methods(["POST"])
-def schedule_edit(request, schedule_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
+def schedule_edit(request, schedule):
 
     if schedule.owner != request.user:
         raise PermissionDenied()
@@ -144,8 +140,7 @@ def schedule_edit(request, schedule_id):
 
 
 @require_http_methods(["GET", "POST"])
-def create_timeslots(request, schedule_id):
-    schedule = Schedule.objects.get(pk=schedule_id)
+def create_timeslots(request, schedule):
 
     if schedule.owner != request.user:
         raise PermissionDenied()
@@ -219,15 +214,13 @@ def create_timeslots(request, schedule_id):
 
             TimeSlot.objects.bulk_create(objects)
 
-        return redirect("schedule", schedule_id)
+        return redirect("schedule", schedule.id)
 
     return render(request, "app/pages/create_timeslots.html", {})
 
 
 @require_http_methods(["GET", "POST"])
-def reserve_timeslot(request, schedule_id, date, timeslot_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
-    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
+def reserve_timeslot(request, schedule, date, timeslot):
     reservations = Reservation.objects.filter(timeslot=timeslot).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
@@ -254,12 +247,10 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
 
 
 @require_http_methods(["GET", "POST"])
-def view_reservations(request, schedule_id, date, timeslot_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
+def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
-    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
     reservations = Reservation.objects.filter(timeslot=timeslot)
 
     if request.POST:
@@ -276,8 +267,7 @@ def view_reservations(request, schedule_id, date, timeslot_id):
 
 
 @require_http_methods(["GET", "POST"])
-def view_schedule_reservations(request, schedule_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
+def view_schedule_reservations(request, schedule):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 

@@ -279,18 +279,21 @@ def view_schedule_reservations(request, schedule):
 
     timeslots = schedule.timeslot_set.all()
 
-    # This is the most bizarre bit of Python that I've ever written.
-    reservations = sorted(
-        {k: list(v) for k, v in groupby(
-            list(
-                filter(
-                    lambda x: len(x["reservations"]) > 0 and x["timeslot"].time_from.date() >= datetime.date.today(),
-                    [{"timeslot": t, "reservations": t.reservation_set.all()} for t in timeslots]
-                )
-            ),
-            lambda x: x["timeslot"].time_from.date()
-        )}.items()
-    )
+    # This groups up all reservations into 
+    # Key: Date
+    # Value: Timeslots that land on date
+    reservations = {
+        date["timeslot__time_from__date"]: Reservation.objects.filter(
+            timeslot__time_from__date=date["timeslot__time_from__date"]
+        )
+        # Get all dates
+        for date in (
+            Reservation.objects.filter(timeslot__schedule=schedule)
+                .all()
+                .values("timeslot__time_from__date")
+                .distinct()
+        )
+    }.items()
 
     return render(request, "app/pages/reservations_view_schedule.html",
                   {"schedule": schedule, "timeslots": reservations})

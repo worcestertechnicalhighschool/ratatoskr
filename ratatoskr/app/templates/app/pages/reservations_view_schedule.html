@@ -19,37 +19,35 @@
         {% for day in timeslots %}
         <h3 class="my-3">{{ day.0 }}</h3>
         <div class="accordion" id="reservation-list-{{ forloop.counter }}">
-          {% for timeslot in day.1 %}
-              {% for reservation in timeslot.reservations %}
-                {% with forloop.parentloop.parentloop.counter|concatenate:forloop.parentloop.counter|concatenate:forloop.counter as identifier %}
-                  <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading-{{ identifier }}">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ identifier }}" aria-controls="collapse-{{ identifier }}">
-                        <span class="text-muted">{{ timeslot.timeslot.time_from|date:'h:i A' }} - {{ timeslot.timeslot.time_to|date:'h:i A' }}</span>&nbsp;&nbsp;{{ reservation.name }}
-                      </button>
-                    </h2>
-                    <div id="collapse-{{ identifier }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ identifier }}" data-bs-parent="#reservation-list-{{ forloop.counter }}">
-                      <div class="accordion-body">
-                        <form method="POST" action="" class="m-0 p-0">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ reservation.id }}">
-                            <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
-                                <i class="fa-solid fa-xmark"></i> Cancel Reservation
-                            </button>
-                            <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ reservation.email }}`;">
-                                <i class="fa-solid fa-envelope"></i> Email
-                            </button><br>
-                            <p class="mt-4">
-                                <b>Name</b>&nbsp;&nbsp;{{ reservation.name }}<br>
-                                <b>Email</b>&nbsp;&nbsp;{{ reservation.email }}<br>
-                                <b>Comments</b>&nbsp;&nbsp;{{ reservation.comment }}
-                            </p>
-                        </form>
-                      </div>
-                    </div>
+          {% for reservation in day.1 %}
+            {% with reservation.id as identifier %}
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-{{ identifier }}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ identifier }}" aria-controls="collapse-{{ identifier }}">
+                    <span class="text-muted">{{ reservation.timeslot.time_from|date:'h:i A' }} - {{ reservation.timeslot.time_to|date:'h:i A' }}</span>&nbsp;&nbsp;{{ reservation.name }}
+                  </button>
+                </h2>
+                <div id="collapse-{{ identifier }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ identifier }}" data-bs-parent="#reservation-list-{{ forloop.counter }}">
+                  <div class="accordion-body">
+                    <form method="POST" action="" class="m-0 p-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ reservation.id }}">
+                        <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
+                            <i class="fa-solid fa-xmark"></i> Cancel Reservation
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ reservation.email }}`;">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </button><br>
+                        <p class="mt-4">
+                            <b>Name</b>&nbsp;&nbsp;{{ reservation.name }}<br>
+                            <b>Email</b>&nbsp;&nbsp;{{ reservation.email }}<br>
+                            <b>Comments</b>&nbsp;&nbsp;{{ reservation.comment }}
+                        </p>
+                    </form>
                   </div>
-                {% endwith %}
-              {% endfor %}
+                </div>
+              </div>
+            {% endwith %}
           {% endfor %}
         </div>
         {% endfor %}

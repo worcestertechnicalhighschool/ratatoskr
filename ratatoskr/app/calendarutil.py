@@ -98,6 +98,9 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
     return conf_data, calendar_id
 
+def delete_calendar_for_schedule(schedule) -> None:
+    client = build_calendar_client(schedule.owner)
+    client.calendars().delete(calendarId=schedule.calendar_id)
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one

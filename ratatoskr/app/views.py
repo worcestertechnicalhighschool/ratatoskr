@@ -228,7 +228,7 @@ def create_timeslots(request, schedule_id):
 def reserve_timeslot(request, schedule_id, date, timeslot_id):
     schedule = Schedule.objects.filter(pk=schedule_id).get()
     timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
-    reservations = Reservation.objects.filter(time_slot=timeslot).count()
+    reservations = Reservation.objects.filter(timeslot=timeslot).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
     if request.POST:
@@ -240,7 +240,7 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
                 "form": reservation_form
             })
         reserve = Reservation.objects.create(
-            time_slot=timeslot,
+            timeslot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
@@ -260,7 +260,7 @@ def view_reservations(request, schedule_id, date, timeslot_id):
         raise PermissionDenied()
 
     timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
-    reservations = Reservation.objects.filter(time_slot=timeslot)
+    reservations = Reservation.objects.filter(timeslot=timeslot)
 
     if request.POST:
         # Just in case there will be more actions in the future.
@@ -287,7 +287,7 @@ def view_schedule_reservations(request, schedule_id):
         match request.POST["action"]:
             case "cancel":
                 reservation = Reservation.objects.filter(pk=request.POST["id"]).get()
-                timeslot = reservation.time_slot
+                timeslot = reservation.timeslot
                 reservation.delete()
                 update_timeslot_event(timeslot)
 
@@ -299,7 +299,7 @@ def view_schedule_reservations(request, schedule_id):
             list(
                 filter(
                     lambda x: len(x["reservations"]) > 0 and x["timeslot"].time_from.date() >= datetime.date.today(),
-                    [{"timeslot": t, "reservations": Reservation.objects.filter(time_slot=t)} for t in timeslots]
+                    [{"timeslot": t, "reservations": Reservation.objects.filter(timeslot=t)} for t in timeslots]
                 )
             ),
             lambda x: x["timeslot"].time_from.date()

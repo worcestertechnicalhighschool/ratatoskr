@@ -30,7 +30,7 @@ class TimeSlot(models.Model):
 class Reservation(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=747)
-    time_slot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
+    timeslot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
     email = models.EmailField()
     comment = models.CharField(max_length=256)
 
@@ -43,14 +43,14 @@ def on_schedule_create(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Reservation)
 def on_reservation_create(sender, instance, **kwargs):
     try:
-        update_timeslot_event(instance.time_slot)
+        update_timeslot_event(instance.timeslot)
     except HttpError as e:
         instance.delete()
         raise e
 
 @receiver(models.signals.post_delete, sender=Reservation)
 def on_reservation_create(sender, instance, **kwargs):
-    update_timeslot_event(instance.time_slot)
+    update_timeslot_event(instance.timeslot)
 
 @receiver(models.signals.post_delete, sender=TimeSlot)
 def on_timeslot_delete(sender, instance, **kwargs):

@@ -13,7 +13,6 @@ from django.utils.timezone import make_aware
 from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
-from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
 
 from ratatoskr.celery import debug_task, send_mail_task
@@ -35,7 +34,6 @@ def create_schedule(request):
         raise PermissionDenied()
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
-        valid = form.is_valid()
         if not form.is_valid():
             render(request, 'app/pages/create_schedule.html', {
                 "errors": form.errors
@@ -55,9 +53,8 @@ def create_schedule(request):
 
 
 @require_http_methods(["GET"])
-def schedule(request, schedule_id):
-    schedule = Schedule.objects.get(pk=schedule_id)
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
+def schedule(request, schedule):
+    timeslots = schedule.timeslot_set.all()
 
     timeslots = dict(
         sorted(
@@ -95,9 +92,8 @@ def user_schedules(request, user_id):
 
 
 @require_http_methods(["GET"])
-def schedule_day(request, schedule_id, date):
-    schedule = Schedule.objects.get(pk=schedule_id)
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
+def schedule_day(request, schedule, date):
+    timeslots = list(schedule.timeslot_set.all())
 
     return render(request, 'app/pages/schedule_day.html', {
         "schedule": schedule,
@@ -107,8 +103,7 @@ def schedule_day(request, schedule_id, date):
 
 
 @require_http_methods(["POST"])
-def schedule_edit(request, schedule_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
+def schedule_edit(request, schedule):
 
     if schedule.owner != request.user:
         raise PermissionDenied()
@@ -120,8 +115,9 @@ def schedule_edit(request, schedule_id):
     # The "|"(union) operator effectively combines the two queries
     # I use a reduce to merge a list of queries into one singular query, using said union opeartor
     timeslot_date_query = [
-        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for
-        date in dates]
+        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24)))
+        for date in dates
+    ]
     timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
     timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
     timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
@@ -144,8 +140,7 @@ def schedule_edit(request, schedule_id):
 
 
 @require_http_methods(["GET", "POST"])
-def create_timeslots(request, schedule_id):
-    schedule = Schedule.objects.get(pk=schedule_id)
+def create_timeslots(request, schedule):
 
     if schedule.owner != request.user:
         raise PermissionDenied()
@@ -219,16 +214,14 @@ def create_timeslots(request, schedule_id):
 
             TimeSlot.objects.bulk_create(objects)
 
-        return redirect("schedule", schedule_id)
+        return redirect("schedule", schedule.id)
 
     return render(request, "app/pages/create_timeslots.html", {})
 
 
 @require_http_methods(["GET", "POST"])
-def reserve_timeslot(request, schedule_id, date, timeslot_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
-    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
-    reservations = Reservation.objects.filter(time_slot=timeslot).count()
+def reserve_timeslot(request, schedule, date, timeslot):
+    reservations = Reservation.objects.filter(timeslot=timeslot).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
     if request.POST:
@@ -239,8 +232,8 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        reserve = Reservation.objects.create(
-            time_slot=timeslot,
+        Reservation.objects.create(
+            timeslot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
@@ -254,20 +247,17 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
 
 
 @require_http_methods(["GET", "POST"])
-def view_reservations(request, schedule_id, date, timeslot_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
+def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
-    timeslot = TimeSlot.objects.filter(pk=timeslot_id).get()
-    reservations = Reservation.objects.filter(time_slot=timeslot)
+    reservations = timeslot.reservation_set.all()
 
     if request.POST:
         # Just in case there will be more actions in the future.
         match request.POST["action"]:
             case "cancel":
                 Reservation.objects.filter(pk=request.POST["id"]).delete()
-                update_timeslot_event(timeslot)
 
     return render(request, "app/pages/reservations_view.html", {
         "timeslot": timeslot,
@@ -277,8 +267,7 @@ def view_reservations(request, schedule_id, date, timeslot_id):
 
 
 @require_http_methods(["GET", "POST"])
-def view_schedule_reservations(request, schedule_id):
-    schedule = Schedule.objects.filter(pk=schedule_id).get()
+def view_schedule_reservations(request, schedule):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
@@ -286,25 +275,25 @@ def view_schedule_reservations(request, schedule_id):
         # Just in case there will be more actions in the future.
         match request.POST["action"]:
             case "cancel":
-                reservation = Reservation.objects.filter(pk=request.POST["id"]).get()
-                timeslot = reservation.time_slot
-                reservation.delete()
-                update_timeslot_event(timeslot)
+                Reservation.objects.filter(pk=request.POST["id"]).delete()
 
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
+    timeslots = schedule.timeslot_set.all()
 
-    # This is the most bizarre bit of Python that I've ever written.
-    reservations = sorted(
-        {k: list(v) for k, v in groupby(
-            list(
-                filter(
-                    lambda x: len(x["reservations"]) > 0 and x["timeslot"].time_from.date() >= datetime.date.today(),
-                    [{"timeslot": t, "reservations": Reservation.objects.filter(time_slot=t)} for t in timeslots]
-                )
-            ),
-            lambda x: x["timeslot"].time_from.date()
-        )}.items()
-    )
+    # This groups up all reservations into 
+    # Key: Date
+    # Value: Timeslots that land on date
+    reservations = {
+        date["timeslot__time_from__date"]: Reservation.objects.filter(
+            timeslot__time_from__date=date["timeslot__time_from__date"]
+        )
+        # Get all dates
+        for date in (
+            Reservation.objects.filter(timeslot__schedule=schedule)
+                .all()
+                .values("timeslot__time_from__date")
+                .distinct()
+        )
+    }.items()
 
     return render(request, "app/pages/reservations_view_schedule.html",
                   {"schedule": schedule, "timeslots": reservations})
@@ -317,6 +306,5 @@ def reserve_confirmed(request):
     })
 
 
-def test(request):
-    something = build_calendar_client(request.user)
-    return HttpResponse("aaaaa")
+def test(request, schedule):
+    return HttpResponse(schedule.id)

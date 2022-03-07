@@ -23,7 +23,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-{{ reservation.id }}">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ reservation.id }}" aria-controls="collapse-{{ reservation.id }}">
-                    <span class="text-muted">{{ reservation.timeslot.time_from|date:'h:i A' }} - {{ reservation.timeslot.time_to|date:'h:i A' }}</span>&nbsp;&nbsp;{{ reservation.name }}
+                        <span class="text-muted">{{ reservation.timeslot.time_from|date:'h:i A' }} - {{ reservation.timeslot.time_to|date:'h:i A' }}</span>&nbsp;&nbsp;{{ reservation.name }}
                     </button>
                 </h2>
                 <div id="collapse-{{ reservation.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ reservation.id }}" data-bs-parent="#reservation-list-{{ forloop.parentloop.counter }}">

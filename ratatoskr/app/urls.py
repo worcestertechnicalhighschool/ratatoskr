@@ -16,5 +16,5 @@ urlpatterns = [
     path('schedule/<int:schedule_id>/<datetime:date>/view/<int:timeslot_id>', views.view_reservations, name='view-reservations'),
     path('schedule/reservation-confirmed', views.reserve_confirmed, name='reserve-confirmed'),
     path('schedules/<int:user_id>', views.user_schedules, name='user-schedules'),
-    path('mail', views.test)
+    path('mail/<schedule:schedule>', views.test)
 ]

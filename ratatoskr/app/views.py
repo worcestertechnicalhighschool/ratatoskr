@@ -13,7 +13,6 @@ from django.utils.timezone import make_aware
 from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
-from app.calendarutil import create_calendar_for_schedule, update_timeslot_event
 from googleapiclient.errors import HttpError
 
 from ratatoskr.celery import debug_task, send_mail_task
@@ -120,8 +119,9 @@ def schedule_edit(request, schedule_id):
     # The "|"(union) operator effectively combines the two queries
     # I use a reduce to merge a list of queries into one singular query, using said union opeartor
     timeslot_date_query = [
-        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24))) for
-        date in dates]
+        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24)))
+        for date in dates
+    ]
     timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
     timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
     timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
@@ -239,7 +239,7 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        reserve = Reservation.objects.create(
+        Reservation.objects.create(
             timeslot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
@@ -267,7 +267,6 @@ def view_reservations(request, schedule_id, date, timeslot_id):
         match request.POST["action"]:
             case "cancel":
                 Reservation.objects.filter(pk=request.POST["id"]).delete()
-                update_timeslot_event(timeslot)
 
     return render(request, "app/pages/reservations_view.html", {
         "timeslot": timeslot,
@@ -286,10 +285,7 @@ def view_schedule_reservations(request, schedule_id):
         # Just in case there will be more actions in the future.
         match request.POST["action"]:
             case "cancel":
-                reservation = Reservation.objects.filter(pk=request.POST["id"]).get()
-                timeslot = reservation.timeslot
-                reservation.delete()
-                update_timeslot_event(timeslot)
+                Reservation.objects.filter(pk=request.POST["id"]).delete()
 
     timeslots = TimeSlot.objects.filter(schedule=schedule)
 
@@ -317,6 +313,5 @@ def reserve_confirmed(request):
     })
 
 
-def test(request):
-    something = build_calendar_client(request.user)
-    return HttpResponse("aaaaa")
+def test(request, schedule):
+    return HttpResponse(schedule.id)

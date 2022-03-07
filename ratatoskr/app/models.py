@@ -34,6 +34,8 @@ class Reservation(models.Model):
     email = models.EmailField()
     comment = models.CharField(max_length=256)
 
+# Signals for hooking into Google Calendar API
+
 @receiver(models.signals.pre_save, sender=Schedule)
 def on_schedule_create(sender, instance, **kwargs):
     if instance.pk is not None:

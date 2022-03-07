@@ -1,4 +1,6 @@
 from pyexpat import model
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import register_converter
 from django.db import models
 from datetime import datetime
@@ -22,8 +24,11 @@ def create_model_converter(model_class: models.Model, regex: str = DIGIT_REGEX):
             self.regex = regex
 
         def to_python(self, value):
-            return model_class.objects.get(pk=int(value))
-
+            try:
+                return model_class.objects.get(pk=int(value))
+            except ObjectDoesNotExist as e:
+                raise Http404 from e
+            
         def to_url(self, value):
             return value
     

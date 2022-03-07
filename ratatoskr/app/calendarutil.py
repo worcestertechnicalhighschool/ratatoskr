@@ -157,7 +157,11 @@ def update_timeslot_event(timeslot) -> None:
 
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
-    client.events().delete(
-        calendarId=timeslot.schedule.calendar_id,
-        eventId=build_timeslot_event_id(timeslot)
-    ).execute()
+    try:
+        client.events().delete(
+            calendarId=timeslot.schedule.calendar_id,
+            eventId=build_timeslot_event_id(timeslot)
+        ).execute()
+    except HttpError as e:
+        if e.status_code != 404:
+            raise e

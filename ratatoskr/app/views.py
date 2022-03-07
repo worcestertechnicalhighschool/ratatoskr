@@ -54,7 +54,7 @@ def create_schedule(request):
 
 @require_http_methods(["GET"])
 def schedule(request, schedule):
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
+    timeslots = schedule.timeslot_set.all()
 
     timeslots = dict(
         sorted(
@@ -93,7 +93,7 @@ def user_schedules(request, user_id):
 
 @require_http_methods(["GET"])
 def schedule_day(request, schedule, date):
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
+    timeslots = list(schedule.timeslot_set.all())
 
     return render(request, 'app/pages/schedule_day.html', {
         "schedule": schedule,
@@ -251,7 +251,7 @@ def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
-    reservations = Reservation.objects.filter(timeslot=timeslot)
+    reservations = timeslot.reservation_set.all()
 
     if request.POST:
         # Just in case there will be more actions in the future.
@@ -277,7 +277,7 @@ def view_schedule_reservations(request, schedule):
             case "cancel":
                 Reservation.objects.filter(pk=request.POST["id"]).delete()
 
-    timeslots = TimeSlot.objects.filter(schedule=schedule)
+    timeslots = schedule.timeslot_set.all()
 
     # This is the most bizarre bit of Python that I've ever written.
     reservations = sorted(
@@ -285,7 +285,7 @@ def view_schedule_reservations(request, schedule):
             list(
                 filter(
                     lambda x: len(x["reservations"]) > 0 and x["timeslot"].time_from.date() >= datetime.date.today(),
-                    [{"timeslot": t, "reservations": Reservation.objects.filter(timeslot=t)} for t in timeslots]
+                    [{"timeslot": t, "reservations": t.reservation_set.all()} for t in timeslots]
                 )
             ),
             lambda x: x["timeslot"].time_from.date()

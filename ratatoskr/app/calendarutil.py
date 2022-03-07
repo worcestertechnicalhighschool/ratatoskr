@@ -106,6 +106,12 @@ def delete_calendar_for_schedule(schedule) -> None:
 # If the event does not exist, this function will create one
 def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
+    
+    # Delete the timeslot if the timeslot has no reservations
+    if timeslot.reservation_set.count() == 0:
+        delete_timeslot_event(timeslot)
+        return
+
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
     conf_data = timeslot.schedule.calendar_meet_data
@@ -155,8 +161,12 @@ def update_timeslot_event(timeslot) -> None:
         client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
 
 
+# Deletes the event associated with the timeslot
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
+    # Timeslots with no reservations do not have an associated event
+    if timeslot.reservation_set.count() == 0:
+        return
     try:
         client.events().delete(
             calendarId=timeslot.schedule.calendar_id,

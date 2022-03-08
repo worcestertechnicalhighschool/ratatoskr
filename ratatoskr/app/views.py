@@ -171,7 +171,7 @@ def create_timeslots(request, schedule):
             # from 3/10 to 3/12
             # from 1:00 to 2:00
             # with 20 minutes for each timeslot
-            # with a 10 second buffer in between each timeslot
+            # with a 10 minutes buffer in between each timeslot
             # we would get the following result:
             # (mind the pseudo-code)
             #   3/10: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
@@ -183,7 +183,7 @@ def create_timeslots(request, schedule):
             # To create this data, we need to do some timedelta operations starting from a base time.
             # Let 1:00 be our base time.
             # Let 20 minutes be our length
-            # Let 30 minutes be the total_buffer
+            # Let 30 minutes be the total_buffer (length + buffer)
 
             # Now, Lets step through that big scary list comprehension below.
             # Starting off, we have a 0 minutes offset
@@ -196,7 +196,7 @@ def create_timeslots(request, schedule):
 
             # This will result in the following timeslots:
             # Timeslot(1:00-1:20), Timeslot(1:30-1:50)
-            
+
             # Do this for every date and now we have all the timeslots from 3/10 to 3/12
             
             # Our date range

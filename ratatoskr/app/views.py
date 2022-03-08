@@ -21,6 +21,8 @@ from ratatoskr.celery import debug_task, send_mail_task
 from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
 from .models import Schedule, TimeSlot, Reservation
 
+from django.contrib import messages
+
 
 @require_http_methods(["GET"])
 def index(request):
@@ -50,6 +52,7 @@ def create_schedule(request):
             auto_lock_after=make_aware(lock_date),
             is_locked=False,
         )
+        messages.add_message(request, messages.INFO, 'Successfully created schedule!')
         return redirect("schedule", new_schedule.id)
     return render(request, 'app/pages/create_schedule.html', {})
 
@@ -133,13 +136,15 @@ def schedule_edit(request, schedule_id):
             for timeslot in all_timeslots:
                 timeslot.is_locked = True
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) locked!')
         case "unlock":
             for timeslot in all_timeslots:
                 timeslot.is_locked = False
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) unlocked!')
         case "delete":
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) deleted!')
             timeslots.delete()
-
     return redirect(request.GET.get("next") or "/")
 
 
@@ -218,7 +223,7 @@ def create_timeslots(request, schedule_id):
             ]
 
             TimeSlot.objects.bulk_create(objects)
-
+        messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
         return redirect("schedule", schedule_id)
 
     return render(request, "app/pages/create_timeslots.html", {})
@@ -245,6 +250,7 @@ def reserve_timeslot(request, schedule_id, date, timeslot_id):
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
+        messages.add_message(request, messages.INFO, 'Timeslot reserved!')
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,

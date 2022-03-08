@@ -238,7 +238,7 @@ def create_timeslots(request, schedule):
             ]
 
             # Since we get a 2d array from this, we need to flatten it
-            objects = sum(timeslot_times.values(), [])
+            objects = sum(timeslot_times, [])
 
             TimeSlot.objects.bulk_create(objects)
 

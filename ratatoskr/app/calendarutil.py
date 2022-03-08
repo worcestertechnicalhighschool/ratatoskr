@@ -115,16 +115,24 @@ def update_timeslot_event(timeslot) -> None:
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
     conf_data = timeslot.schedule.calendar_meet_data
+    
+    # Google Calendar does some implicit time conversions for DST that do not want to cooperate with the times we give it,
+    # so we basically have to resort to this monkey buisness of naivifying these times then setting it back to EST to 
+    # *somehow* make these times convert the correct way.
+    # TODO: Abolish daylight savings time
+    east = pytz.timezone("America/New_York")
+    start = east.localize(timeslot.time_from.replace(tzinfo=None)).isoformat()
+    end = east.localize(timeslot.time_to.replace(tzinfo=None)).isoformat()
 
     event_body = {
         "summary": f"Ratatoskr: {timeslot.schedule.name}",
         "location": "Atop Yggdrasil",
         "description": "Event relayed to you by Ratatoskr 🐭.",
         "start": {
-            "dateTime": timeslot.time_from.replace(tzinfo=pytz.timezone("EST")).isoformat(),
+            "dateTime": start,
         },
         "end": {
-            "dateTime": timeslot.time_to.replace(tzinfo=pytz.timezone("EST")).isoformat(),
+            "dateTime": end,
         },
         "conferenceData": conf_data,
         "attendees": [

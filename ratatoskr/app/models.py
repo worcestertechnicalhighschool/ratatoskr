@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
+from googleapiclient.errors import HttpError
 
 from .calendarutil import create_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
 
@@ -16,10 +17,6 @@ class Schedule(models.Model):
     # These fields are filled automatically
     calendar_id = models.CharField(max_length=1024)
     calendar_meet_data = models.JSONField()
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.pk is None:
-            (self.calendar_meet_data, self.calendar_id) = create_calendar_for_schedule(self)
-        super().save(force_insert, force_update, using, update_fields)
 
 class TimeSlot(models.Model):
     id = models.AutoField(primary_key=True)
@@ -33,13 +30,29 @@ class TimeSlot(models.Model):
 class Reservation(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=747)
-    time_slot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
+    timeslot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
     email = models.EmailField()
     comment = models.CharField(max_length=256)
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.pk is None:
-            update_timeslot_event(self.time_slot, self)
-        super().save(force_insert, force_update, using, update_fields)
+
+# Signals for hooking into Google Calendar API
+
+@receiver(models.signals.pre_save, sender=Schedule)
+def on_schedule_create(sender, instance, **kwargs):
+    if instance.pk is not None:
+        return
+    (instance.calendar_meet_data, instance.calendar_id) = create_calendar_for_schedule(instance)
+
+@receiver(models.signals.post_save, sender=Reservation)
+def on_reservation_create(sender, instance, **kwargs):
+    try:
+        update_timeslot_event(instance.timeslot)
+    except HttpError as e:
+        instance.delete()
+        raise e
+
+@receiver(models.signals.post_delete, sender=Reservation)
+def on_reservation_create(sender, instance, **kwargs):
+    update_timeslot_event(instance.timeslot)
 
 @receiver(models.signals.post_delete, sender=TimeSlot)
 def on_timeslot_delete(sender, instance, **kwargs):

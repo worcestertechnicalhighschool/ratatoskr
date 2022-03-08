@@ -101,7 +101,7 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
-def update_timeslot_event(timeslot, reservation = None) -> None:
+def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
@@ -123,7 +123,7 @@ def update_timeslot_event(timeslot, reservation = None) -> None:
                 "email": r.email,
                 "displayName": r.name,
                 "comment": r.comment
-            } for r in list(timeslot.reservation_set.all()) + ([reservation] if reservation is not None else [])
+            } for r in timeslot.reservation_set.all()
         ],
         "reminders": {
             "useDefault": False,

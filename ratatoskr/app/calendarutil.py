@@ -98,24 +98,41 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
     return conf_data, calendar_id
 
+def delete_calendar_for_schedule(schedule) -> None:
+    client = build_calendar_client(schedule.owner)
+    client.calendars().delete(calendarId=schedule.calendar_id)
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
 def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
+    
+    # Delete the timeslot if the timeslot has no reservations
+    if timeslot.reservation_set.count() == 0:
+        delete_timeslot_event(timeslot)
+        return
+
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
     conf_data = timeslot.schedule.calendar_meet_data
+    
+    # Google Calendar does some implicit time conversions for DST that do not want to cooperate with the times we give it,
+    # so we basically have to resort to this monkey buisness of naivifying these times then setting it back to EST to 
+    # *somehow* make these times convert the correct way.
+    # TODO: Abolish daylight savings time
+    east = pytz.timezone("America/New_York")
+    start = east.localize(timeslot.time_from.replace(tzinfo=None)).isoformat()
+    end = east.localize(timeslot.time_to.replace(tzinfo=None)).isoformat()
 
     event_body = {
         "summary": f"Ratatoskr: {timeslot.schedule.name}",
         "location": "Atop Yggdrasil",
         "description": "Event relayed to you by Ratatoskr 🐭.",
         "start": {
-            "dateTime": timeslot.time_from.replace(tzinfo=pytz.timezone("EST")).isoformat(),
+            "dateTime": start,
         },
         "end": {
-            "dateTime": timeslot.time_to.replace(tzinfo=pytz.timezone("EST")).isoformat(),
+            "dateTime": end,
         },
         "conferenceData": conf_data,
         "attendees": [
@@ -152,9 +169,17 @@ def update_timeslot_event(timeslot) -> None:
         client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
 
 
+# Deletes the event associated with the timeslot
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
-    client.events().delete(
-        calendarId=timeslot.schedule.calendar_id,
-        eventId=build_timeslot_event_id(timeslot)
-    ).execute()
+    # Timeslots with no reservations do not have an associated event
+    if timeslot.reservation_set.count() == 0:
+        return
+    try:
+        client.events().delete(
+            calendarId=timeslot.schedule.calendar_id,
+            eventId=build_timeslot_event_id(timeslot)
+        ).execute()
+    except HttpError as e:
+        if e.status_code != 404:
+            raise e

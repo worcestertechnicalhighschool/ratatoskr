@@ -33,7 +33,7 @@
                 <div>
                     <h2><a href="{% url "schedule-day" schedule.id date %}" class="text-decoration-none"> {{ date }} </a></h2>
                     <h4>{{ data.available }} available, {{ data.taken }} Taken, From {{ data.from.time }} to {{ data.to.time }}</h4>
-                </div>
+                </div> 
                 {% if data.all_locked %}
                     <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
                 {% endif %}

@@ -79,6 +79,22 @@
         </div>
     </nav>
 
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <div class="toast position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1111111111"> {# High index because why not #}
+                    <div class="toast-header">
+                        <strong class="me-auto">{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %} {{message}} </strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <main class="container my-5 height-100">
         {% block body %}
         {% endblock body %}
@@ -96,6 +112,11 @@
             let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl)
+            })
+            toastList.forEach(toast => toast.show())
         }
     </script>
     </body>

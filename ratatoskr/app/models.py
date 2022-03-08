@@ -55,7 +55,7 @@ def on_reservation_create(sender, instance, **kwargs):
         raise e
 
 @receiver(models.signals.post_delete, sender=Reservation)
-def on_reservation_create(sender, instance, **kwargs):
+def on_reservation_delete(sender, instance, **kwargs):
     update_timeslot_event(instance.timeslot)
 
 @receiver(models.signals.post_delete, sender=TimeSlot)

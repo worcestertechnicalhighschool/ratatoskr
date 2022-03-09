@@ -30,7 +30,11 @@
                         </div>
                         <div class="mb-3 col">
                             <label for="to_date" class="form-label">Date To</label>
-                            <input v-if="!multipleTimeslots" v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
+                            <template v-if="!multipleTimeslots">
+                                {% comment %} The disabled date field is just for show {% endcomment %}
+                                <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
+                                <input v-model="fromDate" type="hidden" class="form-control" id="to_date" name="to_date">
+                            </template>
                             <input v-else type="date" class="form-control" id="to_date" name="to_date">
                         </div>
                     </div>
@@ -59,7 +63,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="openings" class="form-label">Openings</label>
-                        <input type="number" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings">
+                        <input type="number" min="0" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings">
                         <div id="openingsHelp" class="form-text">The number of openings for each timeslot.</div>
                     </div>
 

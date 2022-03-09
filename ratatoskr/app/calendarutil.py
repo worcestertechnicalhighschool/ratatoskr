@@ -172,14 +172,12 @@ def update_timeslot_event(timeslot) -> None:
 # Deletes the event associated with the timeslot
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
-    # Timeslots with no reservations do not have an associated event
-    if timeslot.reservation_set.count() == 0:
-        return
+    eventid = build_timeslot_event_id(timeslot)
     try:
         client.events().delete(
             calendarId=timeslot.schedule.calendar_id,
             eventId=build_timeslot_event_id(timeslot)
         ).execute()
     except HttpError as e:
-        if e.status_code != 404:
+        if e.status_code not in [404, 410]: # Not Found, Deleted
             raise e

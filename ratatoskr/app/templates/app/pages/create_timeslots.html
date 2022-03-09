@@ -48,12 +48,12 @@
                     <div v-show="multipleTimeslots">
                         <div class="mb-3">
                             <label for="timeslot_length" class="form-label">Timeslot Length</label>
-                            <input type="number" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length" v-bind:disabled="multipleTimeslots">
+                            <input type="number" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length" v-bind:disabled="!multipleTimeslots">
                             <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
                         </div>
                         <div class="mb-3">
                             <label for="timeslot_break" class="form-label">Timeslot Break</label>
-                            <input type="number" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break" v-bind:disabled="multipleTimeslots">
+                            <input type="number" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break" v-bind:disabled="!multipleTimeslots">
                             <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
                         </div>
                     </div>

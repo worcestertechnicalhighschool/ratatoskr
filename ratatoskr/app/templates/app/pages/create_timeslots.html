@@ -16,7 +16,7 @@
             <div class="card-body">
                 <form method="POST" v-scope="{ multipleTimeslots: false }">
                     {% csrf_token %}
-                    <div class="row g-2">
+                    <div class="row g-2" v-scope="{ fromDate: '' }">
                         <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="multiple_timeslots" @click="multipleTimeslots = $el.checked" name="multiple_timeslots">
                             <label class="form-check-label" for="multiple_timeslots">
@@ -24,23 +24,15 @@
                                 <template v-else>Single Timeslot</template>
                             </label>
                         </div>
-                        <template v-if="multipleTimeslots">
-                            <div class="mb-3 col">
-                                <label for="from_date" class="form-label">Date From</label>
-                                <input type="date" class="form-control" id="from_date" name="from_date">
-                            </div>
-                            <div class="mb-3 col">
-                                <label for="to_date" class="form-label">Date To</label>
-                                <input type="date" class="form-control" id="to_date" name="to_date">
-                            </div>
-                        </template>
-                        <template v-else v-scope="{ fromDate: '' }">
-                            <input type="hidden" class="form-control" id="to_date" name="to_date" v-model="fromDate">
-                            <div class="mb-3">
-                                <label for="from_date" class="form-label">Date From</label>
-                                <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate">
-                            </div>
-                        </template>
+                        <div class="mb-3 col">
+                            <label for="from_date" class="form-label">Date From</label>
+                            <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate">
+                        </div>
+                        <div class="mb-3 col">
+                            <label for="to_date" class="form-label">Date To</label>
+                            <input v-if="!multipleTimeslots" v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
+                            <input v-else type="date" class="form-control" id="to_date" name="to_date">
+                        </div>
                     </div>
                     <div class="row g-2">
                         <div class="mb-3 col">

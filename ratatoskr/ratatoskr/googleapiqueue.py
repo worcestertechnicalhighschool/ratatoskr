@@ -6,7 +6,12 @@ __queue = []
 __busy_wait_thread = None
 
 def __spawn_daemon(lamb):
-    Thread(target=lamb, daemon=True).start()
+    def try_inner():
+        try:
+            lamb()
+        except:
+            pass
+    Thread(target=try_inner, daemon=True).start()
 
 def __busy_waiter():
     global __queue
@@ -16,12 +21,13 @@ def __busy_waiter():
         if len(__queue) == 0:
             continue
         print("Handled")
-        __spawn_daemon(lambda: __queue[:1][0].execute)
-        __queue = __queue[1:]
+        __spawn_daemon(lambda: __queue[0].execute())
+        __queue = __queue[1:]        
         
 
 def add_request_to_queue(req):
     __queue.append(req)
 
 if __busy_wait_thread is None:
-    __busy_wait_thread = Thread(target=__busy_waiter, daemon=True).start()
+    __busy_wait_thread = Thread(target=__busy_waiter, daemon=True)
+    __busy_wait_thread.start()

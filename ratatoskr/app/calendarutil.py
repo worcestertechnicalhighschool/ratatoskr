@@ -11,6 +11,7 @@ from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
+from ratatoskr.googleapiqueue import add_request_to_queue
 from numpy import byte
 
 # Notes:
@@ -182,11 +183,9 @@ def update_timeslot_event(timeslot) -> None:
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     eventid = build_timeslot_event_id(timeslot)
-    try:
+    add_request_to_queue(
         client.events().delete(
             calendarId=timeslot.schedule.calendar_id,
             eventId=build_timeslot_event_id(timeslot)
-        ).execute()
-    except HttpError as e:
-        if e.status_code not in [404, 410]: # Not Found, Deleted
-            raise e
+        )
+    )

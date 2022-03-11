@@ -24,4 +24,4 @@ def add_request_to_queue(req):
     __queue.append(req)
 
 if __busy_wait_thread is None:
-    Thread(target=__busy_waiter, daemon=True).start()
+    __busy_wait_thread = Thread(target=__busy_waiter, daemon=True).start()

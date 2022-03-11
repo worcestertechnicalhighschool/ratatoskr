@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
 from googleapiclient.errors import HttpError
+from threading import Thread
 
 from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
 
@@ -35,6 +36,8 @@ class Reservation(models.Model):
     comment = models.CharField(max_length=256)
 
 # Signals for hooking into Google Calendar API
+
+
 
 @receiver(models.signals.pre_save, sender=Schedule)
 def on_schedule_create(sender, instance, **kwargs):

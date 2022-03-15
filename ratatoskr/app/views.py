@@ -245,8 +245,6 @@ def create_timeslots(request, schedule):
         messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
         return redirect("schedule", schedule.id)
 
-
-
     return render(request, "app/pages/create_timeslots.html", {})
 
 

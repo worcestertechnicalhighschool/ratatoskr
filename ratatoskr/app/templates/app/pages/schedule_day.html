@@ -40,7 +40,7 @@
                         @change="checked += $el.checked ? 1 : -1" />
                     </div>
                 {% endif %}
-                <div class="d-flex flex-grow-1 align-items-center">
+                <div class="d-flex flex-column flex-lg-row flex-grow-1 align-items-center">
                     {% if schedule.owner == user %}
                         <a
                             href="{% url 'view-reservations' schedule.id timeslot.time_from.date timeslot.id %}"
@@ -54,8 +54,7 @@
                         {% endif %}
                         <a
                             href="{% url 'view-reservations' schedule.id timeslot.time_from.date timeslot.id %}"
-                            style="width: 20%"
-                            class="btn btn-primary ms-auto {% if timeslot.reservation_set.count < 1 %}disabled{% endif %}">
+                            class="btn btn-primary ms-lg-auto mt-3 mt-lg-0 {% if timeslot.reservation_set.count < 1 %}disabled{% endif %}">
                             View {{ timeslot.reservation_set.count }} Reserved Slot{{ timeslot.reservation_set.count|pluralize }}
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>
@@ -72,8 +71,7 @@
                         {% endif %}
                         <a
                             href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}"
-                            style="width: 20%"
-                            class="btn btn-primary ms-auto {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}disabled{% endif %}">
+                            class="btn btn-primary ms-lg-auto mt-3 mt-lg-0 {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}disabled{% endif %}">
                             Reserve ({{ timeslot.reservation_limit|sub:timeslot.reservation_set.count }} slot{{ timeslot.reservation_limit|sub:timeslot.reservation_set.count|pluralize }} left)
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>

@@ -79,7 +79,7 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
                 "requestId": str(uuid.uuid4()),
                 # Comment out the line below for testing with a student account.
                 # Students cannot create Google Meets, therefore this returns an error from the API.
-                "conferenceSolutionKey": {"type": "hangoutsMeet"},
+                #"conferenceSolutionKey": {"type": "hangoutsMeet"},
             }
         },
         "attendees": [],
@@ -91,8 +91,8 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     event = client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=dummy_event_body).execute()
 
     # Commenting out the line below and uncommenting conf_data = {} will allow student accounts to use for testing.
-    conf_data = event["conferenceData"]
-    # conf_data = {}
+    #conf_data = event["conferenceData"]
+    conf_data = {}
 
     # Delete the dummy event, we don't need it
     client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()

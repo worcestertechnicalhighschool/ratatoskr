@@ -2,7 +2,7 @@ import datetime
 from functools import reduce
 from io import UnsupportedOperation
 from itertools import groupby
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.core.mail import send_mail
 
 import pandas as pd
@@ -57,7 +57,10 @@ def create_schedule(request):
 
 @require_http_methods(["GET"])
 def schedule(request, schedule):
-    timeslots = schedule.timeslot_set.all()
+    limit_days = 30
+    if schedule.owner == request.user:
+        limit_days = 180
+    timeslots = schedule.timeslot_set.filter(time_from__range=(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=limit_days)))
 
     timeslots = dict(
         sorted(
@@ -84,14 +87,11 @@ def schedule(request, schedule):
 
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
-    if not request.user.is_authenticated:
-        raise PermissionDenied()
-    else:
-        return render(request, "app/pages/schedules.html", {
-            "schedules": Schedule.objects.filter(owner=user_id),
-            "is_owner": request.user.id == user_id,
-            "owner": User.objects.get(id=user_id)
-        })
+    return render(request, "app/pages/schedules.html", {
+        "schedules": Schedule.objects.filter(owner=user_id),
+        "is_owner": request.user.id == user_id,
+        "owner": User.objects.get(id=user_id)
+    })
 
 
 @require_http_methods(["GET"])
@@ -330,8 +330,25 @@ def view_schedule_reservations(request, schedule):
 
 
 @require_http_methods(["GET"])
+def confirm_reservation(request, reservation):
+    if Reservation.objects.filter(pk=reservation).count() != 1:
+        return HttpResponseNotFound()
+
+    reservation = Reservation.objects.filter(pk=reservation).get()
+
+    if reservation.confirmed:
+        messages.add_message(request, messages.WARNING, 'Reservation already confirmed.')
+    else:
+        reservation.confirmed = True
+        reservation.save()
+        messages.add_message(request, messages.SUCCESS, 'Reservation confirmed!')
+
+    return render(request, "app/pages/reserve_confirmed.html", {})
+
+
+@require_http_methods(["GET"])
 def reserve_confirmed(request):
-    return render(request, "app/pages/reserve_confirmed.html", {
+    return render(request, "app/pages/reserve_created.html", {
 
     })
 

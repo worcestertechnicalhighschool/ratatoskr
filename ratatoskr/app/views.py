@@ -250,7 +250,7 @@ def create_timeslots(request, schedule):
 
 @require_http_methods(["GET", "POST"])
 def reserve_timeslot(request, schedule, date, timeslot):
-    reservations = Reservation.objects.filter(timeslot=timeslot).count()
+    reservations = Reservation.objects.filter(timeslot=timeslot, confirmed=True).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
     if request.POST:
@@ -335,9 +335,11 @@ def confirm_reservation(request, reservation):
         return HttpResponseNotFound()
 
     reservation = Reservation.objects.filter(pk=reservation).get()
-
     if reservation.confirmed:
         messages.add_message(request, messages.WARNING, 'Reservation already confirmed.')
+    elif len(reservation.timeslot.reservation_set.filter(confirmed=True)) >= reservation.timeslot.reservation_limit:
+        messages.add_message(request, messages.ERROR, 'Reservation has been taken!')
+        return render(request, "app/pages/reserve_failed.html", {})
     else:
         reservation.confirmed = True
         reservation.save()

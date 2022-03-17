@@ -23,9 +23,9 @@ from numpy import byte
 # comply with the base32 rule for event ids
 
 if ratatoskr.settings.DEBUG:
-    CALENDAR_ID_SUFFIX = "meetings.techhigh.us"
-else:
     CALENDAR_ID_SUFFIX = "debug.meetings.techhigh.us"
+else:
+    CALENDAR_ID_SUFFIX = "meetings.techhigh.us"
 
 CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 

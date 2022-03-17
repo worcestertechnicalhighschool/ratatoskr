@@ -2,4 +2,4 @@
 <h1 style="font-family: 'Arial', sans-serif;">Ratatoskr</h1>
 <hr>
 <p style="font-family: 'Arial', sans-serif;">Hello, {{ name }}! Please confirm your reservation with {{ schedule.owner.get_full_name }} with the link below.</p>
-<a style="font-family: 'Arial', sans-serif; font-weight: bold; text-decoration: none;" href="http://{{ request.get_host() }}{% url 'confirm-reservation' %}">Confirm Reservation</a>
+<a style="font-family: 'Arial', sans-serif; font-weight: bold; text-decoration: none;" href="http://{{ request.get_host() }}{% url 'confirm-reservation' id %}">Confirm Reservation</a>

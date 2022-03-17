@@ -73,8 +73,9 @@ def schedule(request, schedule):
         k: {
             "from": v[0].time_from,
             "to": v[-1].time_to,
-            "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]),
+            "available": sum([i.reservation_limit for i in v]) - sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "taken": sum([i.reservation_set.count() for i in v]),
+            "confirmed": sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
     }
@@ -281,7 +282,7 @@ def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
-    reservations = timeslot.reservation_set.all()
+    reservations = timeslot.reservation_set.filter(confirmed=True)
 
     if request.POST:
         # Just in case there will be more actions in the future.
@@ -314,11 +315,12 @@ def view_schedule_reservations(request, schedule):
     # Value: Timeslots that land on date
     reservations = {
         date["timeslot__time_from__date"]: Reservation.objects.filter(
-            timeslot__time_from__date=date["timeslot__time_from__date"]
+            timeslot__time_from__date=date["timeslot__time_from__date"],
+            confirmed=True
         )
         # Get all dates
         for date in (
-            Reservation.objects.filter(timeslot__schedule=schedule)
+            Reservation.objects.filter(timeslot__schedule=schedule, confirmed=True)
                 .all()
                 .values("timeslot__time_from__date")
                 .distinct()

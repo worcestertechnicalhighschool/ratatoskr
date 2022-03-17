@@ -1,5 +1,6 @@
 import base64
 import datetime
+import ratatoskr.settings
 import hashlib
 from django.utils.timezone import make_aware
 from pydoc import cli
@@ -20,7 +21,12 @@ from numpy import byte
 
 # Effectively we construct a string that identifies the timeslot and pass it through SHA-1 to reduce the chance of collision and...
 # comply with the base32 rule for event ids
-CALENDAR_ID_SUFFIX = "ratatoskr.techhigh.us"
+
+if ratatoskr.settings.DEBUG:
+    CALENDAR_ID_SUFFIX = "debug.meetings.techhigh.us"
+else:
+    CALENDAR_ID_SUFFIX = "meetings.techhigh.us"
+
 CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 
 
@@ -106,11 +112,6 @@ def delete_calendar_for_schedule(schedule) -> None:
 # If the event does not exist, this function will create one
 def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
-    
-    # Delete the timeslot if the timeslot has no reservations
-    if timeslot.reservation_set.count() == 0:
-        delete_timeslot_event(timeslot)
-        return
 
     calendar_id = timeslot.schedule.calendar_id
     event_id = build_timeslot_event_id(timeslot)
@@ -120,9 +121,17 @@ def update_timeslot_event(timeslot) -> None:
     # so we basically have to resort to this monkey buisness of naivifying these times then setting it back to EST to 
     # *somehow* make these times convert the correct way.
     # TODO: Abolish daylight savings time
-    east = pytz.timezone("America/New_York")
-    start = east.localize(timeslot.time_from.replace(tzinfo=None)).isoformat()
-    end = east.localize(timeslot.time_to.replace(tzinfo=None)).isoformat()
+
+    if timeslot.reservation_set.count() != 0:
+        # Normal time if timeslot has reservations
+        east = pytz.timezone("America/New_York")
+        start = east.localize(timeslot.time_from.replace(tzinfo=None)).isoformat()
+        end = east.localize(timeslot.time_to.replace(tzinfo=None)).isoformat()
+    else:
+        # Hide event if there are no reservations
+        utc = pytz.timezone("UTC")
+        start = utc.localize(datetime.datetime(1970, 1, 1)).isoformat()
+        end = utc.localize(datetime.datetime(1970, 1, 1)).isoformat()
 
     event_body = {
         "summary": f"Ratatoskr: {timeslot.schedule.name}",

@@ -1,10 +1,10 @@
 {% extends 'app/layouts/schedule_listing.html' %}
 
 {% block schedule_head %}
-    <div class="d-flex align-items-center p-2">
+    <div class="d-flex flex-column flex-lg-row align-items-center p-2">
         <h3 class="mb-0">Available Days</h3>
         {% if schedule.owner == user %}
-            <div class="ms-auto">
+            <div class="ms-lg-auto mt-2 mt-lg-0">
                 <a class="btn btn-primary" href="{% url 'view-schedule-reservations' schedule.id %}">View Reservations</a>
                 <a class="btn btn-primary" href="{% url "create-timeslots" schedule.id %}">+ Add Timeslots</a>
             </div>
@@ -32,7 +32,7 @@
                 {% endif %}
                 <div>
                     <h2><a href="{% url "schedule-day" schedule.id date %}" class="text-decoration-none"> {{ date }} </a></h2>
-                    <h4>{{ data.available }} available, {{ data.taken }} Taken, From {{ data.from.time }} to {{ data.to.time }}</h4>
+                    <h4>{{ data.available }} available, {{ data.confirmed }} taken, from {{ data.from.time }} to {{ data.to.time }}</h4>
                 </div> 
                 {% if data.all_locked %}
                     <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>

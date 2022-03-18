@@ -21,7 +21,7 @@
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="This timeslot is locked."
-                {% elif timeslot.reservation_set.count >= timeslot.reservation_limit %}
+                {% elif timeslot|available_count < 1 %}
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="This timeslot is full."
@@ -40,41 +40,39 @@
                         @change="checked += $el.checked ? 1 : -1" />
                     </div>
                 {% endif %}
-                <div class="d-flex flex-grow-1 align-items-center">
+                <div class="d-flex flex-column flex-lg-row flex-grow-1 align-items-center">
                     {% if schedule.owner == user %}
                         <a
                             href="{% url 'view-reservations' schedule.id timeslot.time_from.date timeslot.id %}"
-                            class="text-decoration-none {% if timeslot.reservation_set.count < 1 %}disabled{% endif %}">
+                            class="text-decoration-none {% if timeslot|confirmed_count < 1 %}disabled{% endif %}">
                             <h4 class="mb-0">{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
                         </a>
                         {% if timeslot.is_locked %}
                             <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
-                        {% elif timeslot.reservation_set.count >= timeslot.reservation_limit %}
+                        {% elif timeslot|available_count < 1 %}
                             <i class="fa-solid fa-users-slash d-inline-block h2 my-auto ms-3 text-secondary"></i>
                         {% endif %}
                         <a
                             href="{% url 'view-reservations' schedule.id timeslot.time_from.date timeslot.id %}"
-                            style="width: 20%"
-                            class="btn btn-primary ms-auto {% if timeslot.reservation_set.count < 1 %}disabled{% endif %}">
-                            View {{ timeslot.reservation_set.count }} Reserved Slot{{ timeslot.reservation_set.count|pluralize }}
+                            class="btn btn-primary ms-lg-auto mt-3 mt-lg-0 {% if timeslot|confirmed_count < 1 %}disabled{% endif %}">
+                            View {{ timeslot|confirmed_count }} Reserved Slot{{ timeslot|confirmed_count|pluralize }}
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     {% else %}
                         <a
                             href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}"
-                            class="text-decoration-none {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}disabled{% endif %}">
+                            class="text-decoration-none {% if timeslot.is_locked or timeslot|available_count < 1 %}disabled{% endif %}">
                             <h4 class="mb-0">{{ timeslot.time_from.time }} to {{ timeslot.time_to.time }}</h4>
                         </a>
                         {% if timeslot.is_locked %}
                             <i class="fas fa-lock d-inline-block h2 my-auto ms-3 text-secondary"></i>
-                        {% elif timeslot.reservation_set.count >= timeslot.reservation_limit %}
+                        {% elif timeslot|available_count < 1 %}
                             <i class="fa-solid fa-users-slash d-inline-block h2 my-auto ms-3 text-secondary"></i>
                         {% endif %}
                         <a
                             href="{% url 'reserve-timeslot' schedule.id timeslot.time_from.date timeslot.id %}"
-                            style="width: 20%"
-                            class="btn btn-primary ms-auto {% if timeslot.is_locked or timeslot.reservation_set.count >= timeslot.reservation_limit %}disabled{% endif %}">
-                            Reserve ({{ timeslot.reservation_limit|sub:timeslot.reservation_set.count }} slot{{ timeslot.reservation_limit|sub:timeslot.reservation_set.count|pluralize }} left)
+                            class="btn btn-primary ms-lg-auto mt-3 mt-lg-0 {% if timeslot.is_locked or timeslot|available_count < 1 %}disabled{% endif %}">
+                            Reserve ({{ timeslot|available_count }} slot{{ timeslot|available_count|pluralize }} left)
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     {% endif %}

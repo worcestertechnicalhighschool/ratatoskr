@@ -1,0 +1,26 @@
+{% extends 'app/layouts/base.html' %}
+{% load static %}
+
+{% block title %}Cancellation{% endblock title %}
+
+{% block body %}
+    <div class='text-center'>
+        <h1>Cancel Reservation</h1>
+        <p class="mw-75">Are you sure you want to cancel your reservation? This action cannot be undone.</p>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mt-2">Reservation Details</h3>
+            </div>
+            <div class="card-body">
+                <h4>Reservation for <span class="fw-bold">{{ reservation.timeslot.schedule.name }}</span> at <span class="fw-bold">{{ reservation.timeslot.time_from }}</span></h4>
+            </div>
+        </div>
+        <br>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <button type="button" class="btn btn-light" onclick="window.location.href='/';">Nevermind</button>
+            <button type="submit" class="btn btn-danger">Yes</button>
+        </form>
+    </div>
+{% endblock body %}

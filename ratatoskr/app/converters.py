@@ -7,6 +7,7 @@ from datetime import datetime
 
 from .models import Reservation, Schedule, TimeSlot
 
+
 class DateConverter:
     regex = '\d{4}-\d{2}-\d{2}'
 
@@ -16,8 +17,11 @@ class DateConverter:
     def to_url(self, value):
         return value
 
+
 # Converter class factory for creating URL converter classes
 DIGIT_REGEX = "\d+"
+
+
 def create_model_converter(model_class: models.Model, regex: str = DIGIT_REGEX):
     class Converter:
         def __init__(self):
@@ -25,14 +29,15 @@ def create_model_converter(model_class: models.Model, regex: str = DIGIT_REGEX):
 
         def to_python(self, value):
             try:
-                return model_class.objects.get(pk=int(value))
+                return model_class.objects.get(pk=value)
             except ObjectDoesNotExist as e:
                 raise Http404 from e
-            
+
         def to_url(self, value):
             return value
-    
+
     return Converter
+
 
 register_converter(DateConverter, 'datetime')
 register_converter(create_model_converter(Schedule), 'schedule')

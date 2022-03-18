@@ -333,10 +333,6 @@ def view_schedule_reservations(request, schedule):
 
 @require_http_methods(["GET"])
 def confirm_reservation(request, reservation):
-    if Reservation.objects.filter(pk=reservation).count() != 1:
-        return HttpResponseNotFound()
-
-    reservation = Reservation.objects.filter(pk=reservation).get()
     if reservation.confirmed:
         messages.add_message(request, messages.WARNING, 'Reservation already confirmed.')
     elif len(reservation.timeslot.reservation_set.filter(confirmed=True)) >= reservation.timeslot.reservation_limit:
@@ -348,6 +344,15 @@ def confirm_reservation(request, reservation):
         messages.add_message(request, messages.SUCCESS, 'Reservation confirmed!')
 
     return render(request, "app/pages/reserve_confirmed.html", {})
+
+
+@require_http_methods(["GET", "POST"])
+def cancel_reservation(request, reservation):
+    if request.POST:
+        reservation.delete()
+        messages.add_message(request, messages.SUCCESS, 'Reservation cancelled.')
+        return redirect("/")
+    return render(request, "app/pages/reserve_cancelled.html", {"reservation": reservation})
 
 
 @require_http_methods(["GET"])

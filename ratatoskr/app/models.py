@@ -5,7 +5,9 @@ from django.dispatch import receiver
 from googleapiclient.errors import HttpError
 from threading import Thread
 
-from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
+from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, \
+    update_timeslot_event
+
 
 # Create your models here.
 
@@ -19,6 +21,7 @@ class Schedule(models.Model):
     calendar_id = models.CharField(max_length=1024)
     calendar_meet_data = models.JSONField()
 
+
 class TimeSlot(models.Model):
     id = models.AutoField(primary_key=True)
     schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
@@ -28,12 +31,15 @@ class TimeSlot(models.Model):
     is_locked = models.BooleanField()
     reservation_limit = models.IntegerField()
 
+
 class Reservation(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=747)
     timeslot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
     email = models.EmailField()
     comment = models.CharField(max_length=256)
+    confirmed = models.BooleanField(default=False)
+
 
 # Signals for hooking into Google Calendar API
 
@@ -45,9 +51,11 @@ def on_schedule_create(sender, instance, **kwargs):
         return
     (instance.calendar_meet_data, instance.calendar_id) = create_calendar_for_schedule(instance)
 
+
 @receiver(models.signals.post_delete, sender=Schedule)
 def on_schedule_delete(sender, instance, **kwargs):
     delete_calendar_for_schedule(instance)
+
 
 @receiver(models.signals.post_save, sender=Reservation)
 def on_reservation_create(sender, instance, **kwargs):
@@ -57,9 +65,11 @@ def on_reservation_create(sender, instance, **kwargs):
         instance.delete()
         raise e
 
+
 @receiver(models.signals.post_delete, sender=Reservation)
 def on_reservation_delete(sender, instance, **kwargs):
     update_timeslot_event(instance.timeslot)
+
 
 @receiver(models.signals.post_delete, sender=TimeSlot)
 def on_timeslot_delete(sender, instance, **kwargs):

@@ -14,6 +14,8 @@ urlpatterns = [
     path('schedule/<schedule:schedule>/create-timeslots', views.create_timeslots, name='create-timeslots'),
     path('schedule/<schedule:schedule>/<datetime:date>/reserve/<timeslot:timeslot>', views.reserve_timeslot, name='reserve-timeslot'),
     path('schedule/<schedule:schedule>/<datetime:date>/view/<timeslot:timeslot>', views.view_reservations, name='view-reservations'),
+    path('reservation/<reservation:reservation>/confirm', views.confirm_reservation, name='confirm-reservation'),
+    path('reservation/<reservation:reservation>/cancel', views.cancel_reservation, name='cancel-reservation'),
     path('schedule/reservation-confirmed', views.reserve_confirmed, name='reserve-confirmed'),
     path('schedules/<int:user_id>', views.user_schedules, name='user-schedules'),
     path('mail/<schedule:schedule>', views.test)

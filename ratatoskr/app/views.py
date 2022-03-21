@@ -2,7 +2,7 @@ import datetime
 from functools import reduce
 from io import UnsupportedOperation
 from itertools import groupby
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.core.mail import send_mail
 
 import pandas as pd
@@ -57,7 +57,10 @@ def create_schedule(request):
 
 @require_http_methods(["GET"])
 def schedule(request, schedule):
-    timeslots = schedule.timeslot_set.all()
+    limit_days = 30
+    if schedule.owner == request.user:
+        limit_days = 180
+    timeslots = schedule.timeslot_set.filter(time_from__range=(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=limit_days)))
 
     timeslots = dict(
         sorted(
@@ -70,8 +73,9 @@ def schedule(request, schedule):
         k: {
             "from": v[0].time_from,
             "to": v[-1].time_to,
-            "available": sum([i.reservation_limit for i in v]) - sum([i.reservation_set.count() for i in v]),
+            "available": sum([i.reservation_limit for i in v]) - sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "taken": sum([i.reservation_set.count() for i in v]),
+            "confirmed": sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "all_locked": all([x.is_locked for x in v])
         } for k, v in timeslots.items()
     }
@@ -84,14 +88,11 @@ def schedule(request, schedule):
 
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
-    if not request.user.is_authenticated:
-        raise PermissionDenied()
-    else:
-        return render(request, "app/pages/schedules.html", {
-            "schedules": Schedule.objects.filter(owner=user_id),
-            "is_owner": request.user.id == user_id,
-            "owner": User.objects.get(id=user_id)
-        })
+    return render(request, "app/pages/schedules.html", {
+        "schedules": Schedule.objects.filter(owner=user_id),
+        "is_owner": request.user.id == user_id,
+        "owner": User.objects.get(id=user_id)
+    })
 
 
 @require_http_methods(["GET"])
@@ -245,14 +246,12 @@ def create_timeslots(request, schedule):
         messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
         return redirect("schedule", schedule.id)
 
-
-
     return render(request, "app/pages/create_timeslots.html", {})
 
 
 @require_http_methods(["GET", "POST"])
 def reserve_timeslot(request, schedule, date, timeslot):
-    reservations = Reservation.objects.filter(timeslot=timeslot).count()
+    reservations = Reservation.objects.filter(timeslot=timeslot, confirmed=True).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
     if request.POST:
@@ -283,7 +282,7 @@ def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
-    reservations = timeslot.reservation_set.all()
+    reservations = timeslot.reservation_set.filter(confirmed=True)
 
     if request.POST:
         # Just in case there will be more actions in the future.
@@ -316,11 +315,12 @@ def view_schedule_reservations(request, schedule):
     # Value: Timeslots that land on date
     reservations = {
         date["timeslot__time_from__date"]: Reservation.objects.filter(
-            timeslot__time_from__date=date["timeslot__time_from__date"]
+            timeslot__time_from__date=date["timeslot__time_from__date"],
+            confirmed=True
         )
         # Get all dates
         for date in (
-            Reservation.objects.filter(timeslot__schedule=schedule)
+            Reservation.objects.filter(timeslot__schedule=schedule, confirmed=True)
                 .all()
                 .values("timeslot__time_from__date")
                 .distinct()
@@ -332,8 +332,32 @@ def view_schedule_reservations(request, schedule):
 
 
 @require_http_methods(["GET"])
+def confirm_reservation(request, reservation):
+    if reservation.confirmed:
+        messages.add_message(request, messages.WARNING, 'Reservation already confirmed.')
+    elif len(reservation.timeslot.reservation_set.filter(confirmed=True)) >= reservation.timeslot.reservation_limit:
+        messages.add_message(request, messages.ERROR, 'Reservation has been taken!')
+        return render(request, "app/pages/reserve_failed.html", {})
+    else:
+        reservation.confirmed = True
+        reservation.save()
+        messages.add_message(request, messages.SUCCESS, 'Reservation confirmed!')
+
+    return render(request, "app/pages/reserve_confirmed.html", {})
+
+
+@require_http_methods(["GET", "POST"])
+def cancel_reservation(request, reservation):
+    if request.POST:
+        reservation.delete()
+        messages.add_message(request, messages.SUCCESS, 'Reservation cancelled.')
+        return redirect("/")
+    return render(request, "app/pages/reserve_cancelled.html", {"reservation": reservation})
+
+
+@require_http_methods(["GET"])
 def reserve_confirmed(request):
-    return render(request, "app/pages/reserve_confirmed.html", {
+    return render(request, "app/pages/reserve_created.html", {
 
     })
 

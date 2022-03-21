@@ -20,7 +20,7 @@ def __busy_waiter():
         if len(__queue) == 0:
             continue
         __spawn_daemon(lambda: __queue[0].execute())
-        __queue = __queue[1:]        
+        __queue = __queue[1:]
         
 
 def add_request_to_queue(req):

@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block body %}
-    <p class="text-center fs-1 fw-bold">404 Error</p>
-    <p class="text-center fs-3 fw-light">Page not found.</p>
-    <a class="d-flex justify-content-center text-center fs-3 fw-light" href = {% url 'index' %}>Go home?:</p>
+    <p class="text-center text-danger fs-1 fw-bold">404 Error</p>
+    <p class="text-center text-danger fs-3 fw-light">Page not found.</p>
+    <p class="text-center fs-3 fw-light"> <a href = {% url 'index' %}>Go home?</a></p>
 {% endblock body %}

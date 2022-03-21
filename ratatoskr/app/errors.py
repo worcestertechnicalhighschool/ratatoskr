@@ -6,3 +6,6 @@ def error404(request, exception):
 
 def error400(request, exception):
     return render(request, 'app/error/400.html')
+
+def error403(request, exception):
+    return render(request, "app/error/403.html")

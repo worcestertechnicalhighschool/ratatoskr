@@ -27,4 +27,5 @@ urlpatterns = [
 handler404 = 'app.errors.error404'
 handler400 = 'app.errors.error400'
 handler403 = 'app.errors.error403'
+handler500 = 'app.errors.error500'
 

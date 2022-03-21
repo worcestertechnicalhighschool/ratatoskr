@@ -9,3 +9,6 @@ def error400(request, exception):
 
 def error403(request, exception):
     return render(request, "app/error/403.html")
+
+def error500(request, exception):
+    return render(request, 'app/error/500.html')

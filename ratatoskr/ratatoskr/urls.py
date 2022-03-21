@@ -23,3 +23,5 @@ urlpatterns = [
     path('accounts/', include('allauth.socialaccount.providers.google.urls')), # This is probably not the best idea ever. Effectively only import the urls needed to do google auth
     path('logout', LogoutView.as_view(), name="logout"),
 ]
+
+handler404 = 'app.errors.error404'

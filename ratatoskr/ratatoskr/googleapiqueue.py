@@ -19,7 +19,6 @@ def __busy_waiter():
         sleep(0.1)
         if len(__queue) == 0:
             continue
-        print("Handled")
         __spawn_daemon(lambda: __queue[0].execute())
         __queue = __queue[1:]        
         

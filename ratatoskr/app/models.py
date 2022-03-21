@@ -1,8 +1,10 @@
+from uuid import uuid4
 from django.db import models
 from django.contrib.auth.models import User
 from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
 from googleapiclient.errors import HttpError
+from threading import Thread
 
 from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, \
     update_timeslot_event
@@ -32,7 +34,7 @@ class TimeSlot(models.Model):
 
 
 class Reservation(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(default=uuid4, primary_key=True)
     name = models.CharField(max_length=747)
     timeslot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
     email = models.EmailField()
@@ -41,6 +43,8 @@ class Reservation(models.Model):
 
 
 # Signals for hooking into Google Calendar API
+
+
 
 @receiver(models.signals.pre_save, sender=Schedule)
 def on_schedule_create(sender, instance, **kwargs):

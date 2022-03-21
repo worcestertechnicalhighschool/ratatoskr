@@ -1,5 +1,6 @@
 import base64
 import datetime
+from threading import Thread
 import ratatoskr.settings
 import hashlib
 from django.utils.timezone import make_aware
@@ -11,6 +12,7 @@ from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
+from ratatoskr.googleapiqueue import add_request_to_queue
 from numpy import byte
 
 # Notes:
@@ -106,7 +108,7 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
 
 def delete_calendar_for_schedule(schedule) -> None:
     client = build_calendar_client(schedule.owner)
-    client.calendars().delete(calendarId=schedule.calendar_id)
+    add_request_to_queue(client.calendars().delete(calendarId=schedule.calendar_id))
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
@@ -121,6 +123,7 @@ def update_timeslot_event(timeslot) -> None:
     # so we basically have to resort to this monkey buisness of naivifying these times then setting it back to EST to 
     # *somehow* make these times convert the correct way.
     # TODO: Abolish daylight savings time
+    # UPDATE: Ladies and gentlemen, we got em: https://www.reuters.com/world/us/us-senate-approves-bill-that-would-make-daylight-savings-time-permanent-2023-2022-03-15/
 
     if timeslot.reservation_set.count() != 0:
         # Normal time if timeslot has reservations
@@ -149,7 +152,7 @@ def update_timeslot_event(timeslot) -> None:
                 "email": r.email,
                 "displayName": r.name,
                 "comment": r.comment
-            } for r in timeslot.reservation_set.all()
+            } for r in timeslot.reservation_set.filter(confirmed=True).all()
         ],
         "reminders": {
             "useDefault": False,
@@ -170,23 +173,24 @@ def update_timeslot_event(timeslot) -> None:
         },
         "id": event_id
     }
-    try:
-        # Will fail with 404 if the event does not exist
-        client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,
-                              body=event_body).execute()
-    except HttpError:  # And if the event doesn't exist, we create a new event.
-        client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
+    # Just do this asyncrhonouslyk
+    def __t():
+        try:
+            # Will fail with 404 if the event does not exist
+            client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,
+                                body=event_body).execute()
+        except HttpError:  # And if the event doesn't exist, we create a new event.
+            client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
+    Thread(target=__t, daemon=True).start()
 
 
 # Deletes the event associated with the timeslot
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     eventid = build_timeslot_event_id(timeslot)
-    try:
+    add_request_to_queue(
         client.events().delete(
             calendarId=timeslot.schedule.calendar_id,
             eventId=build_timeslot_event_id(timeslot)
-        ).execute()
-    except HttpError as e:
-        if e.status_code not in [404, 410]: # Not Found, Deleted
-            raise e
+        )
+    )

@@ -15,7 +15,6 @@ def __spawn_daemon(lamb):
 
 def __busy_waiter():
     global __queue
-    print("SPAWNED")
     while True:
         sleep(0.1)
         if len(__queue) == 0:

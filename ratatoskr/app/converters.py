@@ -20,8 +20,7 @@ class DateConverter:
 
 # Converter class factory for creating URL converter classes
 DIGIT_REGEX = "\d+"
-
-
+UUID4_REGEX = "[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}"
 def create_model_converter(model_class: models.Model, regex: str = DIGIT_REGEX):
     class Converter:
         def __init__(self):
@@ -42,4 +41,4 @@ def create_model_converter(model_class: models.Model, regex: str = DIGIT_REGEX):
 register_converter(DateConverter, 'datetime')
 register_converter(create_model_converter(Schedule), 'schedule')
 register_converter(create_model_converter(TimeSlot), 'timeslot')
-register_converter(create_model_converter(Reservation), 'reservation')
+register_converter(create_model_converter(Reservation, regex=UUID4_REGEX), 'reservation')

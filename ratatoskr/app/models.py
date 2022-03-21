@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.db import models
 from django.contrib.auth.models import User
 from allauth.socialaccount.models import SocialAccount
@@ -33,7 +34,7 @@ class TimeSlot(models.Model):
 
 
 class Reservation(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(default=uuid4, primary_key=True)
     name = models.CharField(max_length=747)
     timeslot = models.ForeignKey(to=TimeSlot, on_delete=models.CASCADE)
     email = models.EmailField()

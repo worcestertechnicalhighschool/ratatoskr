@@ -1,0 +1,7 @@
+{% extends 'email/layouts/base.txt' %}
+
+{% block body %}
+Hello, {{ reservation.name }}! Please confirm your reservation with {{ schedule.owner.get_full_name }} with the link below.
+
+http://{{ site.domain }}{% url 'confirm-reservation' reservation.id %}
+{% endblock body %}

@@ -14,6 +14,7 @@ from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
+from app.emailutil import send_confirmation_email, send_success_email
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -262,13 +263,14 @@ def reserve_timeslot(request, schedule, date, timeslot):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        Reservation.objects.create(
+        res = Reservation.objects.create(
             timeslot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
         messages.add_message(request, messages.INFO, 'Timeslot reserved!')
+        send_confirmation_email(res)
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,
@@ -342,6 +344,7 @@ def confirm_reservation(request, reservation):
         reservation.confirmed = True
         reservation.save()
         messages.add_message(request, messages.SUCCESS, 'Reservation confirmed!')
+        send_success_email(reservation)
 
     return render(request, "app/pages/reserve_confirmed.html", {})
 
@@ -362,5 +365,6 @@ def reserve_confirmed(request):
     })
 
 
-def test(request, schedule):
-    return HttpResponse(schedule.id)
+def test(request):
+    send_confirmation_email(Reservation.objects.get())
+    return HttpResponse()

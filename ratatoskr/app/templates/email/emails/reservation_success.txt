@@ -1,0 +1,8 @@
+{% extends 'email/layouts/base.txt' %}
+
+{% block body %}
+Thank you {{ reservation.name }} for confirming your reservation with {{ schedule.owner.get_full_name }}!
+You are free to cancel your reservation at any time by using the following link:
+
+http://{{ site.domain }}{% url 'cancel-reservation' reservation.id %}
+{% endblock body %}

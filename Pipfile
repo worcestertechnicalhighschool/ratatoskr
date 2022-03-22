@@ -21,6 +21,7 @@ google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
 ipython = "*"
 psycopg2 = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

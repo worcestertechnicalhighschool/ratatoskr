@@ -1,0 +1,11 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}
+    404
+{% endblock title %}
+
+{% block body %}
+    <p class="text-center text-danger fs-1 fw-bold">500 Error</p>
+    <p class="text-center text-danger fs-3 fw-light">Server error.</p>
+    <p class="text-center fs-3 fw-light"> <a href = {% url 'index' %}>Go home?</a></p>
+{% endblock body %}

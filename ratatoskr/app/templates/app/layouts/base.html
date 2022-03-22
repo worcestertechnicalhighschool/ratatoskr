@@ -99,39 +99,23 @@
         {% block body %}
         {% endblock body %}
     </main>
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <p class="col-md-4 mb-0 text-muted">© 2022 ratatoskr.com</p>
     
-    <footer class="text-center text-lg-start bg-light text-muted">
-        <section class="">
-        <div class="container text-center text-xs-start mt-3">
-            <div class="row mt-4">
-                <div class="col-xs-4 col-xs-3 col-xl-3 mx-auto mb-md-0">
-                    <h6 class="text-uppercase fw-bold mb-4">ratatoskr</h6>
-                    <p> <i class="fa-solid fa-school"></i>
-                        <a href="https://techhigh.us/">Worcester Tech</a>
-                    </p>
-                    <p> <i class="fa-solid fa-code-branch"></i>
-                    <a href="https://github.com/worcestertechnicalhighschool/ratatoskr">Steal our code</a>
-                    </p>
-                </div>
-
-                <div class="col-xs-4 col-xs-3 col-xl-3 mx-auto mb-md-0">
-                    <h6 class="text-uppercase fw-bold mb-4">
-                        Contact
-                    </h6>
-                    <p><i class="fas fa-home me-3"></i> Worcester, MA 01605, US</p>
-                    <p>
-                        <i class="fas fa-envelope me-3"></i> foo@gmail.com
-                    </p>
-                </div>
-            </div>
-        </div>
-        </section>
+            <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+            </a>
     
-        <div class="text-center p-2">
-            © 2022 Copyright:
-            <a class="text-reset fw-bold" href="#">ratatoskr.com</a>
-        </div>
-    </footer>
+            <ul class="nav col-md-4 justify-content-end">
+                <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" class="nav-link px-2 text-muted">Steal our code</a></li>
+                <li class="nav-item"><span class="nav-link px-2 text-muted">|</span></li>
+                <li class="nav-item"><a class="nav-link px-2 text-muted" href="https://techhigh.us">WTHS</a></li>
+                <li class="nav-item"><span class="nav-link px-2 text-muted">|</span></li>
+                <li class="nav-item"><a class="nav-link px-2 text-muted" href="mailto:ratatoskr@techhigh.us">Contact us!</a></li>
+            </ul>
+        </footer>
+    </div>
   
 
     {% block scripts %}

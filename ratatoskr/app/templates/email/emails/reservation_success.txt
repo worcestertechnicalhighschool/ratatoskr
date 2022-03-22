@@ -1,7 +1,7 @@
-{% extends 'email/layouts/alt/base.txt' %}
+{% extends 'email/layouts/base.txt' %}
 
 {% block body %}
-Thank you {{ reservation.name }} for confirming your reservation with {{ reservation.timeslot.schedule.owner.get_full_name }}!
+Thank you {{ reservation.name }} for confirming your reservation with {{ schedule.owner.get_full_name }}!
 You are free to cancel your reservation at any time by using the following link:
 
 http://{{ site.domain }}{% url 'confirm-reservation' reservation.id %}

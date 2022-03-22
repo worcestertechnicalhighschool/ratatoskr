@@ -63,7 +63,7 @@
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     {% if user.is_staff %}
-                                        <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
+                                    <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
                                         <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
@@ -107,7 +107,10 @@
                 <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">ratatoskr</h6>
                     <p>
-                        Hello.
+                        <a href="https://techhigh.us/">Worcester Tech</a>
+                    </p>
+                    <p>
+                    <a href="https://github.com/worcestertechnicalhighschool/ratatoskr">Github Page</a>
                     </p>
                 </div>
 

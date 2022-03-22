@@ -14,7 +14,7 @@ from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
-from app.emailutil import send_confirmation_email
+from app.emailutil import send_confirmation_email, send_success_email
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -344,6 +344,7 @@ def confirm_reservation(request, reservation):
         reservation.confirmed = True
         reservation.save()
         messages.add_message(request, messages.SUCCESS, 'Reservation confirmed!')
+        send_success_email(reservation)
 
     return render(request, "app/pages/reserve_confirmed.html", {})
 

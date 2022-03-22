@@ -18,5 +18,5 @@ urlpatterns = [
     path('reservation/<reservation:reservation>/cancel', views.cancel_reservation, name='cancel-reservation'),
     path('schedule/reservation-confirmed', views.reserve_confirmed, name='reserve-confirmed'),
     path('schedules/<int:user_id>', views.user_schedules, name='user-schedules'),
-    path('mail/<schedule:schedule>', views.test)
+    path('mail/', views.test)
 ]

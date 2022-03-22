@@ -93,7 +93,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ratatoskr.wsgi.application'
 
-if DEBUG:
+if not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = os.environ['email']

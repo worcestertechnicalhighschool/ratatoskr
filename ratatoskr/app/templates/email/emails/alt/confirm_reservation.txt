@@ -1,6 +1,6 @@
 {% extends 'email/layouts/alt/base.txt' %}
 
 {% block body %}
-Hello, {{ name }}! Please confirm your reservation with {{ schedule.owner.get_full_name }} with the link below.
-http://{{ request.get_host() }}{% url 'confirm-reservation' id %}
+Hello, {{ reservation.name }}! Please confirm your reservation with {{ reservation.timeslot.schedule.owner.get_full_name }} with the link below.
+http://{{ request.get_host }}{% url 'confirm-reservation' reservation.id %}
 {% endblock body %}

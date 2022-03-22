@@ -14,6 +14,7 @@ from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
+from app.emailutil import send_confirmation_email
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -362,5 +363,6 @@ def reserve_confirmed(request):
     })
 
 
-def test(request, schedule):
-    return HttpResponse(schedule.id)
+def test(request):
+    send_confirmation_email(Reservation.objects.get())
+    return HttpResponse()

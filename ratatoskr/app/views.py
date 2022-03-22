@@ -263,13 +263,14 @@ def reserve_timeslot(request, schedule, date, timeslot):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        Reservation.objects.create(
+        res = Reservation.objects.create(
             timeslot=timeslot,
             comment=reservation_form.cleaned_data["comment"],
             email=reservation_form.cleaned_data["email"],
             name=reservation_form.cleaned_data["name"],
         )
         messages.add_message(request, messages.INFO, 'Timeslot reserved!')
+        send_confirmation_email(res)
         return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,

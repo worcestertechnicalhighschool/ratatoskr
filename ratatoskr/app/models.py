@@ -1,3 +1,4 @@
+from base64 import b64encode
 from uuid import uuid4
 from django.db import models
 from django.contrib.auth.models import User
@@ -21,6 +22,10 @@ class Schedule(models.Model):
     # These fields are filled automatically
     calendar_id = models.CharField(max_length=1024)
     calendar_meet_data = models.JSONField()
+    def get_calendar_url(self):
+        # Direct link to calendar. cid is base 64 encoded
+        # For some reason, b64encode has these two "==" at the end of the decoded string, so I just striped them out.
+        return f"https://calendar.google.com/calendar/u/0?cid={b64encode(self.calendar_id.encode('ascii')).decode('ascii')[:-2]}"
 
 
 class TimeSlot(models.Model):

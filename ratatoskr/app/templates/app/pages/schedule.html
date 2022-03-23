@@ -5,6 +5,7 @@
         <h3 class="mb-0">Available Days</h3>
         {% if schedule.owner == user %}
             <div class="ms-lg-auto mt-2 mt-lg-0">
+                <a class="btn btn-success" href="{{ schedule.get_calendar_url }}"><i class="fa-solid fa-calendar-days"></i> Google Calendar</a>
                 <a class="btn btn-primary" href="{% url 'view-schedule-reservations' schedule.id %}">View Reservations</a>
                 <a class="btn btn-primary" href="{% url "create-timeslots" schedule.id %}">+ Add Timeslots</a>
             </div>

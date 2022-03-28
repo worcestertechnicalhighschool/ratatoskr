@@ -1,0 +1,26 @@
+.expandable-button {
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    width: auto;
+    max-width: calc(35px + 0.375rem);
+    -webkit-transition: max-width 0.5s;
+    transition: max-width 0.5s;
+}
+
+.expandable-button:hover {
+  max-width: 300px;
+}
+
+.expandable-button i {
+  font-size: 16px;
+  margin-right: calc(15px - 0.375rem);
+  display: flex;
+  align-items: center;
+}
+
+.expandable-button span {
+  white-space: nowrap;
+  padding-left: 15px;
+  padding-right: 15px;
+}

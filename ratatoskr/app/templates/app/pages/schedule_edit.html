@@ -1,0 +1,34 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}Edit Schedule{% endblock title %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center h-75">
+        <div class="card w-75 h-50">
+            <div class="card-header text-center">
+                <h2 class="mt-2">Edit Schedule</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" v-scope="{ multipleTimeslots: false }">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="schedule-name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="schedule-name" aria-describedby="nameHelp" name="schedule-name" value="{{ schedule.name }}">
+                        <div id="nameHelp" class="form-text">This is how your schedule will appear to other users.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="schedule-desc" class="form-label">Description</label>
+                        <textarea class="form-control" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000" rows="5">{{ schedule.description }}</textarea>
+                        <div id="descHelp" class="form-text">This appears below your schedule name when visitors come to reserve timeslots.</div>
+                    </div>
+
+                    <fieldset class="text-center">
+                        <button class="btn btn-primary w-50" type="submit">Update</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

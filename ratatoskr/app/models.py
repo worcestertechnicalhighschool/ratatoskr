@@ -17,11 +17,13 @@ class Schedule(models.Model):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
+    description = models.CharField(max_length=1000, default="")
     is_locked = models.BooleanField()
     auto_lock_after = models.DateTimeField()
     # These fields are filled automatically
     calendar_id = models.CharField(max_length=1024)
     calendar_meet_data = models.JSONField()
+
     def get_calendar_url(self):
         # Direct link to calendar. cid is base 64 encoded
         # For some reason, b64encode has these two "==" at the end of the decoded string, so I just striped them out.
@@ -48,7 +50,6 @@ class Reservation(models.Model):
 
 
 # Signals for hooking into Google Calendar API
-
 
 
 @receiver(models.signals.pre_save, sender=Schedule)

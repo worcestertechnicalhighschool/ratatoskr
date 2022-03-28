@@ -78,14 +78,14 @@ def update_schedule(request, schedule):
             for timeslot in all_timeslots:
                 timeslot.is_locked = True
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) locked!')
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } locked!')
         case "unlock":
             for timeslot in all_timeslots:
                 timeslot.is_locked = False
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) unlocked!')
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } unlocked!')
         case "delete":
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) deleted!')
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } deleted!')
             timeslots.delete()
 
 
@@ -371,7 +371,7 @@ def edit_schedule(request, schedule):
         schedule.description = request.POST["schedule-desc"]
         schedule.save()
 
-        return redirect("/schedule/" + str(schedule.id))
+        return redirect(f'/schedule/{schedule.id}')
 
     return render(request, "app/pages/schedule_edit.html", {
         "schedule": schedule

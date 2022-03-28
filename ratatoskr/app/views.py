@@ -56,42 +56,45 @@ def create_schedule(request):
     return render(request, 'app/pages/create_schedule.html', {})
 
 
+def update_schedule(request, schedule):
+    dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
+    ids = [int(i) for i in request.POST.getlist("timeslot_id")]
+
+    # Query the timeslot table with all the data given
+    # The "|"(union) operator effectively combines the two queries
+    # I use a reduce to merge a list of queries into one singular query, using said union opeartor
+    timeslot_date_query = [
+        TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24)))
+        for date in dates
+    ]
+    timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
+    timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
+    timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
+    timeslots = (timeslot_date_query | timeslot_id_query)
+    all_timeslots = timeslots.all()
+
+    match request.POST["action"]:
+        case "lock":
+            for timeslot in all_timeslots:
+                timeslot.is_locked = True
+            TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) locked!')
+        case "unlock":
+            for timeslot in all_timeslots:
+                timeslot.is_locked = False
+            TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) unlocked!')
+        case "delete":
+            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) deleted!')
+            timeslots.delete()
+
+
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
     if request.POST:
         if schedule.owner != request.user:
             raise PermissionDenied()
-
-        dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
-        ids = [int(i) for i in request.POST.getlist("timeslot_id")]
-
-        # Query the timeslot table with all the data given
-        # The "|"(union) operator effectively combines the two queries
-        # I use a reduce to merge a list of queries into one singular query, using said union opeartor
-        timeslot_date_query = [
-            TimeSlot.objects.filter(schedule=schedule, time_from__range=(date, date + datetime.timedelta(hours=24)))
-            for date in dates
-        ]
-        timeslot_date_query = reduce(lambda a, x: a | x, timeslot_date_query, TimeSlot.objects.none())
-        timeslot_id_query = [TimeSlot.objects.filter(schedule=schedule, pk=id) for id in ids]
-        timeslot_id_query = reduce(lambda a, x: a | x, timeslot_id_query, TimeSlot.objects.none())
-        timeslots = (timeslot_date_query | timeslot_id_query)
-        all_timeslots = timeslots.all()
-
-        match request.POST["action"]:
-            case "lock":
-                for timeslot in all_timeslots:
-                    timeslot.is_locked = True
-                TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-                messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) locked!')
-            case "unlock":
-                for timeslot in all_timeslots:
-                    timeslot.is_locked = False
-                TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-                messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) unlocked!')
-            case "delete":
-                messages.add_message(request, messages.INFO, f'{all_timeslots.count()} Timeslot(s) deleted!')
-                timeslots.delete()
+        update_schedule(request, schedule)
 
     limit_days = 30
     if schedule.owner == request.user:
@@ -131,8 +134,13 @@ def user_schedules(request, user_id):
     })
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 def schedule_day(request, schedule, date):
+    if request.POST:
+        if schedule.owner != request.user:
+            raise PermissionDenied()
+        update_schedule(request, schedule)
+
     timeslots = list(schedule.timeslot_set.all())
 
     return render(request, 'app/pages/schedule_day.html', {

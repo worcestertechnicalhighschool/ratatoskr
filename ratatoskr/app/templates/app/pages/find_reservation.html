@@ -1,0 +1,72 @@
+{% extends 'app/layouts/base.html' %}
+{% load static %}
+
+{% block title %}Find Your Reservation{% endblock title %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="card w-75" style="max-width: 750px;">
+            <div class="card-header text-center">
+                <h2 class="mt-2">Find Reservation</h2>
+            </div>
+          <div class="card-body">
+              {% if matches is not None %}
+                  {% if matches %}
+                      <p class="card-text text-center">Here's what we found! Find the reservation that you're looking for, and choose from the options present. You can try <a href="">another search</a> too, if that could help.</p>
+                      <div class="accordion" id="match-list">
+                      {% for match in matches %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-{{ match.id }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ match.id }}" aria-controls="collapse-{{ match.id }}">
+                                        <span class="text-muted">{{ match.timeslot.time_from|date:'M d: h:i A' }} - {{ match.timeslot.time_to|date:'h:i A' }}</span>&nbsp;&nbsp;Reservation on&nbsp;<b>{{ match.timeslot.schedule.name }}</b>
+                                    </button>
+                                </h2>
+                                <div id="collapse-{{ match.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ match.id }}" data-bs-parent="#match-list">
+                                    <div class="accordion-body">
+                                        <form method="POST" action="" class="m-0 p-0">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{ match.id }}">
+                                            <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
+                                                <i class="fa-solid fa-xmark"></i> Cancel Reservation
+                                            </button>
+                                            <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ match.email }}`;">
+                                                <i class="fa-solid fa-envelope"></i> Email
+                                            </button><br>
+                                            <p class="mt-4">
+                                                <b>Name</b>&nbsp;&nbsp;{{ match.name }}<br>
+                                                <b>Email</b>&nbsp;&nbsp;{{ match.email }}<br>
+                                                <b>Status</b>&nbsp;&nbsp;{{ match.confirmed|yesno:"Confirmed,Unconfirmed,Unknown" }}<br>
+                                                <b>Comments</b>&nbsp;&nbsp;{{ match.comment }}
+                                            </p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                      {% endfor %}
+                      </div>
+                  {% else %}
+                    <p class="card-text text-center">Uh oh... We didn't find any reservations with that information. If you want, you can <a href="">try again</a>.</p>
+                  {% endif %}
+              {% else %}
+                <p class="card-text text-center">Lost your reservation? We can help! Enter your email and name below, and we'll find the details.</p>
+                <form class="mx-auto mt-4 text-start" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp">
+                        <div id="nameHelp" class="form-text">Enter your name, or the name your reservation was created with.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">Use the email that you made the reservation with.</div>
+                    </div>
+                    <fieldset class="text-center mt-4">
+                        <button class="btn btn-primary w-50" name="submit" type="submit">Find</button>
+                    </fieldset>
+                </form>
+              {% endif %}
+          </div>
+        </div>
+    </div>
+{% endblock body %}

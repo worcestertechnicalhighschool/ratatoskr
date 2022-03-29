@@ -378,11 +378,27 @@ def edit_schedule(request, schedule):
     })
 
 
+@require_http_methods(["GET", "POST"])
+def find_reservation(request):
+    if request.POST:
+        return render(request, "app/pages/find_reservation.html", {
+            "matches": Reservation.objects.filter(email=request.POST["email"], name=request.POST["name"])
+        })
+    return render(request, "app/pages/find_reservation.html", {
+
+    })
+
+
 @require_http_methods(["GET"])
 def reserve_confirmed(request):
     return render(request, "app/pages/reserve_created.html", {
 
     })
+
+
+@require_http_methods(["GET"])
+def help_page(request):
+    return None
 
 
 def test(request):

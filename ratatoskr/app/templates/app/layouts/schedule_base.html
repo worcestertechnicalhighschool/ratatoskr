@@ -5,13 +5,17 @@
 {% block body %}
     <div class="text-muted d-flex flex-row align-items-center mb-1">
         <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
-        <h6 class="mb-0"><a href="mailto:{{ schedule.owner.email }}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
+        <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
     </div>
     <h1 class="mb-4">{{ schedule.name }}</h1>
 
     <p class="text-body text-break mb-4">{{ schedule.description }}</p>
 
-    <div class="card">
+    <a class="btn btn-outline-primary" href="mailto:{{ schedule.owner.email }}"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Contact</a>
+    <a class="btn btn-outline-warning" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
+    <a class="btn btn-outline-danger" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help</a>
+
+    <div class="card mt-4">
         <div class="card-header">
             {% block schedule_head %}
             {% endblock schedule_head %}

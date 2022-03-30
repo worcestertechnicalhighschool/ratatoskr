@@ -295,6 +295,7 @@ def view_reservations(request, schedule, date, timeslot):
         match request.POST["action"]:
             case "cancel":
                 Reservation.objects.filter(pk=request.POST["id"]).delete()
+                messages.add_message(request, messages.SUCCESS, "Reservation cancelled.")
 
     return render(request, "app/pages/reservations_view.html", {
         "timeslot": timeslot,
@@ -380,10 +381,18 @@ def edit_schedule(request, schedule):
 
 @require_http_methods(["GET", "POST"])
 def find_reservation(request):
-    if request.POST:
+    if request.POST and "email" in request.POST and "name" in request.POST:
         return render(request, "app/pages/find_reservation.html", {
             "matches": Reservation.objects.filter(email=request.POST["email"], name=request.POST["name"])
         })
+    elif request.POST:
+        match request.POST["action"]:
+            case "cancel":
+                Reservation.objects.filter(pk=request.POST["id"]).delete()
+                messages.add_message(request, messages.SUCCESS, "Reservation cancelled.")
+            case "resend":
+                send_confirmation_email(Reservation.objects.filter(pk=request.POST["id"]).get())
+                messages.add_message(request, messages.SUCCESS, "Resent confirmation email!")
     return render(request, "app/pages/find_reservation.html", {
 
     })

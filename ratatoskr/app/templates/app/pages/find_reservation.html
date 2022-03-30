@@ -26,12 +26,12 @@
                                         <form method="POST" action="" class="m-0 p-0">
                                             {% csrf_token %}
                                             <input type="hidden" name="id" value="{{ match.id }}">
-                                            <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
+                                            <a onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
                                                 <i class="fa-solid fa-xmark"></i> Cancel Reservation
-                                            </button>
-                                            <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ match.email }}`;">
+                                            </a>
+                                            <a type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ match.email }}`;">
                                                 <i class="fa-solid fa-envelope"></i> Email
-                                            </button><br>
+                                            </a><br>
                                             <p class="mt-4">
                                                 <b>Name</b>&nbsp;&nbsp;{{ match.name }}<br>
                                                 <b>Email</b>&nbsp;&nbsp;{{ match.email }}<br>

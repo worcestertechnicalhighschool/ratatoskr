@@ -5,10 +5,17 @@
         <h3 class="mb-0">Available Days</h3>
         {% if schedule.owner == user %}
             <div class="ms-lg-auto mt-2 mt-lg-0">
-                <a class="btn btn-primary expandable-button" href="{% url 'edit-schedule' schedule.id %}" title="Edit Schedule"><i class="fa-solid fa-pen-to-square"></i> <span>Edit Schedule</span></a>
-                <a class="btn btn-danger expandable-button" href="{{ schedule.get_calendar_url }}"><i class="fa-solid fa-calendar-days"></i> <span>Google Calendar</span></a>
-                <a class="btn btn-warning expandable-button" href="{% url 'view-schedule-reservations' schedule.id %}"><i class="fa-solid fa-calendar-day"></i> <span>View Reservations</span></a>
-                <a class="btn btn-success expandable-button" href="{% url 'create-timeslots' schedule.id %}"><i class="fa-solid fa-calendar-week"></i> <span>Add Timeslot</span></a>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Actions
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'edit-schedule' schedule.id %}"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Edit Schedule</a></li>
+                    <li><a class="dropdown-item" href="{{ schedule.get_calendar_url }}"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar</a></li>
+                    <li><a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}"><i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations</a></li>
+                    <li><a class="dropdown-item" href="{% url 'create-timeslots' schedule.id %}"><i class="fa-solid fa-calendar-week"></i>&nbsp;&nbsp;Add Timeslot</a></li>
+                  </ul>
+                </div>
             </div>
         {% endif %}
     </div>

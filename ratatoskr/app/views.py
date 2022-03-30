@@ -398,7 +398,7 @@ def reserve_confirmed(request):
 
 @require_http_methods(["GET"])
 def help_page(request):
-    return None
+    return HttpResponse("No.")
 
 
 def test(request):

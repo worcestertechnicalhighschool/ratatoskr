@@ -50,6 +50,13 @@
                     v-bind:disabled="checked == 0">
                     <i class="fas fa-unlock"></i> Unlock
                 </button>
+                <button
+                    name="action"
+                    value="copy"
+                    class="btn btn-info"
+                    v-bind:disabled="checked == 0">
+                    <i class="fa-solid fa-copy"></i> Copy
+                </button>
             </div>
         {% endif %}
         <div class="card-body" id="timeslot-body">

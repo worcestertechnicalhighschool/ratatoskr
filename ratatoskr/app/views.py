@@ -87,14 +87,20 @@ def update_schedule(request, schedule):
         case "delete":
             messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } deleted!')
             timeslots.delete()
+        case "copy":
+            return render(request, "app/pages/copy_timeslot.html", {
+                "timeslots": timeslots
+            })
+    return None
 
 
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
+    response = None
     if request.POST:
         if schedule.owner != request.user:
             raise PermissionDenied()
-        update_schedule(request, schedule)
+        response = update_schedule(request, schedule)
 
     limit_days = 30
     if schedule.owner == request.user:
@@ -119,7 +125,7 @@ def schedule(request, schedule):
         } for k, v in timeslots.items()
     }
 
-    return render(request, 'app/pages/schedule.html', {
+    return response or render(request, 'app/pages/schedule.html', {
         "schedule": schedule,
         "timeslots": timeslot_meta
     })
@@ -136,14 +142,15 @@ def user_schedules(request, user_id):
 
 @require_http_methods(["GET", "POST"])
 def schedule_day(request, schedule, date):
+    response = None
     if request.POST:
         if schedule.owner != request.user:
             raise PermissionDenied()
-        update_schedule(request, schedule)
+        response = update_schedule(request, schedule)
 
     timeslots = list(schedule.timeslot_set.all())
 
-    return render(request, 'app/pages/schedule_day.html', {
+    return response or render(request, 'app/pages/schedule_day.html', {
         "schedule": schedule,
         "timeslots": filter(lambda x: x.time_from.date() == date.date(), timeslots),
         "date": date

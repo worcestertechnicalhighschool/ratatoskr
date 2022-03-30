@@ -6,7 +6,7 @@ from . import converters
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('create-schedule/', views.create_schedule, name='create-schedule'),
+    path('schedule/create', views.create_schedule, name='create-schedule'),
     path('schedule/<schedule:schedule>', views.schedule, name='schedule'),
     path('schedule/<schedule:schedule>/edit', views.edit_schedule, name='edit-schedule'),
     path('schedule/<schedule:schedule>/reservations', views.view_schedule_reservations, name='view-schedule-reservations'),

@@ -109,10 +109,11 @@ def schedule(request, schedule):
 
     timeslots = dict(
         sorted(
-            {k: list(v) for k, v in groupby(timeslots, lambda x: x.time_from.date())}.items()
-            # Group the timeslots by their time_from date
+            {k: list(v) for k, v in groupby(sorted(timeslots, key=lambda x: x.time_from), lambda x: x.time_from.date())}.items()
+            # Group and sort the timeslots by their time_from date
         )
     )
+    print(timeslots)
 
     timeslot_meta = {
         k: {
@@ -148,7 +149,7 @@ def schedule_day(request, schedule, date):
             raise PermissionDenied()
         response = update_schedule(request, schedule)
 
-    timeslots = list(schedule.timeslot_set.all())
+    timeslots = sorted(list(schedule.timeslot_set.all()), key=lambda x: x.time_from)
 
     return response or render(request, 'app/pages/schedule_day.html', {
         "schedule": schedule,

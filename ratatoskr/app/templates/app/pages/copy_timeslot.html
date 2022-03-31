@@ -1,0 +1,58 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}Copy Timeslots{% endblock title %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center h-75">
+        <div class="card w-75 h-50">
+            <div class="card-header text-center">
+                <h2 class="mt-2">Copy Timeslots</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">You can either copy or move the timeslots selected below. Copying the timeslots will keep the original timeslots and create new timeslots at the specified Copy To Date and Time. Moving the timeslots <b>will cancel reservations on those timeslots</b>, placing them starting at the new date and time, and removing the original.</p>
+                <form method="POST" action="{% url 'copy-timeslots' timeslots.0.schedule.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="timeslots" value="{% for timeslot in timeslots %}{{ timeslot.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <p class="card-text fw-bold">Copying the following timeslots:<br></p>
+                    <ul>
+                        {% for timeslot in timeslots %}
+                            <li>{{ timeslot.time_from|date:'M d: h:i A' }} - {{ timeslot.time_to|date:'h:i A' }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="row g-2">
+                        <div class="mb-3 col">
+                            <label for="from_date" class="form-label">Original Start Date</label>
+                            <input type="date" class="form-control" id="from_date" name="from_date" value="{{ timeslots.0.time_from|date:'Y-m-d' }}" disabled>
+                        </div>
+                        <div class="mb-3 col">
+                            <label for="from_time" class="form-label">Original Start Time</label>
+                            <input type="time" class="form-control" id="from_time" name="from_time" value="{{ timeslots.0.time_from|date:'H:i:s' }}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="mb-3 col">
+                            <label for="to_date" class="form-label">Copy To Date</label>
+                            <input type="date" class="form-control" id="to_date" name="to_date">
+                        </div>
+                        <div class="mb-3 col">
+                            <label for="to_time" class="form-label">Copy To Time</label>
+                            <input type="time" class="form-control" id="to_time" name="to_time" value="{{ timeslots.0.time_from|date:'H:i:s' }}">
+                        </div>
+                    </div>
+
+                    <div class="row g-2 w-75 mx-auto mt-3">
+                        <button class="btn btn-primary col mx-2" name="action" value="copy" type="submit">
+                            Copy Timeslot{{ timeslots|length|pluralize }}
+                        </button>
+                        <button class="btn btn-primary col mx-2" name="action" value="move" type="submit">
+                            Move Timeslot{{ timeslots|length|pluralize }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 
+from .models import TimeSlot
+
 
 class TimeslotGenerationForm(forms.Form):
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
@@ -27,6 +29,18 @@ class ReservationForm(forms.Form):
     comment = forms.CharField(max_length=256, initial="", required=False)
     # TODO: Find out how to store phone numbers
     # phone = models.PhoneNumberField()
+
+
+class CopyTimeslotsForm(forms.Form):
+    action = forms.CharField(max_length=4)
+    timeslots = forms.CharField(max_length=500)
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cleaned_data["timeslots"] = list(map(lambda x: TimeSlot.objects.get(pk=int(x)), cleaned_data["timeslots"].split(",")))
+        return cleaned_data
 
 
 class ScheduleCreationForm(forms.Form):

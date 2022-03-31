@@ -20,7 +20,7 @@
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow mb-3">
-        <div class="container-fluid px-5 ">
+        <div class="container-fluid px-3 px-lg-5">
             <a class="navbar-brand mb-0 h1" href="{% url "index" %}">ratatoskr <small class="text-secondary d-none d-md-inline">meeting system</small></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -31,13 +31,10 @@
                         <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    <li class="nav-item">
                       <a class="nav-link" href="#">About</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="https://techhigh.us">WTHS</a>
+                      <a class="nav-link" href="#">Contact</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -63,7 +60,7 @@
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     {% if user.is_staff %}
-                                    <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
+                                        <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
                                         <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
@@ -100,19 +97,15 @@
         {% endblock body %}
     </main>
     <div class="container">
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <p class="col-md-4 mb-0 text-muted">© 2022 ratatoskr.com</p>
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top flex-column flex-md-row">
+            <p class="col-md-4 mb-md-0 mb-2 text-muted">© 2022 ratatoskr.com</p>
     
-            <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-            </a>
-    
-            <ul class="nav col-md-4 justify-content-end">
-                <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" class="nav-link px-2 text-muted"><i class="fa-solid fa-code-branch"></i> Steal our code</a></li>
-                <li class="nav-item"><span class="nav-link px-2 text-muted">|</span></li>
-                <li class="nav-item"><a class="nav-link px-2 text-muted" href="https://techhigh.us"><i class="fa-solid fa-school"></i> WTHS</a></li>
-                <li class="nav-item"><span class="nav-link px-2 text-muted">|</span></li>
-                <li class="nav-item"><a class="nav-link px-2 text-muted" href="mailto:ratatoskr@techhigh.us"><i class="fa-solid fa-envelope"></i> Contact us!</a></li>
+            <ul class="nav justify-content-end">
+                <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" class="nav-link px-1 text-muted"><i class="fa-solid fa-code-branch"></i> Steal our code</a></li>
+                <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
+                <li class="nav-item"><a class="nav-link px-1 text-muted" href="https://techhigh.us"><i class="fa-solid fa-school"></i> WTHS</a></li>
+                <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
+                <li class="nav-item"><a class="nav-link px-1 text-muted" href="mailto:ratatoskr@techhigh.us"><i class="fa-solid fa-envelope"></i> Contact us!</a></li>
             </ul>
         </footer>
     </div>

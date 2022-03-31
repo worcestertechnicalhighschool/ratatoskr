@@ -34,9 +34,9 @@
                         <button onclick="return confirm(`Are you sure you want to cancel this reservation?`)" name="action" value="cancel" class="btn btn-danger">
                             <i class="fa-solid fa-xmark"></i> Cancel Reservation
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="window.location.href = `mailto:{{ reservation.email }}`;">
+                        <a type="button" class="btn btn-primary" href="mailto:{{ reservation.email }}">
                             <i class="fa-solid fa-envelope"></i> Email
-                        </button><br>
+                        </a><br>
                         <p class="mt-4">
                             <b>Name</b>&nbsp;&nbsp;{{ reservation.name }}<br>
                             <b>Email</b>&nbsp;&nbsp;{{ reservation.email }}<br>

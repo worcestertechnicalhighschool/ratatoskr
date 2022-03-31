@@ -9,7 +9,7 @@
                 <h2 class="mt-2">Copy Timeslots</h2>
             </div>
             <div class="card-body">
-                <p class="text-muted">You can either copy or move the timeslots selected below. Copying the timeslots will keep the original timeslots and create new timeslots at the specified Copy To Date and Time. Moving the timeslots will cancel reservations on those timeslots, placing them starting at the new date and time, and removing the original.</p>
+                <p class="text-muted">You can either copy or move the timeslots selected below. Copying the timeslots will keep the original timeslots and create new timeslots at the specified Copy To Date and Time. Moving the timeslots <b>will cancel reservations on those timeslots</b>, placing them starting at the new date and time, and removing the original.</p>
                 <form method="POST" action="{% url 'copy-timeslots' timeslots.0.schedule.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="timeslots" value="{% for timeslot in timeslots %}{{ timeslot.id }}{% if not forloop.last %},{% endif %}{% endfor %}">

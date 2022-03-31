@@ -434,11 +434,15 @@ def copy_timeslots(request, schedule):
             ]
 
             TimeSlot.objects.bulk_create(sum(copied_timeslots, []))
+            messages.add_message(request, messages.SUCCESS, "Timeslots copied!")
         case "move":
             for timeslot in form.cleaned_data["timeslots"]:
                 timeslot.time_from += delta_time
                 timeslot.time_to += delta_time
                 timeslot.save()
+                Reservation.objects.filter(timeslot=timeslot).delete()
+                messages.add_message(request, messages.SUCCESS, "Timeslots moved!")
+                # TODO: notify users that the reservation was cancelled.
     return redirect(request.POST["next"])
 
 

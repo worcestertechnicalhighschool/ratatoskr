@@ -18,7 +18,7 @@ from app.emailutil import send_confirmation_email, send_success_email
 
 from ratatoskr.celery import debug_task, send_mail_task
 
-from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm
+from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
 from .models import Schedule, TimeSlot, Reservation
 
 from django.contrib import messages
@@ -89,7 +89,7 @@ def update_schedule(request, schedule):
             timeslots.delete()
         case "copy":
             return render(request, "app/pages/copy_timeslot.html", {
-                "timeslots": timeslots
+                "timeslots": sorted(timeslots, key=lambda x: x.time_from)
             })
     return None
 
@@ -403,6 +403,43 @@ def find_reservation(request):
     return render(request, "app/pages/find_reservation.html", {
 
     })
+
+
+@require_http_methods(["POST"])
+def copy_timeslots(request, schedule):
+    if schedule.owner != request.user:
+        raise PermissionDenied()
+
+    form = CopyTimeslotsForm(request.POST)
+    if not form.is_valid():
+        raise UnsupportedOperation()
+
+    from_time = sorted(form.cleaned_data["timeslots"], key=lambda x: x.time_from)[0].time_from
+    to_time = make_aware(datetime.datetime.combine(form.cleaned_data["to_date"], form.cleaned_data["to_time"]))
+    delta_time = to_time - from_time
+
+    match form.cleaned_data["action"]:
+        case "copy":
+            copied_timeslots = [
+                [
+                    TimeSlot(
+                        schedule=schedule,
+                        time_from=timeslot.time_from + delta_time,
+                        time_to=timeslot.time_to + delta_time,
+                        reservation_limit=timeslot.reservation_limit,
+                        is_locked=timeslot.is_locked,
+                        auto_lock_after=timeslot.auto_lock_after
+                    )
+                ] for timeslot in form.cleaned_data["timeslots"]
+            ]
+
+            TimeSlot.objects.bulk_create(sum(copied_timeslots, []))
+        case "move":
+            for timeslot in form.cleaned_data["timeslots"]:
+                timeslot.time_from += delta_time
+                timeslot.time_to += delta_time
+                timeslot.save()
+    return redirect(request.POST["next"])
 
 
 @require_http_methods(["GET"])

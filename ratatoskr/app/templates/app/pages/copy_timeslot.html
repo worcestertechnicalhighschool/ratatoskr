@@ -9,8 +9,11 @@
                 <h2 class="mt-2">Copy Timeslots</h2>
             </div>
             <div class="card-body">
-                <form method="POST" v-scope="{ copyTimeslots: true }">
+                <p class="text-muted">You can either copy or move the timeslots selected below. Copying the timeslots will keep the original timeslots and create new timeslots at the specified Copy To Date and Time. Moving the timeslots will cancel reservations on those timeslots, placing them starting at the new date and time, and removing the original.</p>
+                <form method="POST" action="{% url 'copy-timeslots' timeslots.0.schedule.id %}">
                     {% csrf_token %}
+                    <input type="hidden" name="timeslots" value="{% for timeslot in timeslots %}{{ timeslot.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                    <input type="hidden" name="next" value="{{ request.path }}">
                     <p class="card-text fw-bold">Copying the following timeslots:<br></p>
                     <ul>
                         {% for timeslot in timeslots %}
@@ -36,23 +39,18 @@
                         </div>
                         <div class="mb-3 col">
                             <label for="to_time" class="form-label">Copy To Time</label>
-                            <input type="time" class="form-control" id="to_time" name="to_time">
+                            <input type="time" class="form-control" id="to_time" name="to_time" value="{{ timeslots.0.time_from|date:'H:i:s' }}">
                         </div>
                     </div>
 
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" id="copy_timeslots" @click="copyTimeslots = $el.checked" name="copy_timeslots" checked>
-                        <label class="form-check-label" for="copy_timeslots">
-                            <template v-if="copyTimeslots">Copy Timeslots</template>
-                            <template v-else>Move Timeslots</template>
-                        </label>
-                    </div>
-
-                    <fieldset class="text-center">
-                        <button class="btn btn-primary w-50" type="submit">
-                            <template v-if="copyTimeslots">Copy</template><template v-else>Move</template> Timeslot{{ timeslots|length|pluralize }}
+                    <div class="row g-2 w-75 mx-auto mt-3">
+                        <button class="btn btn-primary col mx-2" name="action" value="copy" type="submit">
+                            Copy Timeslot{{ timeslots|length|pluralize }}
                         </button>
-                    </fieldset>
+                        <button class="btn btn-primary col mx-2" name="action" value="move" type="submit">
+                            Move Timeslot{{ timeslots|length|pluralize }}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

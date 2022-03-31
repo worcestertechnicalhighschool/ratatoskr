@@ -113,7 +113,6 @@ def schedule(request, schedule):
             # Group and sort the timeslots by their time_from date
         )
     )
-    print(timeslots)
 
     timeslot_meta = {
         k: {

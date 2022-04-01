@@ -1,4 +1,7 @@
 from django.template.defaultfilters import register
+import re
+
+from django.utils.html import strip_tags
 
 
 @register.filter
@@ -19,6 +22,12 @@ def available_count(timeslot):
 @register.filter
 def confirmed_count(timeslot):
     return len(timeslot.reservation_set.filter(confirmed=True))
+
+
+@register.filter
+def textified(html_data):
+    text_only = re.sub('[ \t]+', ' ', strip_tags(html_data))
+    return text_only.replace('\n ', '\n').strip()
 
 
 @register.filter

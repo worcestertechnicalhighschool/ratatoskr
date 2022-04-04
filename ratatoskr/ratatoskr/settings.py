@@ -31,7 +31,10 @@ SECRET_KEY = 'django-insecure-k(@m5gxw=ej*#adl45$%!7h_%@kipss%0k%+@(0r(%6bhv+6z3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1:8000",
+    "https://ratatoskr-meeting-system.herokuapp.com/"
+]
 
 SITE_ID = 1
 

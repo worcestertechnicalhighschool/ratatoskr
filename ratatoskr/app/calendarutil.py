@@ -13,7 +13,6 @@ from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
-from ratatoskr.googleapiqueue import add_request_to_queue
 from numpy import byte
 from ratelimit import limits, sleep_and_retry
 

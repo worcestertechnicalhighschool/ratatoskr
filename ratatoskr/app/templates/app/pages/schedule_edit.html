@@ -1,5 +1,16 @@
 {% extends 'app/layouts/base.html' %}
 
+{% block head %}
+<script src='https://cdn.tiny.cloud/1/f47idibd5kj81gghyonezjs67j91eg2no42861jiswtvuvvv/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#schedule-desc',
+        menubar: '',
+        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+    });
+</script>
+{% endblock head %}
+
 {% block title %}Edit Schedule{% endblock title %}
 
 {% block body %}
@@ -20,7 +31,7 @@
 
                     <div class="mb-3">
                         <label for="schedule-desc" class="form-label">Description</label>
-                        <textarea class="form-control" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000" rows="5">{{ schedule.description }}</textarea>
+                        <textarea class="form-control" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000">{{ schedule.description }}</textarea>
                         <div id="descHelp" class="form-text">This appears below your schedule name when visitors come to reserve timeslots.</div>
                     </div>
 

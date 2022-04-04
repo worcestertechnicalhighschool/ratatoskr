@@ -115,7 +115,11 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     # conf_data = {}
 
     # Delete the dummy event, we don't need it
-    client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    @daemon
+    def del_async():
+        client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    del_async()
+    
     return conf_data, calendar_id
 
 @api_pool

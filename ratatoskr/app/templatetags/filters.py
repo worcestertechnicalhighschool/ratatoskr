@@ -1,3 +1,4 @@
+import html
 from django.template.defaultfilters import register
 import re
 
@@ -27,7 +28,7 @@ def confirmed_count(timeslot):
 @register.filter
 def textified(html_data):
     text_only = re.sub('[ \t]+', ' ', strip_tags(html_data))
-    return text_only.replace('\n ', '\n').strip()
+    return html.unescape(text_only.replace('\n ', '\n').strip())
 
 
 @register.filter

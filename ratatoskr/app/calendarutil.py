@@ -34,12 +34,13 @@ else:
 CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 
 # 9 calls per second
-api_pool = limits(calls=9, period=1)
+api_limits_decorator = limits(calls=9, period=1)
 
-def api_ratelimit(func):
+# Decorator function for rate limiting async calls to a function
+def api_pool(func):
     @daemon
     @sleep_and_retry
-    @api_pool
+    @api_limits_decorator
     def inner(*args, **kwargs):
         func(*args, **kwargs)
     return inner
@@ -118,12 +119,14 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
     return conf_data, calendar_id
 
+@api_pool
 def delete_calendar_for_schedule(schedule) -> None:
     client = build_calendar_client(schedule.owner)
-    add_request_to_queue(client.calendars().delete(calendarId=schedule.calendar_id))
+    client.calendars().delete(calendarId=schedule.calendar_id)
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
+@api_pool
 def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
 
@@ -186,23 +189,20 @@ def update_timeslot_event(timeslot) -> None:
         "id": event_id
     }
     # Just do this asyncrhonouslyk
-    def __t():
-        try:
-            # Will fail with 404 if the event does not exist
-            client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,
-                                body=event_body).execute()
-        except HttpError:  # And if the event doesn't exist, we create a new event.
-            client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
-    Thread(target=__t, daemon=True).start()
+    try:
+        # Will fail with 404 if the event does not exist
+        client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,
+                            body=event_body).execute()
+    except HttpError:  # And if the event doesn't exist, we create a new event.
+        client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
 
 
 # Deletes the event associated with the timeslot
+@api_pool
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     eventid = build_timeslot_event_id(timeslot)
-    add_request_to_queue(
-        client.events().delete(
-            calendarId=timeslot.schedule.calendar_id,
-            eventId=build_timeslot_event_id(timeslot)
-        )
+    client.events().delete(
+        calendarId=timeslot.schedule.calendar_id,
+        eventId=build_timeslot_event_id(timeslot)
     )

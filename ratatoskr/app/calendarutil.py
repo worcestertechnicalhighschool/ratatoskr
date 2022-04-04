@@ -1,6 +1,7 @@
 import base64
 import datetime
 from threading import Thread
+from ratatoskr.threadutil import daemon
 import ratatoskr.settings
 import hashlib
 from django.utils.timezone import make_aware
@@ -14,6 +15,7 @@ from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
 from ratatoskr.googleapiqueue import add_request_to_queue
 from numpy import byte
+from ratelimit import limits, sleep_and_retry
 
 # Notes:
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
@@ -31,6 +33,16 @@ else:
 
 CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 
+# 9 calls per second
+api_pool = limits(calls=9, period=1)
+
+def api_ratelimit(func):
+    @daemon
+    @sleep_and_retry
+    @api_pool
+    def inner(*args, **kwargs):
+        func(*args, **kwargs)
+    return inner
 
 def hashify(string: str) -> str:
     return hashlib.sha1(bytes(string, "ascii")).hexdigest().lower()

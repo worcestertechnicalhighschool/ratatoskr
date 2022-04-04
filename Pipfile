@@ -22,6 +22,7 @@ google-auth-oauthlib = "*"
 ipython = "*"
 psycopg2 = "*"
 python-dotenv = "*"
+ratelimit = "*"
 
 [dev-packages]
 

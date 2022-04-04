@@ -1,6 +1,7 @@
 import base64
 import datetime
 from threading import Thread
+from ratatoskr.threadutil import daemon
 import ratatoskr.settings
 import hashlib
 from django.utils.timezone import make_aware
@@ -12,8 +13,8 @@ from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from allauth.socialaccount.models import SocialToken, SocialApp
 from django.contrib.auth.models import User
-from ratatoskr.googleapiqueue import add_request_to_queue
 from numpy import byte
+from ratelimit import limits, sleep_and_retry
 
 # Notes:
 # Client object is just a capsule for the Credentials, there is no cost to building multiple client objects
@@ -31,6 +32,17 @@ else:
 
 CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SUFFIX
 
+# 9 calls per second
+api_limits_decorator = limits(calls=9, period=1)
+
+# Decorator function for rate limiting async calls to a function
+def api_pool(func):
+    @daemon
+    @sleep_and_retry
+    @api_limits_decorator
+    def inner(*args, **kwargs):
+        func(*args, **kwargs)
+    return inner
 
 def hashify(string: str) -> str:
     return hashlib.sha1(bytes(string, "ascii")).hexdigest().lower()
@@ -103,15 +115,21 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     # conf_data = {}
 
     # Delete the dummy event, we don't need it
-    client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    @daemon
+    def del_async():
+        client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
+    del_async()
+    
     return conf_data, calendar_id
 
+@api_pool
 def delete_calendar_for_schedule(schedule) -> None:
     client = build_calendar_client(schedule.owner)
-    add_request_to_queue(client.calendars().delete(calendarId=schedule.calendar_id))
+    client.calendars().delete(calendarId=schedule.calendar_id)
 
 # Updates the calendar event associated with the timeslot
 # If the event does not exist, this function will create one
+@api_pool
 def update_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
 
@@ -174,23 +192,20 @@ def update_timeslot_event(timeslot) -> None:
         "id": event_id
     }
     # Just do this asyncrhonouslyk
-    def __t():
-        try:
-            # Will fail with 404 if the event does not exist
-            client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,
-                                body=event_body).execute()
-        except HttpError:  # And if the event doesn't exist, we create a new event.
-            client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
-    Thread(target=__t, daemon=True).start()
+    try:
+        # Will fail with 404 if the event does not exist
+        client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,
+                            body=event_body).execute()
+    except HttpError:  # And if the event doesn't exist, we create a new event.
+        client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=event_body).execute()
 
 
 # Deletes the event associated with the timeslot
+@api_pool
 def delete_timeslot_event(timeslot) -> None:
     client = build_calendar_client(timeslot.schedule.owner)
     eventid = build_timeslot_event_id(timeslot)
-    add_request_to_queue(
-        client.events().delete(
-            calendarId=timeslot.schedule.calendar_id,
-            eventId=build_timeslot_event_id(timeslot)
-        )
+    client.events().delete(
+        calendarId=timeslot.schedule.calendar_id,
+        eventId=build_timeslot_event_id(timeslot)
     )

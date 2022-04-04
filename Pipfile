@@ -23,6 +23,7 @@ ipython = "*"
 psycopg2 = "*"
 python-dotenv = "*"
 ratelimit = "*"
+gunicorn = "*"
 
 [dev-packages]
 

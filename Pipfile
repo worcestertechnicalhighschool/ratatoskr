@@ -25,6 +25,7 @@ python-dotenv = "*"
 ratelimit = "*"
 gunicorn = "*"
 whitenoise = "*"
+dj-database-url = "*"
 
 [dev-packages]
 

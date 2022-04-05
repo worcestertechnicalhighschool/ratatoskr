@@ -137,7 +137,7 @@ GitHub.sublime-settings
 .history
 
 # pipenv
-Pipfile.lock
+# Pipfile.lock
 
 # SCSS/SASS/CSS
 *.css

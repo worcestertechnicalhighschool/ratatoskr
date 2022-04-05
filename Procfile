@@ -1,2 +1,2 @@
-web: gunicorn ratatoskr/ratatoskr.wsgi
+web: cd ./ratatoskr; gunicorn ratatoskr.wsgi:application; cd ..
 release: ./ratatoskr/manage.py migrate

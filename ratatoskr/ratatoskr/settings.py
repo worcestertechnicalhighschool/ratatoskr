@@ -18,7 +18,7 @@ from dotenv import load_dotenv, get_key
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+# load_dotenv(BASE_DIR / '.env')
 
 LOGIN_REDIRECT_URL = "/"
 

@@ -1,3 +1,4 @@
+import os
 from allauth.socialaccount import providers
 from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand, CommandError
@@ -9,6 +10,24 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         override_socialapp = False
+
+        # -c get from environment variables
+        if "-c" in args:
+            app = SocialApp.objects.create(
+                provider = "google",
+                name = "ratatoskr",
+                client_id = os.environ["GOOGLE_CLIENT_ID"],
+                secret = os.environ["GOOGLE_CLIENT_SECRET"],
+            )
+
+            site = Site.objects.get(pk=1)
+
+            site.domain = os.environ["SITE_URL"]
+            site.name = os.environ["SITE_URL"]
+
+            site.save()
+
+            return
 
         # In the case we already have another social app
         if SocialApp.objects.count() == 1:

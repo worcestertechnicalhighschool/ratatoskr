@@ -24,6 +24,7 @@ psycopg2 = "*"
 python-dotenv = "*"
 ratelimit = "*"
 gunicorn = "*"
+whitenoise = "*"
 
 [dev-packages]
 

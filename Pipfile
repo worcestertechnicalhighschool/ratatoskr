@@ -26,7 +26,6 @@ ratelimit = "*"
 gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
-django-compressor = "*"
 
 [dev-packages]
 

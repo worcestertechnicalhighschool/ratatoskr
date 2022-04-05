@@ -47,6 +47,11 @@ ALLOWED_HOSTS = [
 
 SITE_ID = 1
 
+# CSRF
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 # Application definition
 
 INSTALLED_APPS = [

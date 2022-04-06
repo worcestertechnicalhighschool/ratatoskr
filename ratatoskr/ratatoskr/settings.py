@@ -224,5 +224,3 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
-
-DEBUG = False

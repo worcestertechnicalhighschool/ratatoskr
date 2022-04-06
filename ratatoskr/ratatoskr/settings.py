@@ -142,7 +142,8 @@ else:
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
 
-SECURE_SSL_REDIRECT = True
+# Do not enable this in a development environment. Chrome will cache the redirect and force HTTPS redirects even when this is disabled.
+SECURE_SSL_REDIRECT = not DEBUG
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

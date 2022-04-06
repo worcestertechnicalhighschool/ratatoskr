@@ -147,6 +147,7 @@ else:
 # go to chrome://net-internals/#hsts and delete 127.0.0.1:8000, open the inspector on the website, and right click on the reload icon
 # and select the Empty Cache and Hard Reload option. 
 SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 0 if DEBUG else 60 ** 2
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

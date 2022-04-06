@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
+import pytz
 from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
@@ -103,9 +104,15 @@ def schedule(request, schedule):
         response = update_schedule(request, schedule)
 
     limit_days = 30
+    est = pytz.timezone("America/New_York")
+
     if schedule.owner == request.user:
         limit_days = 180
-    timeslots = schedule.timeslot_set.filter(time_from__range=(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=limit_days)))
+    timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
+    timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
+    timeslots = schedule.timeslot_set.filter(
+        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc), est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
+    )
 
     timeslots = dict(
         sorted(

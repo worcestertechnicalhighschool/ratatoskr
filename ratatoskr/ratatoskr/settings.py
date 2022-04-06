@@ -143,6 +143,9 @@ else:
     }
 
 # Do not enable this in a development environment. Chrome will cache the redirect and force HTTPS redirects even when this is disabled.
+# If you are a poor soul who is being harassed by Chrome and HSTS SSL,
+# go to chrome://net-internals/#hsts and delete 127.0.0.1:8000, open the inspector on the website, and right click on the reload icon
+# and select the Empty Cache and Hard Reload option. 
 SECURE_SSL_REDIRECT = not DEBUG
 
 # Password validation

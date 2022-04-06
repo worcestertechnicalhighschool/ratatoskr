@@ -12,13 +12,14 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os.path
 import os
 from pathlib import Path
+import dj_database_url
 
 from dotenv import load_dotenv, get_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+# load_dotenv(BASE_DIR / '.env')
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -26,17 +27,32 @@ LOGIN_REDIRECT_URL = "/"
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k(@m5gxw=ej*#adl45$%!7h_%@kipss%0k%+@(0r(%6bhv+6z3'
+envget = os.environ.get('SECRET_KEY')
+SECRET_KEY = envget if envget else 'django-insecure-k(@m5gxw=ej*#adl45$%!7h_%@kipss%0k%+@(0r(%6bhv+6z3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# If there is a variable called PRODUCTION, debug will be false
+DEBUG = not bool(os.environ.get('PRODUCTION'))
+
+# yabe
+# secret key needs to be defined in production
+# the insecure one is literally public right there above you
+if not bool(envget) and not DEBUG:
+    raise Exception("SECRET_KEY environment variable not defined in production!")
 
 ALLOWED_HOSTS = [
-    "127.0.0.1:8000",
-    "https://ratatoskr-meeting-system.herokuapp.com/"
+    "127.0.0.1",
+    "localhost",
+    "ratatoskr-meeting-system.herokuapp.com",
+    "meetings.techhigh.us"
 ]
 
 SITE_ID = 1
+
+# CSRF
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # Application definition
 
@@ -60,6 +76,8 @@ INSTALLED_APPS = [
     "django_celery_results"
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -74,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'ratatoskr.urls'
@@ -99,6 +118,7 @@ WSGI_APPLICATION = 'ratatoskr.wsgi.application'
 if not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
+    # These two should DEFINITELY be defined in production
     EMAIL_HOST_USER = os.environ['email']
     EMAIL_HOST_PASSWORD = os.environ['email_password']
     EMAIL_PORT = 587
@@ -110,12 +130,24 @@ else:
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    }
+
+# Do not enable this in a development environment. Chrome will cache the redirect and force HTTPS redirects even when this is disabled.
+# If you are a poor soul who is being harassed by Chrome and HSTS SSL,
+# go to chrome://net-internals/#hsts and delete 127.0.0.1:8000, open the inspector on the website, and right click on the reload icon
+# and select the Empty Cache and Hard Reload option. 
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 0 if DEBUG else 60 ** 2
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -149,11 +181,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'static'
 
 SASS_PROCESSOR_ROOT = STATIC_ROOT
+
+SASS_PROCESSOR_STORAGE = 'django.contrib.staticfiles.storage.FileSystemStorage'
+SASS_PROCESSOR_STORAGE_OPTIONS = {
+    'location': STATIC_ROOT,
+    'base_url': STATIC_URL,
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

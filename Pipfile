@@ -23,8 +23,12 @@ ipython = "*"
 psycopg2 = "*"
 python-dotenv = "*"
 ratelimit = "*"
+gunicorn = "*"
+whitenoise = "*"
+dj-database-url = "*"
+django-compressor = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.10.4"

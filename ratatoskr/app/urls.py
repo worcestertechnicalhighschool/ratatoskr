@@ -20,6 +20,8 @@ urlpatterns = [
     path('reservation/<reservation:reservation>/cancel', views.cancel_reservation, name='cancel-reservation'),
     path('schedule/reservation-confirmed', views.reserve_confirmed, name='reserve-confirmed'),
     path('schedules/<int:user_id>', views.user_schedules, name='user-schedules'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
     path('help/', views.help_page, name='help'),
     path('mail/', views.test)
 ]

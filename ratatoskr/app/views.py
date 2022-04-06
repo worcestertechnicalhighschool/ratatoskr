@@ -32,6 +32,17 @@ def index(request):
     })
 
 
+@require_http_methods(["GET"])
+def about(request):
+    return render(request, 'app/pages/about.html')
+
+
+@require_http_methods(["GET"])
+def contact(request):
+    return render(request, 'app/pages/contact.html')
+
+
+
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
     if not request.user.is_authenticated:
@@ -462,7 +473,7 @@ def reserve_confirmed(request):
 
 @require_http_methods(["GET"])
 def help_page(request):
-    return HttpResponse("No.")
+    return render(request, "app/pages/help.html")
 
 
 def test(request):

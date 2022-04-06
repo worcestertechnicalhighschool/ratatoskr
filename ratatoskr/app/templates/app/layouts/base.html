@@ -28,13 +28,13 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="navbar-nav ms-auto flex-nowrap align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -44,13 +44,13 @@
                     <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0">
                       {% if user.is_authenticated %}
                           <div class="dropdown mx-2">
-                              <a href="#" class="nav-link dropdown-toggle py-0" data-bs-toggle="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle py-0" data-bs-toggle="dropdown">
                                     {% comment %} does it look like i want a stupid long property chain? i just want my user's gosh darn profile picture! {% endcomment %}
                                     <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
                                     {{ user.socialaccount_set.all.0.extra_data.name }}
                                     <b class="caret"></b>
-                              </a>
-                              <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
+                                </a>
+                                <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
                                     {% if user.is_superuser %}
                                         <li><span class="dropdown-item-text">THE A D M I N</span></li>
                                     {% elif user.is_staff %}
@@ -65,11 +65,11 @@
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
                                     <li><span class="dropdown-item-text" href="#">{% logout_button %}</span></li>
-                              </ul>
-                          </div>
-                      {% else %}
-                          {% login_button %}
-                      {% endif %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            {% login_button %}
+                        {% endif %}
                     </li>
                 </ul>
             </div>
@@ -105,7 +105,7 @@
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
                 <li class="nav-item"><a class="nav-link px-1 text-muted" href="https://techhigh.us"><i class="fa-solid fa-school"></i> WTHS</a></li>
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
-                <li class="nav-item"><a class="nav-link px-1 text-muted" href="mailto:ratatoskr@techhigh.us"><i class="fa-solid fa-envelope"></i> Contact us!</a></li>
+                <li class="nav-item"><a class="nav-link px-1 text-muted" href="{% url "contact" %}"><i class="fa-solid fa-envelope"></i> Contact us!</a></li>
             </ul>
         </footer>
     </div>

@@ -1,0 +1,60 @@
+{% extends 'app/layouts/base.html' %}
+{% block title %}Contact{% endblock title %}
+
+{% block body %}
+
+    <div class="d-flex justify-content-center">
+        <div class="card" style="width: 35rem;">
+            <div class="card-body">
+                <h2 class="ps-5 pb-2">Contact Us!</h1>
+                <form>
+                    <div class="d-flex justify-content-center mb-2">
+                        <div class="mb-3">
+                            <label class="form-label ps-1">Full Name</label>    
+                            <div class="input-group">
+                                <label for="firstName"></label>
+                                <input type="text" class="form-control" name="firstName" placeholder="First Name" aria-label="FirstName">
+                                <label for="lastName"></label>
+                                <input type="text" class="form-control" name="lastName" placeholder="Last Name" aria-label="LastName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-2">
+                        <div class="mb-3">
+                            <label class="form-label ps-1">Email Address</label>  
+                            <div class="input-group" style="width:26rem;">
+                                <span class="input-group-text" id="at-addon1">@</span>
+                                <label for="email"></label>
+                                <input type="text" class="form-control" name="email" placeholder="Email" aria-label="email" aria-describedby="at-addon1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-2">
+                        <div class="mb-3">
+                            <label class="form-label ps-1">Send any questions!</label>  
+                            <div class="input-group mb-3" style="width:26rem;">
+                                <span class="input-group-text" id="message-addon1"><i class="fa-solid fa-message"></i></span>
+                                <label for="message"></label>
+                                <textarea class="form-control" name="atsign" placeholder="Comments/Questions/Concerns" aria-label="message" aria-describedby="message-addon1"> </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-2">
+                        <div class="mb-3">
+                            <div class="input-group mb-3">
+                                <button type="submit" class="btn btn-primary">Submit!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <h6>Our email is <a href="mailto:ratatoskr@techhigh.us">ratatoskr@techhigh.us</a>!</h6>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <h6>Here is our <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues">github issues</a> page!</h6>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

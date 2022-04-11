@@ -15,7 +15,22 @@
     <a class="btn btn-outline-warning" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
     <a class="btn btn-outline-danger" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help</a>
     {% if user.is_authenticated and user != schedule.owner %}
-        <a class="btn btn{% if schedule|is_subscribed:user %}{% else %}-outline{% endif %}-info" href="{% if schedule|is_subscribed:user %}{% url 'unsubscribe' schedule.id %}{% else %}{% url 'subscribe' schedule.id %}{% endif %}"><i class="fa-solid fa-eye"></i>&nbsp;&nbsp;{% if schedule|is_subscribed:user %}Unsubscribe{% else %}Subscribe{% endif %}</a>
+        <form class="m-0 p-0 d-inline" method="POST" action="{% url 'subscription' schedule.id %}">
+            {% csrf_token %}
+            {% if not schedule|is_subscribed:user %}
+                <button class="btn btn-outline-info" name="action" value="subscribe"><i class="fa-solid fa-eye"></i>&nbsp;&nbsp;Subscribe</button>
+            {% else %}
+                <div class="btn-group">
+                      <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-eye"></i> Subscription
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" name="action" value="add_guest"><i class="fa-solid fa-people-line"></i>&nbsp;&nbsp;Add Self To Meetings</button></li>
+                        <li><button class="dropdown-item" name="action" value="unsubscribe"><i class="fa-solid fa-eye-slash"></i>&nbsp;&nbsp;Unsubscribe</button></li>
+                      </ul>
+                </div>
+            {% endif %}
+        </form>
     {% endif %}
 
     <div class="card mt-4">

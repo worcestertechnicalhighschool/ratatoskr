@@ -478,16 +478,20 @@ def reserve_confirmed(request):
     })
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["POST"])
 def subscribe_schedule(request, schedule):
-    if ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).count() < 1:
-        ScheduleSubscription(schedule=schedule, user=request.user).save()
-    return redirect(f"/schedule/{schedule.pk}")
+    if request.user != schedule.owner:
+        raise PermissionDenied()
 
+    match request.POST["action"]:
+        case "unsubscribe":
+            ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).delete()
+        case "add_guest":
+            print("Add guest.")
+        case "subscribe":
+            if ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).count() < 1:
+                ScheduleSubscription(schedule=schedule, user=request.user).save()
 
-@require_http_methods(["GET"])
-def unsubscribe_schedule(request, schedule):
-    ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).delete()
     return redirect(f"/schedule/{schedule.pk}")
 
 

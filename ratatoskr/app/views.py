@@ -42,7 +42,6 @@ def contact(request):
     return render(request, 'app/pages/contact.html')
 
 
-
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
     if not request.user.is_authenticated:
@@ -90,19 +89,25 @@ def update_schedule(request, schedule):
             for timeslot in all_timeslots:
                 timeslot.is_locked = True
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } locked!')
+            messages.add_message(request, messages.INFO,
+                                 f'{all_timeslots.count()} timeslot{"s" if all_timeslots.count() != 1 else ""} locked!')
         case "unlock":
             for timeslot in all_timeslots:
                 timeslot.is_locked = False
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } unlocked!')
+            messages.add_message(request, messages.INFO,
+                                 f'{all_timeslots.count()} timeslot{"s" if all_timeslots.count() != 1 else ""} unlocked!')
         case "delete":
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } deleted!')
+            messages.add_message(request, messages.INFO,
+                                 f'{all_timeslots.count()} timeslot{"s" if all_timeslots.count() != 1 else ""} deleted!')
             timeslots.delete()
         case "copy":
             return render(request, "app/pages/copy_timeslot.html", {
                 "timeslots": sorted(timeslots, key=lambda x: x.time_from)
             })
+        case "delete_schedule":
+            schedule.delete()
+            return redirect("/")
     return None
 
 
@@ -122,12 +127,14 @@ def schedule(request, schedule):
     timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
     timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
     timeslots = schedule.timeslot_set.filter(
-        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc), est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
+        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
+                          est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
     )
 
     timeslots = dict(
         sorted(
-            {k: list(v) for k, v in groupby(sorted(timeslots, key=lambda x: x.time_from), lambda x: x.time_from.date())}.items()
+            {k: list(v) for k, v in
+             groupby(sorted(timeslots, key=lambda x: x.time_from), lambda x: x.time_from.date())}.items()
             # Group and sort the timeslots by their time_from date
         )
     )
@@ -136,7 +143,8 @@ def schedule(request, schedule):
         k: {
             "from": v[0].time_from,
             "to": v[-1].time_to,
-            "available": sum([i.reservation_limit for i in v]) - sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
+            "available": sum([i.reservation_limit for i in v]) - sum(
+                [len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "taken": sum([i.reservation_set.count() for i in v]),
             "confirmed": sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "all_locked": all([x.is_locked for x in v])
@@ -177,7 +185,6 @@ def schedule_day(request, schedule, date):
 
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
-
     if schedule.owner != request.user:
         raise PermissionDenied()
 
@@ -234,7 +241,7 @@ def create_timeslots(request, schedule):
             # Timeslot(1:00-1:20), Timeslot(1:30-1:50)
 
             # Do this for every date and now we have all the timeslots from 3/10 to 3/12
-            
+
             # Our date range
             dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
             # The total amount of time from the first timeslot's start to the last timeslot's end
@@ -479,4 +486,3 @@ def help_page(request):
 def test(request):
     send_confirmation_email(Reservation.objects.get())
     return HttpResponse()
-

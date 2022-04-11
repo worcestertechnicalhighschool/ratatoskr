@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center px-4">
         {% if is_owner %}
         <div class="d-flex flex-row align-items-center">
-            <img class="me-2 rounded" src="{{ owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ owner.get_full_name }}'s profile picture" style="width: 40px">
+            <img class="me-3 rounded" src="{{ owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ owner.get_full_name }}'s profile picture" style="width: 40px">
             <h1>My Schedules</h1>
         </div>
         <a href="{% url "create-schedule" %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>

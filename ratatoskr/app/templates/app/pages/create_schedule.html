@@ -13,7 +13,7 @@
             <h2 class="mt-2">Create Schedule</h2>
         </div>
       <div class="card-body">
-        <form action="{% url "create-schedule" %}" method="POST" v-scope="{ autoLockEnabled: false }">
+        <form action="{% url 'create-schedule' %}" method="POST" v-scope="{ autoLockEnabled: false, loading: false }" @submit="loading = true">
             {% csrf_token %}
             <div class="form-floating mb-3">
                 <input type="text" id="name" name="name" class="form-control" placeholder="My New Schedule" />
@@ -34,7 +34,13 @@
             </fieldset>
             <br>
             <fieldset class="text-center">
-                <button class="btn btn-primary w-50" name="submit" type="submit">Create</button>
+                <button class="btn btn-primary w-50" name="submit" type="submit" v-bind:disabled="loading">
+                    <template v-if="loading">
+                        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </template>
+                    <span v-else>Create</span>
+                </button>
             </fieldset>
         </form>
       </div>

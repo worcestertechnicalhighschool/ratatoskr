@@ -20,7 +20,7 @@ from app.emailutil import send_confirmation_email, send_success_email
 from ratatoskr.celery import debug_task, send_mail_task
 
 from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
-from .models import Schedule, TimeSlot, Reservation
+from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
 
@@ -478,14 +478,17 @@ def reserve_confirmed(request):
     })
 
 
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def subscribe_schedule(request, schedule):
-    return None
+    if ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).count() < 1:
+        ScheduleSubscription(schedule=schedule, user=request.user).save()
+    return redirect(f"/schedule/{schedule.pk}")
 
 
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def unsubscribe_schedule(request, schedule):
-    return None
+    ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).delete()
+    return redirect(f"/schedule/{schedule.pk}")
 
 
 @require_http_methods(["GET"])

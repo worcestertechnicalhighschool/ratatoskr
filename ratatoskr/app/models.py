@@ -7,11 +7,12 @@ from django.dispatch import receiver
 from googleapiclient.errors import HttpError
 from threading import Thread
 
-from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, \
-    update_timeslot_event
+from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
 
 
 # Create your models here.
+from .emailutil import send_change_email
+
 
 class Schedule(models.Model):
     id = models.AutoField(primary_key=True)
@@ -73,8 +74,15 @@ def on_reservation_create(sender, instance, **kwargs):
         raise e
 
 
+@receiver(models.signals.post_save, sender=Reservation)
+def on_reservation_changed(sender, instance, **kwargs):
+    if instance.confirmed:
+        send_change_email(instance, "confirmed")
+
+
 @receiver(models.signals.post_delete, sender=Reservation)
 def on_reservation_delete(sender, instance, **kwargs):
+    send_change_email(instance, "cancelled")
     update_timeslot_event(instance.timeslot)
 
 

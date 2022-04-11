@@ -54,6 +54,7 @@ class ScheduleSubscription(models.Model):
     id = models.AutoField(primary_key=True)
     schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    add_as_guest = models.BooleanField(default=False)
 
 
 # Signals for hooking into Google Calendar API

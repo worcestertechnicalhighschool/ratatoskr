@@ -478,6 +478,16 @@ def reserve_confirmed(request):
     })
 
 
+@require_http_methods(["POST"])
+def subscribe_schedule(request, schedule):
+    return None
+
+
+@require_http_methods(["POST"])
+def unsubscribe_schedule(request, schedule):
+    return None
+
+
 @require_http_methods(["GET"])
 def help_page(request):
     return render(request, "app/pages/help.html")

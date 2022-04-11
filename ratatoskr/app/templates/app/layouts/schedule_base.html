@@ -14,6 +14,9 @@
     <a class="btn btn-outline-primary" href="mailto:{{ schedule.owner.email }}"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Contact</a>
     <a class="btn btn-outline-warning" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
     <a class="btn btn-outline-danger" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help</a>
+    {% if user.is_authenticated and user != schedule.owner %}
+        <a class="btn btn{% if schedule|is_subscribed:user %}{% else %}-outline{% endif %}-info" href="{% if schedule|is_subscribed:user %}{% url 'unsubscribe' schedule.id %}{% else %}{% url 'subscribe' schedule.id %}{% endif %}"><i class="fa-solid fa-eye"></i>&nbsp;&nbsp;{% if schedule|is_subscribed:user %}Unsubscribe{% else %}Subscribe{% endif %}</a>
+    {% endif %}
 
     <div class="card mt-4">
         <div class="card-header">

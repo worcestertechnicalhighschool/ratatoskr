@@ -50,6 +50,12 @@ class Reservation(models.Model):
     confirmed = models.BooleanField(default=False)
 
 
+class ScheduleSubscription(models.Model):
+    id = models.AutoField(primary_key=True)
+    schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+
 # Signals for hooking into Google Calendar API
 
 

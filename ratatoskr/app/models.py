@@ -11,7 +11,7 @@ from .calendarutil import create_calendar_for_schedule, delete_calendar_for_sche
 
 
 # Create your models here.
-from .emailutil import send_change_email
+from .emailutil import send_change_email, send_cancelled_email
 
 
 class Schedule(models.Model):
@@ -83,6 +83,7 @@ def on_reservation_changed(sender, instance, **kwargs):
 @receiver(models.signals.post_delete, sender=Reservation)
 def on_reservation_delete(sender, instance, **kwargs):
     send_change_email(instance, "cancelled")
+    send_cancelled_email(instance)
     update_timeslot_event(instance.timeslot)
 
 

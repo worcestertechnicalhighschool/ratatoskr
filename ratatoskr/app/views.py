@@ -477,7 +477,6 @@ def copy_timeslots(request, schedule):
                 timeslot.save()
                 Reservation.objects.filter(timeslot=timeslot).delete()
                 messages.add_message(request, messages.SUCCESS, "Timeslots moved!")
-                # TODO: notify users that the reservation was cancelled.
     return redirect(request.POST["next"])
 
 

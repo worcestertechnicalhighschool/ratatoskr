@@ -47,3 +47,4 @@ class ScheduleCreationForm(forms.Form):
     name = forms.CharField(max_length=64)
     should_lock_automatically = forms.BooleanField()
     auto_lock_after = forms.TimeField(widget=forms.DateTimeInput(attrs={'type': 'time'}), required=False)
+    visibility_select = forms.CharField(max_length=1)

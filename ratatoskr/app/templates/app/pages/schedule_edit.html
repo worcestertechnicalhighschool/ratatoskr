@@ -35,6 +35,16 @@
                         <div id="descHelp" class="form-text">This appears below your schedule name when visitors come to reserve timeslots.</div>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="visibility-select" class="form-label">Visibility</label>
+                        <select class="form-select" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility-select">
+                          <option {% if schedule.visibility == 'A' %}selected{% endif %} value="A">Public</option>
+                          <option {% if schedule.visibility == 'U' %}selected{% endif %} value="U">Unlisted</option>
+                          <option {% if schedule.visibility == 'P' %}selected{% endif %} value="P">Private</option>
+                        </select>
+                        <div id="visibilityHelp" class="form-text">Choose your visibility to restrict access to your schedule.</div>
+                    </div>
+
                     <fieldset class="text-center">
                         <button class="btn btn-primary w-50" type="submit">Update</button>
                     </fieldset>

@@ -28,7 +28,7 @@ from django.contrib import messages
 @require_http_methods(["GET"])
 def index(request):
     return render(request, 'app/pages/index.html', {
-        "schedules": Schedule.objects.all()
+        "schedules": Schedule.objects.filter(visibility='A')
     })
 
 
@@ -59,6 +59,7 @@ def create_schedule(request):
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
+            visibility=form.cleaned_data["visibility_select"],
             auto_lock_after=make_aware(lock_date),
             is_locked=False,
         )
@@ -119,6 +120,9 @@ def schedule(request, schedule):
             raise PermissionDenied()
         response = update_schedule(request, schedule)
 
+    if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
+        raise PermissionDenied()
+
     limit_days = 30
     est = pytz.timezone("America/New_York")
 
@@ -160,7 +164,7 @@ def schedule(request, schedule):
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
     return render(request, "app/pages/schedules.html", {
-        "schedules": Schedule.objects.filter(owner=user_id),
+        "schedules": Schedule.objects.filter(owner=user_id) if request.user.id == user_id else Schedule.objects.filter(owner=user_id, visibility='P'),
         "is_owner": request.user.id == user_id,
         "owner": User.objects.get(id=user_id)
     })
@@ -173,6 +177,9 @@ def schedule_day(request, schedule, date):
         if schedule.owner != request.user:
             raise PermissionDenied()
         response = update_schedule(request, schedule)
+
+    if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
+        raise PermissionDenied()
 
     timeslots = sorted(list(schedule.timeslot_set.all()), key=lambda x: x.time_from)
 
@@ -291,6 +298,8 @@ def reserve_timeslot(request, schedule, date, timeslot):
     reservations = Reservation.objects.filter(timeslot=timeslot, confirmed=True).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
         raise PermissionDenied()
+    if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
+        raise PermissionDenied()
     if request.POST:
         reservation_form = ReservationForm(request.POST)
         if not reservation_form.is_valid():
@@ -397,11 +406,12 @@ def cancel_reservation(request, reservation):
 
 @require_http_methods(["GET", "POST"])
 def edit_schedule(request, schedule):
+    if schedule.owner != request.user:
+        raise PermissionDenied()
     if request.POST:
-        if schedule.owner != request.user:
-            raise PermissionDenied()
         schedule.name = request.POST["schedule-name"]
         schedule.description = request.POST["schedule-desc"]
+        schedule.visibility = request.POST["visibility-select"]
         schedule.save()
 
         return redirect(f'/schedule/{schedule.id}')
@@ -480,7 +490,7 @@ def reserve_confirmed(request):
 
 @require_http_methods(["POST"])
 def subscribe_schedule(request, schedule):
-    if request.user != schedule.owner:
+    if request.user is None:
         raise PermissionDenied()
 
     match request.POST["action"]:

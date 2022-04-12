@@ -15,8 +15,15 @@ from .emailutil import send_change_email, send_cancelled_email
 
 
 class Schedule(models.Model):
+
+    class Visibility(models.TextChoices):
+        PUBLIC = 'A'
+        UNLISTED = 'U'
+        PRIVATE = 'P'
+
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    visibility = models.CharField(max_length=1, choices=Visibility.choices, default=Visibility.PUBLIC)
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=1000, default="")
     is_locked = models.BooleanField()

@@ -32,6 +32,15 @@
                     <input type="datetime-local" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" class="form-control" />
                 </div>
             </fieldset>
+            <div class="my-3">
+                <label for="visibility-select" class="form-label">Visibility</label>
+                <select class="form-select" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility_select">
+                  <option selected value="A">Public</option>
+                  <option value="U">Unlisted</option>
+                  <option value="P">Private</option>
+                </select>
+                <div id="visibilityHelp" class="form-text">Choose your visibility to restrict access to your schedule.</div>
+            </div>
             <br>
             <fieldset class="text-center">
                 <button class="btn btn-primary w-50" name="submit" type="submit" v-bind:disabled="loading">

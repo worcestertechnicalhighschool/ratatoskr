@@ -496,7 +496,9 @@ def subscribe_schedule(request, schedule):
         case "unsubscribe":
             ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).delete()
         case "add_guest":
-            print("Add guest.")
+            sub = ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).get()
+            sub.add_as_guest = not sub.add_as_guest
+            sub.save()
         case "subscribe":
             if ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).count() < 1:
                 ScheduleSubscription(schedule=schedule, user=request.user).save()

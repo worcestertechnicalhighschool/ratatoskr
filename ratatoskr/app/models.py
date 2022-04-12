@@ -7,15 +7,14 @@ from django.dispatch import receiver
 from googleapiclient.errors import HttpError
 from threading import Thread
 
-from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, update_timeslot_event
-
+from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, \
+    update_timeslot_event, add_subscriber, remove_subscriber
 
 # Create your models here.
 from .emailutil import send_change_email, send_cancelled_email
 
 
 class Schedule(models.Model):
-
     class Visibility(models.TextChoices):
         PUBLIC = 'A'
         UNLISTED = 'U'
@@ -104,3 +103,14 @@ def on_reservation_delete(sender, instance, **kwargs):
 @receiver(models.signals.post_delete, sender=TimeSlot)
 def on_timeslot_delete(sender, instance, **kwargs):
     delete_timeslot_event(instance)
+
+
+@receiver(models.signals.post_save, sender=ScheduleSubscription)
+def on_subscription_created(sender, instance, created, **kwargs):
+    if instance.add_as_guest: add_subscriber(instance.schedule, instance.user)
+    elif not instance.add_as_guest and not created: remove_subscriber(instance.schedule, instance.user)
+
+
+@receiver(models.signals.post_delete, sender=ScheduleSubscription)
+def on_subscription_delete(sender, instance, **kwargs):
+    if instance.add_as_guest: remove_subscriber(instance.schedule, instance.user)

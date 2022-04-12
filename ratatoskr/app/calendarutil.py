@@ -114,6 +114,15 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     conf_data = event["conferenceData"]
     # conf_data = {}
 
+    # Make public so information can be shared using subscriptions.
+    rules = {
+        "role": "reader",
+        "scope": {
+            "type": "default"
+        }
+    }
+    client.acl().insert(calendarId=calendar_id, body=rules).execute()
+
     # Delete the dummy event, we don't need it
     @daemon
     def del_async():
@@ -209,3 +218,20 @@ def delete_timeslot_event(timeslot) -> None:
         calendarId=timeslot.schedule.calendar_id,
         eventId=build_timeslot_event_id(timeslot)
     )
+
+
+# Shares the provided schedule with the subscriber.
+@api_pool
+def add_subscriber(schedule, user) -> None:
+    client = build_calendar_client(user)
+    subs = {
+        'id': schedule.calendar_id
+    }
+    client.calendarList().insert(body=subs).execute()
+
+
+# Removes the user from the provided schedule
+@api_pool
+def remove_subscriber(schedule, user) -> None:
+    client = build_calendar_client(user)
+    client.calendarList().delete(calendarId=schedule.calendar_id).execute()

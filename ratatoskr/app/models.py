@@ -8,7 +8,7 @@ from googleapiclient.errors import HttpError
 from threading import Thread
 
 from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, \
-    update_timeslot_event, add_subscriber, remove_subscriber
+    update_timeslot_event, add_subscriber, remove_subscriber, change_visibility
 
 # Create your models here.
 from .emailutil import send_change_email, send_cancelled_email
@@ -69,6 +69,8 @@ class ScheduleSubscription(models.Model):
 @receiver(models.signals.pre_save, sender=Schedule)
 def on_schedule_create(sender, instance, **kwargs):
     if instance.pk is not None:
+        old = Schedule.objects.filter(pk=instance.pk).get()
+        if old.visibility != instance.visibility: change_visibility(instance)
         return
     (instance.calendar_meet_data, instance.calendar_id) = create_calendar_for_schedule(instance)
 

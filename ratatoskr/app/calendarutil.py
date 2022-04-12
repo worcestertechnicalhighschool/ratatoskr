@@ -220,6 +220,31 @@ def delete_timeslot_event(timeslot) -> None:
     )
 
 
+# Update Google Calendar visibility with schedule visibility.
+@api_pool
+def change_visibility(schedule) -> None:
+    client = build_calendar_client(schedule.owner)
+
+    from .models import Schedule
+    rules = {
+        "role": "reader" if schedule.visibility != Schedule.Visibility.PRIVATE else "none",
+        "scope": {
+            "type": "default"
+        }
+    }
+
+    try:
+        client.acl().patch(calendarId=schedule.calendar_id, ruleId="default", body=rules).execute()
+    except Exception as e:
+        rules = {
+            "role": "reader" if schedule.visibility != Schedule.Visibility.PRIVATE else "none",
+            "scope": {
+                "type": "default"
+            }
+        }
+        client.acl().insert(calendarId=schedule.calendar_id, body=rules).execute()
+
+
 # Shares the provided schedule with the subscriber.
 @api_pool
 def add_subscriber(schedule, user) -> None:

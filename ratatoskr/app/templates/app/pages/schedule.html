@@ -6,15 +6,19 @@
         {% if schedule.owner == user %}
             <div class="ms-lg-auto mt-2 mt-lg-0">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Actions
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'edit-schedule' schedule.id %}"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Edit Schedule</a></li>
-                    <li><a class="dropdown-item" href="{{ schedule.get_calendar_url }}"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar</a></li>
-                    <li><a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}"><i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations</a></li>
-                    <li><a class="dropdown-item" href="{% url 'create-timeslots' schedule.id %}"><i class="fa-solid fa-calendar-week"></i>&nbsp;&nbsp;Add Timeslot</a></li>
-                  </ul>
+                  <form action="" method="POST">
+                      {% csrf_token %}
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Actions
+                      </button>
+                      <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="{% url 'edit-schedule' schedule.id %}"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Edit Schedule</a></li>
+                          <li><a class="dropdown-item" href="{{ schedule.get_calendar_url }}"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar</a></li>
+                          <li><a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}"><i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations</a></li>
+                          <li><a class="dropdown-item" href="{% url 'create-timeslots' schedule.id %}"><i class="fa-solid fa-calendar-week"></i>&nbsp;&nbsp;Add Timeslot</a></li>
+                          <li><button class="dropdown-item" onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);" name="action" value="delete_schedule"><i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete Schedule</button></li>
+                      </ul>
+                  </form>
                 </div>
             </div>
         {% endif %}

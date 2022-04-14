@@ -41,3 +41,46 @@ def send_success_email(reservation):
         from_email="ratatoskr@techhigh.us",
         recipient_list=[reservation.email]
     )
+
+
+def send_cancelled_email(reservation):
+    html_content = get_template("email/emails/cancelled_reservation.html")
+    txt_content = get_template("email/emails/cancelled_reservation.txt")
+
+    ctx = {
+        "reservation": reservation,
+        "timeslot": reservation.timeslot,
+        "schedule": reservation.timeslot.schedule,
+        "site": Site.objects.get(pk=SITE_ID)
+    }
+    send_mail(
+        subject=f"Ratatoskr: Cancelled reservation on {reservation.timeslot.schedule.name}",
+        html_message=html_content.render(ctx),
+        message=txt_content.render(ctx),
+        from_email="ratatoskr@techhigh.us",
+        recipient_list=[reservation.email]
+    )
+
+
+def send_change_email(reservation, action):
+    html_content = get_template("email/emails/schedule_change.html")
+    txt_content = get_template("email/emails/schedule_change.txt")
+
+    ctx = {
+        "reservation": reservation,
+        "timeslot": reservation.timeslot,
+        "schedule": reservation.timeslot.schedule,
+        "site": Site.objects.get(pk=SITE_ID),
+        "action": action
+    }
+
+    from .models import ScheduleSubscription  # Avoiding circular import.
+    subscribers = list(map(lambda x: x.user.email, ScheduleSubscription.objects.filter(schedule=reservation.timeslot.schedule.pk)))
+
+    send_mail(
+        subject=f"Ratatoskr: Reservation {action}ed on {reservation.timeslot.schedule.name}",
+        html_message=html_content.render(ctx),
+        message=txt_content.render(ctx),
+        from_email="ratatoskr@techhigh.us",
+        recipient_list=[reservation.timeslot.schedule.owner.email] + subscribers
+    )

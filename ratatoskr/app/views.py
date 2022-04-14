@@ -20,7 +20,7 @@ from app.emailutil import send_confirmation_email, send_success_email
 from ratatoskr.celery import debug_task, send_mail_task
 
 from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
-from .models import Schedule, TimeSlot, Reservation
+from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
 
@@ -28,7 +28,7 @@ from django.contrib import messages
 @require_http_methods(["GET"])
 def index(request):
     return render(request, 'app/pages/index.html', {
-        "schedules": Schedule.objects.all()
+        "schedules": Schedule.objects.filter(visibility='A')
     })
 
 
@@ -40,7 +40,6 @@ def about(request):
 @require_http_methods(["GET"])
 def contact(request):
     return render(request, 'app/pages/contact.html')
-
 
 
 @require_http_methods(["GET", "POST"])
@@ -60,6 +59,7 @@ def create_schedule(request):
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
+            visibility=form.cleaned_data["visibility_select"],
             auto_lock_after=make_aware(lock_date),
             is_locked=False,
         )
@@ -90,19 +90,25 @@ def update_schedule(request, schedule):
             for timeslot in all_timeslots:
                 timeslot.is_locked = True
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } locked!')
+            messages.add_message(request, messages.INFO,
+                                 f'{all_timeslots.count()} timeslot{"s" if all_timeslots.count() != 1 else ""} locked!')
         case "unlock":
             for timeslot in all_timeslots:
                 timeslot.is_locked = False
             TimeSlot.objects.bulk_update(all_timeslots, ["is_locked"])
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } unlocked!')
+            messages.add_message(request, messages.INFO,
+                                 f'{all_timeslots.count()} timeslot{"s" if all_timeslots.count() != 1 else ""} unlocked!')
         case "delete":
-            messages.add_message(request, messages.INFO, f'{all_timeslots.count()} timeslot{ "s" if all_timeslots.count() != 1 else "" } deleted!')
+            messages.add_message(request, messages.INFO,
+                                 f'{all_timeslots.count()} timeslot{"s" if all_timeslots.count() != 1 else ""} deleted!')
             timeslots.delete()
         case "copy":
             return render(request, "app/pages/copy_timeslot.html", {
                 "timeslots": sorted(timeslots, key=lambda x: x.time_from)
             })
+        case "delete_schedule":
+            schedule.delete()
+            return redirect("/")
     return None
 
 
@@ -114,6 +120,9 @@ def schedule(request, schedule):
             raise PermissionDenied()
         response = update_schedule(request, schedule)
 
+    if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
+        raise PermissionDenied()
+
     limit_days = 30
     est = pytz.timezone("America/New_York")
 
@@ -122,12 +131,14 @@ def schedule(request, schedule):
     timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
     timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
     timeslots = schedule.timeslot_set.filter(
-        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc), est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
+        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
+                          est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
     )
 
     timeslots = dict(
         sorted(
-            {k: list(v) for k, v in groupby(sorted(timeslots, key=lambda x: x.time_from), lambda x: x.time_from.date())}.items()
+            {k: list(v) for k, v in
+             groupby(sorted(timeslots, key=lambda x: x.time_from), lambda x: x.time_from.date())}.items()
             # Group and sort the timeslots by their time_from date
         )
     )
@@ -136,7 +147,8 @@ def schedule(request, schedule):
         k: {
             "from": v[0].time_from,
             "to": v[-1].time_to,
-            "available": sum([i.reservation_limit for i in v]) - sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
+            "available": sum([i.reservation_limit for i in v]) - sum(
+                [len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "taken": sum([i.reservation_set.count() for i in v]),
             "confirmed": sum([len(i.reservation_set.filter(confirmed=True)) for i in v]),
             "all_locked": all([x.is_locked for x in v])
@@ -152,7 +164,7 @@ def schedule(request, schedule):
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
     return render(request, "app/pages/schedules.html", {
-        "schedules": Schedule.objects.filter(owner=user_id),
+        "schedules": Schedule.objects.filter(owner=user_id) if request.user.id == user_id else Schedule.objects.filter(owner=user_id, visibility='P'),
         "is_owner": request.user.id == user_id,
         "owner": User.objects.get(id=user_id)
     })
@@ -166,6 +178,9 @@ def schedule_day(request, schedule, date):
             raise PermissionDenied()
         response = update_schedule(request, schedule)
 
+    if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
+        raise PermissionDenied()
+
     timeslots = sorted(list(schedule.timeslot_set.all()), key=lambda x: x.time_from)
 
     return response or render(request, 'app/pages/schedule_day.html', {
@@ -177,7 +192,6 @@ def schedule_day(request, schedule, date):
 
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
-
     if schedule.owner != request.user:
         raise PermissionDenied()
 
@@ -234,7 +248,7 @@ def create_timeslots(request, schedule):
             # Timeslot(1:00-1:20), Timeslot(1:30-1:50)
 
             # Do this for every date and now we have all the timeslots from 3/10 to 3/12
-            
+
             # Our date range
             dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
             # The total amount of time from the first timeslot's start to the last timeslot's end
@@ -283,6 +297,8 @@ def create_timeslots(request, schedule):
 def reserve_timeslot(request, schedule, date, timeslot):
     reservations = Reservation.objects.filter(timeslot=timeslot, confirmed=True).count()
     if timeslot.is_locked or reservations >= timeslot.reservation_limit:
+        raise PermissionDenied()
+    if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
         raise PermissionDenied()
     if request.POST:
         reservation_form = ReservationForm(request.POST)
@@ -390,11 +406,12 @@ def cancel_reservation(request, reservation):
 
 @require_http_methods(["GET", "POST"])
 def edit_schedule(request, schedule):
+    if schedule.owner != request.user:
+        raise PermissionDenied()
     if request.POST:
-        if schedule.owner != request.user:
-            raise PermissionDenied()
         schedule.name = request.POST["schedule-name"]
         schedule.description = request.POST["schedule-desc"]
+        schedule.visibility = request.POST["visibility-select"]
         schedule.save()
 
         return redirect(f'/schedule/{schedule.id}')
@@ -460,7 +477,6 @@ def copy_timeslots(request, schedule):
                 timeslot.save()
                 Reservation.objects.filter(timeslot=timeslot).delete()
                 messages.add_message(request, messages.SUCCESS, "Timeslots moved!")
-                # TODO: notify users that the reservation was cancelled.
     return redirect(request.POST["next"])
 
 
@@ -471,6 +487,25 @@ def reserve_confirmed(request):
     })
 
 
+@require_http_methods(["POST"])
+def subscribe_schedule(request, schedule):
+    if request.user is None:
+        raise PermissionDenied()
+
+    match request.POST["action"]:
+        case "unsubscribe":
+            ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).delete()
+        case "add_guest":
+            sub = ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).get()
+            sub.add_as_guest = not sub.add_as_guest
+            sub.save()
+        case "subscribe":
+            if ScheduleSubscription.objects.filter(schedule=schedule, user=request.user).count() < 1:
+                ScheduleSubscription(schedule=schedule, user=request.user).save()
+
+    return redirect(f"/schedule/{schedule.pk}")
+
+
 @require_http_methods(["GET"])
 def help_page(request):
     return render(request, "app/pages/help.html")
@@ -479,4 +514,3 @@ def help_page(request):
 def test(request):
     send_confirmation_email(Reservation.objects.get())
     return HttpResponse()
-

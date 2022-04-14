@@ -1,0 +1,31 @@
+@use "../bootstrap/variables";
+
+* {
+    --bs-body-bg: #121212;
+    --bs-body-color: #dddddd;
+    --bs-dark-rgb: #dddddd;
+    --bs-light-rgb: #101010;
+
+}
+
+.card {
+    background-color: #232323 !important;
+}
+
+.nav-link {
+    color: #dddddd !important;
+}
+
+.navbar-light .navbar-brand {
+    color: #eeeeee !important;
+}
+
+.form-control {
+    background-color: #313131 !important;
+    color: white !important;
+}
+
+.form-control:focus {
+    background-color: #313131 !important;
+    color: white !important;
+}

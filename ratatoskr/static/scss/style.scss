@@ -1,6 +1,7 @@
 
 // Prepend variable overrides before bootstrap
 @import "app/var-override.scss";
+@import "app/darkmode.scss";
 @import "bootstrap/bootstrap.scss";
 // Append style overrides after Bootstrap
 @import "app/link-disable.scss";

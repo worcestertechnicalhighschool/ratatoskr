@@ -16,7 +16,7 @@ def send_confirmation_email(reservation):
         "site": Site.objects.get(pk=SITE_ID)
     }
     send_mail(
-        subject=f"Ratatoskr: Confirm reservation for f{reservation.timeslot.schedule.name}",
+        subject=f"Ratatoskr: Confirm reservation for {reservation.timeslot.schedule.name}",
         html_message=html_content.render(ctx),
         message=txt_content.render(ctx),
         from_email="ratatoskr@techhigh.us",

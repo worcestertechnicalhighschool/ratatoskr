@@ -3,6 +3,13 @@
 {% block body %}
 <p
     style="font-family: 'Arial', sans-serif;">
-    Hello, {{ schedule.owner.get_full_name }}! <b>{{ reservation.name }}</b> has {{ action }} a timeslot on <b>{{ schedule.name }}</b> at <b>{{ reservation.timeslot.time_from|date:'M j, Y g:i A' }}</b>.
+    Hello, {{ name }}! <b>{{ reservation.name }}</b> has {{ action }} a timeslot on <b>{{ schedule.name }}</b> at <b>{{ reservation.timeslot.time_from|date:'M j, Y g:i A' }}</b>.
 </p>
+{% if is_subscriber %}
+<hr/>
+<small style="font-family: 'Arial', sans-serif;">
+You are recieving this email because you are subscribed to {{ schedule.owner.get_full_name }}'s schedule.
+You can unsubscribe by navigating to the schedule page <a href="http://{{ site.domain }}{% url 'confirm-reservation' reservation.id %}">here</a> and unsubscribing there.
+</small> 
+{% endif %}
 {% endblock body %}

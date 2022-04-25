@@ -6,7 +6,7 @@ from ratatoskr.threadutil import threadpool_decorator
 
 from ratatoskr.settings import SITE_ID
 
-pool = threadpool_decorator()
+pool = threadpool_decorator(2) # we dont need that many threads
 
 @pool
 def send_confirmation_email(reservation):
@@ -65,7 +65,6 @@ def send_cancelled_email(reservation):
         recipient_list=[reservation.email]
     )
 
-@pool
 def send_change_email(reservation, action):
     html_content = get_template("email/emails/schedule_change.html")
     txt_content = get_template("email/emails/schedule_change.txt")
@@ -79,12 +78,33 @@ def send_change_email(reservation, action):
     }
 
     from .models import ScheduleSubscription  # Avoiding circular import.
-    subscribers = [i.user.email for i in ScheduleSubscription.objects.filter(schedule=reservation.timeslot.schedule.pk)]
+    subscribers = [i.user for i in ScheduleSubscription.objects.filter(schedule=reservation.timeslot.schedule.pk)]
 
-    send_mail(
-        subject=f"Ratatoskr: Reservation {action}ed on {reservation.timeslot.schedule.name}",
-        html_message=html_content.render(ctx),
-        message=txt_content.render(ctx),
-        from_email="ratatoskr@techhigh.us",
-        recipient_list=[reservation.timeslot.schedule.owner.email] + subscribers
-    )
+    @pool
+    def inner():
+        nonlocal ctx
+        ctx = ctx | { "name": reservation.timeslot.schedule.owner.get_full_name }
+        pass
+        send_mail(
+            subject=f"Ratatoskr: Reservation {action}ed on {reservation.timeslot.schedule.name}",
+            html_message=html_content.render(ctx),
+            message=txt_content.render(ctx),
+            from_email="ratatoskr@techhigh.us",
+            recipient_list=[reservation.timeslot.schedule.owner.email]
+        )
+    inner()
+
+    ctx = ctx | { "is_subscriber": True }
+    @pool
+    def inner():
+        nonlocal ctx
+        for sub in subscribers:
+            ctx = ctx | { "name": sub.get_full_name }
+            send_mail(
+                subject=f"Ratatoskr: Reservation {action}ed on {reservation.timeslot.schedule.name}",
+                html_message=html_content.render(ctx),
+                message=txt_content.render(ctx),
+                from_email="ratatoskr@techhigh.us",
+                recipient_list=[sub.email]
+            )
+    inner()

@@ -1,10 +1,14 @@
-from django.core.mail import EmailMultiAlternatives, send_mail
+from email.message import EmailMessage
+from django.core.mail import EmailMultiAlternatives, send_mail, send_mass_mail
 from django.template.loader import get_template
 from django.contrib.sites.models import Site
+from ratatoskr.threadutil import threadpool_decorator
 
 from ratatoskr.settings import SITE_ID
 
+pool = threadpool_decorator()
 
+@pool
 def send_confirmation_email(reservation):
     html_content = get_template("email/emails/confirm_reservation.html")
     txt_content = get_template("email/emails/confirm_reservation.txt")
@@ -23,7 +27,7 @@ def send_confirmation_email(reservation):
         recipient_list=[reservation.email]
     )
 
-
+@pool
 def send_success_email(reservation):
     html_content = get_template("email/emails/reservation_success.html")
     txt_content = get_template("email/emails/reservation_success.txt")
@@ -42,7 +46,7 @@ def send_success_email(reservation):
         recipient_list=[reservation.email]
     )
 
-
+@pool
 def send_cancelled_email(reservation):
     html_content = get_template("email/emails/cancelled_reservation.html")
     txt_content = get_template("email/emails/cancelled_reservation.txt")
@@ -61,7 +65,7 @@ def send_cancelled_email(reservation):
         recipient_list=[reservation.email]
     )
 
-
+@pool
 def send_change_email(reservation, action):
     html_content = get_template("email/emails/schedule_change.html")
     txt_content = get_template("email/emails/schedule_change.txt")
@@ -75,7 +79,7 @@ def send_change_email(reservation, action):
     }
 
     from .models import ScheduleSubscription  # Avoiding circular import.
-    subscribers = list(map(lambda x: x.user.email, ScheduleSubscription.objects.filter(schedule=reservation.timeslot.schedule.pk)))
+    subscribers = [i.user.email for i in ScheduleSubscription.objects.filter(schedule=reservation.timeslot.schedule.pk)]
 
     send_mail(
         subject=f"Ratatoskr: Reservation {action}ed on {reservation.timeslot.schedule.name}",

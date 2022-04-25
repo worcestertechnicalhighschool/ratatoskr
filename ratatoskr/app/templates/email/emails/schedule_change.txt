@@ -4,7 +4,7 @@
 Hello, {{ name }}! {{ reservation.name }} has {{ action }} a timeslot on {{ schedule.name }} at {{ reservation.timeslot.time_from|date:'M j, Y g:i A' }}.
 {% if is_subscriber %}
 --------------------
-You are recieving this email because you are subscribed to {{ schedule.owner.get_full_name }}'s schedule.
+You are receiving this email because you are subscribed to {{ schedule.owner.get_full_name }}'s schedule.
 You can unsubscribe by navigating to the schedule page using the link below and unsubscribing there.
 http://{{ site.domain }}{% url 'confirm-reservation' reservation.id %}
 {% endif %}

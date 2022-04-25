@@ -1,0 +1,8 @@
+{% extends 'email/layouts/base.html' %}
+
+{% block body %}
+<p
+    style="font-family: 'Arial', sans-serif;">
+    Hello, {{ schedule.owner.get_full_name }}! <b>{{ reservation.name }}</b> has {{ action }} a timeslot on <b>{{ schedule.name }}</b> at <b>{{ reservation.timeslot.time_from|date:'M j, Y g:i A' }}</b>.
+</p>
+{% endblock body %}

@@ -1,8 +1,124 @@
 {% extends 'app/layouts/base.html' %}
 {% block title %}Help{% endblock title %}
 
+{% block head %}
+<style>
+.main-content {
+    padding-top: 30px;
+}
+
+@media all and (min-width: 992px) {
+    .sidebar {
+        width: 25%;
+        float: left;
+    }
+
+    .main-content {
+        float: left;
+        width: calc(75% - 16px);
+    }
+}
+</style>
+{% endblock head %}
+
 {% block body %}
     <h1 class="px-4">Help</h1>
     <hr/>
-    <h3 class="px-4">Coming soon!</h2>
+    <div class="sidebar">
+        <div class="list-group list-group-flush mx-3 mt-4">
+            <a href="#signing-in" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-user me-3"></i><span>Signing In</span></a>
+            <a href="#creating-schedule" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-calendar-plus me-3"></i><span>Creating a Schedule</span></a>
+            <a href="#sharing-schedule" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-share me-3"></i><span>Sharing a Schedule</span></a>
+            <a href="#editing-schedule" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-pen-to-square me-3"></i><span>Editing a Schedule</span></a>
+            <a href="#adding-timeslots" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-calendar-week me-3"></i><span>Adding Timeslots</span></a>
+            <a href="#finding-reservation" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-magnifying-glass-arrow-right me-3"></i><span>Finding Your Reservations</span></a>
+            <a href="#confirming-cancelling" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-calendar-check me-3"></i><span>Confirming and Cancelling</span></a>
+            <a href="#copying-moving" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-timeline me-3"></i><span>Copying and Moving Timeslots</span></a>
+            <a href="#subscribing" class="list-group-item list-group-item-action py-2 ripple"><i class="fa-solid fa-bullhorn me-3"></i><span>Subscribing to Schedules</span></a>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="card mb-3" id="signing-in">
+          <div class="card-header">
+            Signing In
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="creating-schedule">
+          <div class="card-header">
+            Creating a Schedule
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="sharing-schedule">
+          <div class="card-header">
+            Sharing a Schedule
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="editing-schedule">
+          <div class="card-header">
+            Editing a Schedule
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="adding-timeslots">
+          <div class="card-header">
+            Adding Timeslots
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="finding-reservation">
+          <div class="card-header">
+            Finding Your Reservations
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="confirming-cancelling">
+          <div class="card-header">
+            Confirming and Cancelling
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="copying-moving">
+          <div class="card-header">
+            Copying and Moving Timeslots
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <div class="card mb-3" id="subscribing">
+          <div class="card-header">
+            Subscribing to Schedules
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Placeholder Help Title</h5>
+            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+          </div>
+        </div>
+        <p class="mt-4 text-center">Couldn't find what you're looking for? Try <a href="{% url 'contact' %}">contacting us</a>.</p>
+    </div>
 {% endblock body %}

@@ -4,6 +4,9 @@ import re
 
 from django.utils.html import strip_tags
 
+from app.models import ScheduleSubscription
+from app.models import Schedule
+
 
 @register.filter
 def index(l, i):
@@ -29,6 +32,21 @@ def confirmed_count(timeslot):
 def textified(html_data):
     text_only = re.sub('[ \t]+', ' ', strip_tags(html_data))
     return html.unescape(text_only.replace('\n ', '\n').strip())
+
+
+@register.filter
+def is_subscribed(schedule, user):
+    return ScheduleSubscription.objects.filter(schedule=schedule.pk, user=user.pk).count() > 0
+
+
+@register.filter
+def is_guest(schedule, user):
+    return ScheduleSubscription.objects.filter(schedule=schedule.pk, user=user.pk)[0].add_as_guest
+
+
+@register.filter
+def has_schedules(user):
+    return Schedule.objects.filter(owner=user.pk).count() > 0
 
 
 @register.filter

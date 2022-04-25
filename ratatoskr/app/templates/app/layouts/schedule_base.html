@@ -11,9 +11,31 @@
 
     {{ schedule.description |safe }}
 
-    <a class="btn btn-outline-primary" href="mailto:{{ schedule.owner.email }}"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Contact</a>
-    <a class="btn btn-outline-warning" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
-    <a class="btn btn-outline-danger" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help</a>
+    <a class="btn btn-outline-primary mt-1" href="mailto:{{ schedule.owner.email }}"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Contact</a>
+    <a class="btn btn-outline-warning mt-1" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
+    <a class="btn btn-outline-danger mt-1" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help</a>
+    {% if user.is_authenticated and user != schedule.owner %}
+        <form class="m-0 p-0 d-inline" method="POST" action="{% url 'subscription' schedule.id %}">
+            {% csrf_token %}
+            {% if not schedule|is_subscribed:user %}
+                <button class="btn btn-outline-info mt-1" name="action" value="subscribe"><i class="fa-solid fa-eye"></i>&nbsp;&nbsp;Subscribe</button>
+            {% else %}
+                <div class="btn-group mt-1">
+                      <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-eye"></i> Subscription
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" name="action" value="add_guest"><i class="fa-solid fa-people-line"></i>&nbsp;&nbsp;{% if schedule|is_guest:user %}Remove Self From Meetings{% else %}Add Self To Meetings{% endif %}</button></li>
+                        <li><button class="dropdown-item" name="action" value="unsubscribe"><i class="fa-solid fa-eye-slash"></i>&nbsp;&nbsp;Unsubscribe</button></li>
+                      </ul>
+                </div>
+            {% endif %}
+        </form>
+    {% endif %}
+
+    {% if user == schedule.owner and schedule.visibility != 'A' %}
+        <p class="text-muted mt-3">This schedule is currently {% if schedule.visibility == 'U' %}unlisted. This means that anyone with the link can view or reserve timeslots.{% else %}private. This means that only you have access to the schedule.{% endif %}</p>
+    {% endif %}
 
     <div class="card mt-4">
         <div class="card-header">

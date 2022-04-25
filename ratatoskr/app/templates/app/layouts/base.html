@@ -63,6 +63,9 @@
                                         <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
                                         <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
                                         <li><hr class="dropdown-divider"></li>
+                                    {% elif user|has_schedules %}
+                                        <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
+                                        <li><hr class="dropdown-divider"></li>
                                     {% endif %}
                                     <li><span class="dropdown-item-text" href="#">{% logout_button %}</span></li>
                                 </ul>

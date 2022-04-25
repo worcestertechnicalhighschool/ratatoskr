@@ -1,15 +1,12 @@
-from cmath import log
-import re
-# from django.contrib.auth.signals import user_logged_in
-from allauth.account.signals import user_logged_in
+from allauth.account.signals import user_logged_in as allauth_user_logged_in
 from django.contrib.auth import logout 
 from django.contrib import messages
 from ratatoskr.settings import DEBUG
 
+# TODO: Find a way to not have the default login message pop up
 
-@user_logged_in.connect
+@allauth_user_logged_in.connect
 def give_staff_permission_if_staff_in_worceterschools_domain(request, user, **kwargs):
-
     # You may pass 😎
     if user.is_staff or user.is_superuser:
         return
@@ -26,4 +23,3 @@ def give_staff_permission_if_staff_in_worceterschools_domain(request, user, **kw
         if not DEBUG:
             logout(request)
     
-

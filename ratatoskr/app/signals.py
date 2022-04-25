@@ -14,12 +14,14 @@ def give_staff_permission_if_staff_in_worceterschools_domain(request, user, **kw
     email_user, email_domain = user.email.split("@")
 
     if email_domain not in ("worcesterschools.net", "techhigh.us"):
-        messages.add_message(request, messages.INFO, "Only Google accounts registered within the `worcesterschools` domain are allowed to login")
+        messages.error(request, "Only Google accounts registered within the `worcesterschools` domain are allowed to login")
         if not DEBUG:
             logout(request)
 
     if email_user.startswith("student.") and email_domain == "worcesterschools.net":
-        messages.add_message(request, messages.INFO, "Students are not allowed to login unless given permission by site maintainers")
+        messages.error(request, "Students are not allowed to login unless given permission by site maintainers")
         if not DEBUG:
             logout(request)
+    if DEBUG:
+        messages.info(request, "But since you are in DEBUG mode, you can log in anyways")
     

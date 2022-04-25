@@ -1,23 +1,20 @@
 {% extends 'app/layouts/base.html' %}
-{% block title %}Home{% endblock title %}
-
-{% load socialaccount %}
+{% block title %}About{% endblock title %}
 
 {% block body %}
-    <h1 class="px-4"><strong>All Schedules</strong></h1>
-    <hr />
+    <h1 class="px-4 text-center display-1">About Us!</h1>
+    <p class="text-center lead">Free labor</p>
     <div class="container">
-        {% if schedules %}
-        <div class="row row-cols-lg-3">
-            {% for schedule in schedules %}
-            <div class="col mb-3">
-                    {% schedule_card schedule %}
-                </div>
-            {% endfor %}
+        <div class="row">
+            <div class="col text-center">
+                <h1 class="display-6">Our Mission</h1>
+            </div>
+            <div class="col-6 text-center">
+                <h1 class="display-6">Contributors</h1>
+            </div>
+            <div class="col text-center">
+                <h1 class="display-6">Why "ratatoskr"</h1>
+            </div>
         </div>
-        {% else %}
-        <p class="text-center pt-4">There aren't any schedules here yet...</p>
-        {% endif %}
-    </div>
-
+      </div>
 {% endblock body %}

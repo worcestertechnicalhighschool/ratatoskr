@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
 from app.emailutil import send_confirmation_email, send_success_email
+from django.contrib.auth.decorators import login_required
 
 from ratatoskr.celery import debug_task, send_mail_task
 
@@ -41,11 +42,9 @@ def about(request):
 def contact(request):
     return render(request, 'app/pages/contact.html')
 
-
+@login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
-    if not request.user.is_authenticated:
-        raise PermissionDenied()
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
@@ -190,6 +189,7 @@ def schedule_day(request, schedule, date):
     })
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
     if schedule.owner != request.user:
@@ -324,6 +324,7 @@ def reserve_timeslot(request, schedule, date, timeslot):
     })
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
@@ -345,6 +346,7 @@ def view_reservations(request, schedule, date, timeslot):
     })
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def view_schedule_reservations(request, schedule):
     if schedule.owner.id != request.user.id:
@@ -404,6 +406,7 @@ def cancel_reservation(request, reservation):
     return render(request, "app/pages/reserve_cancelled.html", {"reservation": reservation})
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def edit_schedule(request, schedule):
     if schedule.owner != request.user:
@@ -440,6 +443,7 @@ def find_reservation(request):
     })
 
 
+@login_required
 @require_http_methods(["POST"])
 def copy_timeslots(request, schedule):
     if schedule.owner != request.user:
@@ -487,6 +491,7 @@ def reserve_confirmed(request):
     })
 
 
+@login_required
 @require_http_methods(["POST"])
 def subscribe_schedule(request, schedule):
     if request.user is None:

@@ -33,8 +33,17 @@
         </form>
     {% endif %}
 
-    {% if user == schedule.owner and schedule.visibility != 'A' %}
-        <p class="text-muted mt-3">This schedule is currently {% if schedule.visibility == 'U' %}unlisted. This means that anyone with the link can view or reserve timeslots.{% else %}private. This means that only you have access to the schedule.{% endif %}</p>
+    {% if user == schedule.owner %}
+        <p class="text-muted mt-3">
+            This schedule is currently 
+            {% if schedule.visibility == 'A' %}
+                public. This means that this schedule is visible on your <a href="{% url 'user-schedules' user.id %}">profile page</a>.
+            {% elif schedule.visibility == 'U' %}
+                unlisted. This means that anyone with the link can view or reserve timeslots.
+            {% else %}
+                private. This means that only you have access to the schedule.
+            {% endif %}
+        </p>
     {% endif %}
 
     <div class="card mt-4">

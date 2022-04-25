@@ -6,7 +6,7 @@ from ratatoskr.threadutil import threadpool_decorator
 
 from ratatoskr.settings import SITE_ID
 
-pool = threadpool_decorator(2) # we dont need that many threads
+pool = threadpool_decorator()
 
 @pool
 def send_confirmation_email(reservation):

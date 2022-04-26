@@ -14,6 +14,7 @@
                 <input class="my-1 form-control" type="text" name="contact_info" id="" placeholder="Contact email (optional)">
                 <label class="lead">Message type:</label>
                 <fieldset id="message-type">
+                    {# just add to this list here to add another message type #}
                     <template v-for="(item, i) in ['Bug Report', 'Question', 'Comment', 'Suggestion']">
                         <div>
                             <input type="radio" name="message_type" v-bind:value="item" v-bind:id="i" required>

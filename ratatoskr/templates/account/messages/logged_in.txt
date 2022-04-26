@@ -1,0 +1,8 @@
+{% comment %} 
+this template is here to override the default logged in message behavior
+
+have a cat that says bruh
+
+ᓚᘏᗢ <(bruh)
+
+{% endcomment %}

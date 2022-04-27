@@ -33,8 +33,9 @@
                                     onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
                                     name="action"
                                     value="delete_schedule">
-                                    <i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete Schedule</button>
-                                </li>
+                                    <i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete Schedule
+                                </button>
+                            </li>
                         </ul>
                       <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success">
                         Add Timeslot +

@@ -15,12 +15,12 @@ from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
-from app.emailutil import send_confirmation_email, send_success_email
+from app.emailutil import send_confirmation_email, send_message_email, send_success_email
 from django.contrib.auth.decorators import login_required
 
 from ratatoskr.celery import debug_task, send_mail_task
 
-from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
+from .forms import MessageForm, ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
 from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
@@ -40,6 +40,17 @@ def about(request):
 
 @require_http_methods(["GET", "POST"])
 def contact(request):
+    if request.POST:
+        form = MessageForm(request.POST)
+        # NOTE: call form.is_valid() before actually using its data.
+        # I have no idea why but for some odd reason, form.cleaned_data gets defined at some random interval if is_valid isnt called
+        # weird
+        if not form.is_valid():
+            render(request, "app/pages/contact.html", {
+                "errors": form.errors
+            })
+        send_message_email(form)
+        messages.info(request, "Message recieved! Your feedback is valuable to us!")
     return render(request, 'app/pages/contact.html')
 
 @login_required

@@ -9,7 +9,9 @@
         <div class="col-lg-6">
             <section class="d-lg-inline-block d-flex flex-column justify-content-center w-100">
                 <h3>Send us a message</h3>
-                <form class="card d-inline-block w-100" action="POST">
+                <form class="card d-inline-block w-100" method="POST">
+                    {% csrf_token %}
+                    {{ errors }}
                     <div class="card-body">
                         <textarea class="my-1 form-control" name="message" rows="5" placeholder="Enter your message..." required></textarea>
                         <input class="my-1 form-control" type="text" name="contact_info" id="" placeholder="Contact info (optional)">

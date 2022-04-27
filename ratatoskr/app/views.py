@@ -38,7 +38,7 @@ def about(request):
     return render(request, 'app/pages/about.html')
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 def contact(request):
     return render(request, 'app/pages/contact.html')
 
@@ -107,7 +107,7 @@ def update_schedule(request, schedule):
             })
         case "delete_schedule":
             schedule.delete()
-            return redirect("/")
+            return redirect("schedules", schedule.owner.id)
     return None
 
 

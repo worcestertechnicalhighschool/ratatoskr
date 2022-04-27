@@ -99,7 +99,7 @@
                 public. This means that this schedule is visible on your <a href="{% url 'user-schedules' user.id %}">profile page</a>.
             {% elif schedule.visibility == 'U' %}
                 unlisted. This means that this schedule can only be accessed through a share link.
-            {% else %}
+            {% elif schedule.visibility == 'P' %}
                 private. This means that only you have access to the schedule.
             {% endif %}
         </p>

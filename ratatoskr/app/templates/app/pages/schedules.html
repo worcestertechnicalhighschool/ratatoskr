@@ -8,7 +8,16 @@
         {% if is_owner %}
         <div class="d-flex flex-row align-items-center">
             <img class="me-3 rounded" src="{{ owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ owner.get_full_name }}'s profile picture" style="width: 40px">
-            <h1>My Schedules</h1>
+            <h1>
+                My Schedules 
+                <a
+                    href="#"
+                    data-bs-toggle="tooltip"
+                    title="Copy share link"
+                    @click="navigator.clipboard.writeText(window.location.href)">
+                    <i class="fas fa-link"></i>
+                </a>
+            </h1>
         </div>
         <a href="{% url "create-schedule" %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>
         {% else %}

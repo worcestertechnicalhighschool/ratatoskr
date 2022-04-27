@@ -1,23 +1,64 @@
 {% extends 'app/layouts/base.html' %}
+
+{% load static %}
+
 {% block title %}Home{% endblock title %}
 
-{% load socialaccount %}
-
-{% block body %}
-    <h1 class="px-4"><strong>All Schedules</strong></h1>
-    <hr />
-    <div class="container">
-        {% if schedules %}
-        <div class="row row-cols-lg-3">
-            {% for schedule in schedules %}
-            <div class="col mb-3">
-                    {% schedule_card schedule %}
-                </div>
-            {% endfor %}
+{% block body %}    
+    <section class="d-flex justify-content-center align-items-center pb-6" style="height: 73vh">
+        <div>
+            <h1 class="display-1">ratatoskr</h1>
+            <p class="lead"></p>
         </div>
-        {% else %}
-        <p class="text-center pt-4">There aren't any schedules here yet...</p>
-        {% endif %}
+    </section>
+    <div class="text-center pb-5 mb-5">
+        <a href="#look" class="btn btn-success btn-circle shadow-sm">
+            <h3 class="display-5"><i class="fa-solid fa-arrow-down-long"></i></h3>
+        </a>
     </div>
-
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Lorem ipsum dolor </h1>
+            <p class="lead">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/placeholder.jpg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+    </section>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/placeholder.jpg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Lorem ipsum dolor</h1>
+            <p class="lead">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+        </div>
+    </section>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Lorem ipsum dolor</h1>
+            <p class="lead">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/placeholder.jpg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+    </section>
 {% endblock body %}

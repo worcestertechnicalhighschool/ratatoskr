@@ -5,23 +5,45 @@
 {% block title %}Home{% endblock title %}
 
 {% block body %}    
-    <section class="d-flex justify-content-center align-items-center" style="height: 65vh">
+    <section class="d-flex justify-content-center align-items-center pb-6" style="height: 73vh">
         <div>
             <h1 class="display-1">ratatoskr</h1>
             <p class="lead"></p>
         </div>
     </section>
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <div class="text-center pb-5 mb-5">
+        <a href="#look" class="btn btn-success btn-circle shadow-sm">
+            <h3 class="display-5"><i class="fa-solid fa-arrow-down-long"></i></h3>
+        </a>
+    </div>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Take a look</h1>
+            <p class="lead">It works.</p>
+        </div>
         <div class="col-10 col-sm-8 col-lg-6">
-          <img src="{% static 'assets/krabs.jpg' %}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/placeholder.jpg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+    </section>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/placeholder.jpg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
         <div class="col-lg-6">
-          <h1 class="display-5 mb-3">Take a look</h1>
-          <p class="lead">It works.</p>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-            <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Primary</button>
-          </div>
+            <h1 class="display-5 mb-3">Take a look</h1>
+            <p class="lead">It works.</p>
         </div>
-      </div>
-    </div>
+    </section>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Take a look</h1>
+            <p class="lead">It works.</p>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/placeholder.jpg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+    </section>
 {% endblock body %}

@@ -417,6 +417,8 @@ def edit_schedule(request, schedule):
         schedule.visibility = request.POST["visibility-select"]
         schedule.save()
 
+        messages.info(request, "Edits successfully applied!")
+
         return redirect("schedule", schedule.id)
 
     return render(request, "app/pages/schedule_edit.html", {

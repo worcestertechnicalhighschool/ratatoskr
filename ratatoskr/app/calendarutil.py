@@ -1,7 +1,7 @@
 import base64
 import datetime
 from threading import Thread
-from ratatoskr.threadutil import daemon
+from ratatoskr.threadutil import daemon, threadpool_decorator
 import ratatoskr.settings
 import hashlib
 from django.utils.timezone import make_aware
@@ -34,10 +34,11 @@ CALENDAR_TIMESLOT_EVENT_ID = "%(timeslot_id)s@%(schedule_id)s#" + CALENDAR_ID_SU
 
 # 9 calls per second
 api_limits_decorator = limits(calls=9, period=1)
+threadpool = threadpool_decorator() # By default, use the core count of the CPU for the number of threads initalized
 
 # Decorator function for rate limiting async calls to a function
 def api_pool(func):
-    @daemon
+    @threadpool
     @sleep_and_retry
     @api_limits_decorator
     def inner(*args, **kwargs):
@@ -97,10 +98,8 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
         "conferenceData": {
             "createRequest": {
                 "requestId": str(uuid.uuid4()),
-                # Comment out the line below for testing with a student account.
-                # Students cannot create Google Meets, therefore this returns an error from the API.
                 "conferenceSolutionKey": {"type": "hangoutsMeet"},
-            }
+            } if not schedule.owner.email.startswith("student.") else {} # Students cannot create conferences
         },
         "attendees": [],
         "reminders": {"useDefault": False},
@@ -111,8 +110,7 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     event = client.events().insert(calendarId=calendar_id, conferenceDataVersion=1, body=dummy_event_body).execute()
 
     # Commenting out the line below and uncommenting conf_data = {} will allow student accounts to use for testing.
-    conf_data = event["conferenceData"]
-    # conf_data = {}
+    conf_data = event["conferenceData"] if not schedule.owner.email.startswith("student.") else {} # Students cannot create conferences
 
     # Make public so information can be shared using subscriptions.
     rules = {

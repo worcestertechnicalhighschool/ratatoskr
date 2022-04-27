@@ -2,14 +2,73 @@
 
 {% block title %}{{ schedule.name }}{% endblock title %}
 
-{% block body %}
-    <div class="text-muted d-flex flex-row align-items-center mb-1">
-        <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
-        <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
-    </div>
-    <h1 class="mb-4">{{ schedule.name }}</h1>
+{% block head %}
+<script src='https://cdn.tiny.cloud/1/f47idibd5kj81gghyonezjs67j91eg2no42861jiswtvuvvv/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+{% endblock head %}
 
-    {{ schedule.description |safe }}
+{% block body %}
+    {% if user == schedule.owner %}
+        <form action="{% url 'edit-schedule' schedule.id %}" method="post" v-scope="{
+            editEnable: false,
+            theForm: null
+        }" @vue:mounted="theForm = $el">
+            {% csrf_token %}
+            <div class="text-muted d-flex flex-row align-items-center mb-1">
+                <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
+                <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
+            </div>
+
+            <div v-if="editEnable" v-cloak class="mb-2">
+                <input class="d-inline form-control w-50" type="text" name="schedule-name" value="{{ schedule.name }}">
+                <select class="d-inline form-select w-25" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility-select">
+                    <option {% if schedule.visibility == 'A' %}selected{% endif %} value="A">Public</option>
+                    <option {% if schedule.visibility == 'U' %}selected{% endif %} value="U">Unlisted</option>
+                    <option {% if schedule.visibility == 'P' %}selected{% endif %} value="P">Private</option>
+                </select>
+            </div>
+            <h1 class="mb-2" v-else>
+                {{ schedule.name }}
+                <a href="#" @click="editEnable = true"><i class="fas fa-pencil float-right h2"></i></a>
+            </h1>
+
+            <script>
+                function reset(form) {
+                    const willReset = confirm(`Discard changes?`)
+                    if (willReset)
+                        form.reset()
+                    return !willReset
+                }
+            </script>
+            <div v-if="editEnable" class="d-flex d-md-block flex-column mb-2">
+                <button class="btn btn-danger" v-cloak type="button" @click="editEnable = reset(theForm)">Discard Changes</button>
+                <div class="d-md-none d-inline mb-1"></div> {# padding for mobile #}
+                <button class="btn btn-success" v-cloak type="submit">Save Changes</button>
+            </div>
+            
+            
+            {% comment %} using v-if here will throw off tinymce {% endcomment %}
+            {% comment %} vue directives will be erased by tinymce on their textareas {% endcomment %}
+            <div v-cloak v-show="editEnable">
+                <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000">
+                    {{ schedule.description }} 
+                </textarea>
+            </div>
+            <div v-show="!editEnable" class="mt-2">
+                {{ schedule.description|safe }}
+            </div>
+    </form>
+    {% else %}
+        <div class="text-muted d-flex flex-row align-items-center mb-1">
+            <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
+            <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
+        </div>
+        <h1 class="mb-4">{{ schedule.name }}</h1>
+
+        
+        <div v-else>
+            {{ schedule.description|safe }}
+        </div>
+    {% endif %}
 
     <a class="btn btn-outline-primary mt-1" href="mailto:{{ schedule.owner.email }}"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Contact</a>
     <a class="btn btn-outline-warning mt-1" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
@@ -39,8 +98,8 @@
             {% if schedule.visibility == 'A' %}
                 public. This means that this schedule is visible on your <a href="{% url 'user-schedules' user.id %}">profile page</a>.
             {% elif schedule.visibility == 'U' %}
-                unlisted. This means that anyone with the link can view or reserve timeslots.
-            {% else %}
+                unlisted. This means that this schedule can only be accessed through a share link.
+            {% elif schedule.visibility == 'P' %}
                 private. This means that only you have access to the schedule.
             {% endif %}
         </p>
@@ -60,3 +119,13 @@
     </div>
 
 {% endblock body %}
+
+{% block scripts %}
+<script>
+    tinymce.init({
+        selector: '#schedule-desc',
+        menubar: '',
+        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+    });
+</script>
+{% endblock scripts %}

@@ -12,11 +12,30 @@
                         Actions
                       </button>
                       <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="{% url 'edit-schedule' schedule.id %}"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Edit Schedule</a></li>
-                          <li><a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}"><i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations</a></li>
-                          <li><button type="button" class="dropdown-item" @click="navigator.clipboard.writeText(window.location.href)"><i class="fas fa-link"></i> Copy Share Link</button></li>
-                          <li><a class="dropdown-item" href="{{ schedule.get_calendar_url }}"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar</a></li>
-                          <li><button class="dropdown-item text-danger" onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);" name="action" value="delete_schedule"><i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete Schedule</button></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}">
+                                    <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations
+                                </a>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item" @click="navigator.clipboard.writeText(window.location.href)">
+                                    <i class="fas fa-link"></i> Copy Share Link
+                                </button>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ schedule.get_calendar_url }}">
+                                    <i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar
+                                </a>
+                            </li>
+                            <li>
+                                <button
+                                    class="dropdown-item text-danger"
+                                    onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
+                                    name="action"
+                                    value="delete_schedule">
+                                    <i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete Schedule
+                                </button>
+                            </li>
                         </ul>
                       <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success">
                         Add Timeslot +

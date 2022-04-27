@@ -2,13 +2,6 @@
 
 {% block head %}
 <script src='https://cdn.tiny.cloud/1/f47idibd5kj81gghyonezjs67j91eg2no42861jiswtvuvvv/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#schedule-desc',
-        menubar: '',
-        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
-    });
-</script>
 {% endblock head %}
 
 {% block title %}Edit Schedule{% endblock title %}
@@ -53,3 +46,13 @@
         </div>
     </div>
 {% endblock body %}
+
+{% block scripts %}
+<script>
+    tinymce.init({
+        selector: '#schedule-desc',
+        menubar: '',
+        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+    });
+</script>
+{% endblock scripts %}

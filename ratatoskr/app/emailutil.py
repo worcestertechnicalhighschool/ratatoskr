@@ -108,3 +108,17 @@ def send_change_email(reservation, action):
                 recipient_list=[sub.email]
             )
     inner()
+
+@pool
+def send_message_email(message):
+    txt_content = get_template("email/emails/contact_message.txt")
+
+    ctx = {
+        "message": message.cleaned_data
+    }
+    send_mail(
+        subject=f"Ratatoskr: {message.cleaned_data['message_type']} message recieved",
+        message=txt_content.render(ctx),
+        from_email="ratatoskr@techhigh.us",
+        recipient_list=["ratatoskr@techhigh.us"]
+    )

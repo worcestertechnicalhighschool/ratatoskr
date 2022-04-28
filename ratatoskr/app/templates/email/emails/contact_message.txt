@@ -1,0 +1,17 @@
+{% extends 'email/layouts/base.txt' %}
+{% block body %}
+Message type {{ message.message_type }}
+-----
+
+Message:
+-----
+{{ message.message }}
+
+{% if contact_info %}
+Contact Information:
+------
+{{ message.contact_info }}
+{% else %}
+No contact information given
+{% endif %}
+{% endblock body %}

@@ -5,30 +5,30 @@
         <h3 class="mb-0">Available Days</h3>
         {% if schedule.owner == user %}
             <div class="ms-lg-auto mt-2 mt-lg-0">
-                <div class="btn-group">
-                  <form action="" method="POST">
-                      {% csrf_token %}
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        Actions
-                      </button>
-                      <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}">
-                                    <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations
-                                </a>
-                            </li>
-                            {% comment %} vue @click does not work here for some reason {% endcomment %}
-                            <li>
-                                <button type="button" class="dropdown-item" onclick="navigator.clipboard.writeText(window.location.href)">
-                                    <i class="fas fa-link"></i> Copy Share Link
-                                </button>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ schedule.get_calendar_url }}">
-                                    <i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar
-                                </a>
-                            </li>
-                            <li>
+                <div class="">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Actions
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}">
+                                <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations
+                            </a>
+                        </li>
+                        {% comment %} vue @click does not work here for some reason {% endcomment %}
+                        <li>
+                            <button type="button" class="dropdown-item" onclick="navigator.clipboard.writeText(window.location.href)">
+                                <i class="fas fa-link"></i> Copy Share Link
+                            </button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ schedule.get_calendar_url }}">
+                                <i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar
+                            </a>
+                        </li>
+                        <li>
+                            <form action="" method="POST">
+                                {% csrf_token %}
                                 <button
                                     class="dropdown-item text-danger"
                                     onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
@@ -36,12 +36,13 @@
                                     value="delete_schedule">
                                     <i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;Delete Schedule
                                 </button>
-                            </li>
-                        </ul>
-                      <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success">
-                        Add Timeslot +
-                      </a>
-                  </form>
+                            </form>
+
+                        </li>
+                    </ul>
+                    <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success">
+                    Add Timeslot +
+                    </a>
                 </div>
             </div>
         {% endif %}
@@ -57,6 +58,7 @@
                         class="d-flex align-items-center ms-1 me-4"
                         v-scope="{ checkbox: false }">
                     <input
+                        aria-label="Select Timeslot Day"
                         class="form-check-input"
                         type="checkbox"
                         name="timeslot_date"

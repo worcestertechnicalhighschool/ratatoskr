@@ -5,7 +5,7 @@
 {% block title %}Home{% endblock title %}
 
 {% block body %}    
-    <section class="d-flex justify-content-center align-items-center pb-6" style="height: 73vh">
+    <section class="d-flex justify-content-center align-items-center pb-6" style="height: 70vh">
         <div>
             <h1 class="display-1">ratatoskr</h1>
             <p class="lead"></p>
@@ -16,7 +16,9 @@
             Hiding this button from aria because a hard of seeing person would not have that much a use for this button...
         {% endcomment %}
         <a href="#look" class="btn btn-success btn-circle shadow-sm" aria-hidden="true">
-            <h3 class="display-5"><i class="fa-solid fa-arrow-down-long"></i></h3>
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <h1 class="mb-1" style="font-size: 40px"><i class="fa-solid fa-arrow-down-long"></i></h1>
+            </div>
         </a>
     </div>
     <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">

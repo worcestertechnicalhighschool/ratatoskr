@@ -4,23 +4,27 @@
 
 {% block title %}Home{% endblock title %}
 
-{% block body %}    
-    <section class="d-flex justify-content-center align-items-center pb-6" style="height: 70vh">
-        <div>
+{% block body %}
+    <section class="d-flex flex-column justify-content-center align-items-center pb-2" style="height: 100vh">
+        <div class="text-center">
             <h1 class="display-1">ratatoskr</h1>
-            <p class="lead"></p>
+            <hr>
+            <p class="lead">Worcester Tech's Meeting Scheduling System</p>
+        </div>
+        <div class="pt-5 mt-5"></div>
+
+        <div class="text-center pt-5 mt-5">
+            {% comment %}
+                Hiding this button from aria because a hard of seeing person would not have that much a use for this button...
+            {% endcomment %}
+            <a href="#look" class="btn btn-success btn-circle shadow-sm animate" aria-hidden="true">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <h1 class="mb-1" style="font-size: 40px"><i class="fa-solid fa-arrow-down-long"></i></h1>
+                </div>
+            </a>
         </div>
     </section>
-    <div class="text-center pb-5 mb-5">
-        {% comment %}
-            Hiding this button from aria because a hard of seeing person would not have that much a use for this button...
-        {% endcomment %}
-        <a href="#look" class="btn btn-success btn-circle shadow-sm" aria-hidden="true">
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <h1 class="mb-1" style="font-size: 40px"><i class="fa-solid fa-arrow-down-long"></i></h1>
-            </div>
-        </a>
-    </div>
+
     <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">
         <div class="col-lg-6">
             <h1 class="display-5 mb-3">Lorem ipsum dolor </h1>

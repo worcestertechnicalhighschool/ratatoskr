@@ -19,6 +19,7 @@
                 <button class="btn btn-primary mb-2" type="button" @click="selectAll(checkboxes)">
                     <div class="border border-light d-inline-flex m-0 mt-1 me-1 p-0 rounded">
                         <input
+                            aria-label="Select All"
                             class="text-danger form-check-input p-0 m-0"
                             type="checkbox"
                             v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"

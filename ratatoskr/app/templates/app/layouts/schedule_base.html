@@ -28,7 +28,7 @@
             </div>
             <h1 class="mb-2" v-else>
                 {{ schedule.name }}
-                <a href="#" @click="editEnable = true"><i class="fas fa-pencil float-right h2"></i></a>
+                <button class="btn btn-link p-0" aria-label="Start Editing Schedule" @click="editEnable = true"><i class="fas fa-pencil float-right h2"></i></button>
             </h1>
 
             <script>
@@ -100,7 +100,7 @@
             {% elif schedule.visibility == 'U' %}
                 unlisted. This means that this schedule can only be accessed through a share link.
             {% elif schedule.visibility == 'P' %}
-                private. This means that only you have access to the schedule.
+                private. This means that, even with a share link, nobody but you can see this schedule.
             {% endif %}
         </p>
     {% endif %}

@@ -29,7 +29,7 @@
                 <label for="should_lock_automatically">Lock schedule automatically</label>
                 <div class="mt-2" id="autoLock">
                     <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
-                    <input type="datetime-local" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" class="form-control" />
+                    <input type="datetime-local" id="auto_lock_after" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" class="form-control" />
                 </div>
             </fieldset>
             <div class="my-3">

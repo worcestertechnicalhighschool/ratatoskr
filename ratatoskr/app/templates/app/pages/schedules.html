@@ -10,13 +10,13 @@
             <img class="me-3 rounded" src="{{ owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ owner.get_full_name }}'s profile picture" style="width: 40px">
             <h1>
                 My Schedules 
-                <a
-                    href="#"
+                <button
+                    class="btn btn-link p-0"
                     data-bs-toggle="tooltip"
                     title="Copy share link"
                     @click="navigator.clipboard.writeText(window.location.href)">
-                    <i class="fas fa-link"></i>
-                </a>
+                    <i class="fas fa-link h1 m-0 p-0"></i>
+                </button>
             </h1>
         </div>
         <a href="{% url "create-schedule" %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>

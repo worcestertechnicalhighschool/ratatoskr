@@ -17,8 +17,9 @@
                                     <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations
                                 </a>
                             </li>
+                            {% comment %} vue @click does not work here for some reason {% endcomment %}
                             <li>
-                                <button type="button" class="dropdown-item" @click="navigator.clipboard.writeText(window.location.href)">
+                                <button type="button" class="dropdown-item" onclick="navigator.clipboard.writeText(window.location.href)">
                                     <i class="fas fa-link"></i> Copy Share Link
                                 </button>
                             </li>

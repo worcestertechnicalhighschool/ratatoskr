@@ -197,7 +197,6 @@ def update_timeslot_event(timeslot) -> None:
         },
         "id": event_id
     }
-    # Just do this asyncrhonouslyk
     try:
         # Will fail with 404 if the event does not exist
         client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,

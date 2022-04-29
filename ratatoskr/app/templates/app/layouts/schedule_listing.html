@@ -8,7 +8,7 @@
                         .length,
             shiftClicked: []
         }"
-        class="m-0 p-0"
+        class="m-0 p-0 h-100"
         method="POST"
         action="">
         {% csrf_token %}
@@ -60,7 +60,7 @@
                 </button>
             </div>
         {% endif %}
-        <div class="card-body" id="timeslot-body">
+        <div class="card-body h-100" id="timeslot-body">
             {% block schedule_body %}
             {% endblock schedule_body %}
         </div>

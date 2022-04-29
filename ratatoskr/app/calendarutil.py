@@ -112,20 +112,19 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     # Commenting out the line below and uncommenting conf_data = {} will allow student accounts to use for testing.
     conf_data = event["conferenceData"] if not schedule.owner.email.startswith("student.") else {} # Students cannot create conferences
 
-    # Make public so information can be shared using subscriptions.
-    rules = {
-        "role": "reader",
-        "scope": {
-            "type": "default"
+    @api_pool
+    def finishing_changes():
+        # Make public so information can be shared using subscriptions.
+        rules = {
+            "role": "reader",
+            "scope": {
+                "type": "default"
+            }
         }
-    }
-    client.acl().insert(calendarId=calendar_id, body=rules).execute()
-
-    # Delete the dummy event, we don't need it
-    @daemon
-    def del_async():
+        client.acl().insert(calendarId=calendar_id, body=rules).execute()
+        # Delete dummy timeslot we dont need it
         client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
-    del_async()
+    finishing_changes()
     
     return conf_data, calendar_id
 
@@ -198,7 +197,6 @@ def update_timeslot_event(timeslot) -> None:
         },
         "id": event_id
     }
-    # Just do this asyncrhonouslyk
     try:
         # Will fail with 404 if the event does not exist
         client.events().patch(calendarId=calendar_id, eventId=event_id, conferenceDataVersion=1,

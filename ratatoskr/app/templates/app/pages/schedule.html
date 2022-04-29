@@ -9,7 +9,8 @@
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     Actions
                     </button>
-                    <ul class="dropdown-menu">
+                    {% comment %} Z index so that the form does not overlap this menu {% endcomment %}
+                    <ul class="dropdown-menu" style="z-index: 1021">
                         <li>
                             <a class="dropdown-item" href="{% url 'view-schedule-reservations' schedule.id %}">
                                 <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;View Reservations
@@ -40,7 +41,75 @@
 
                         </li>
                     </ul>
-                    <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success">
+                    <button
+                        type="button" class="btn btn-success dropdown-toggle d-none d-lg-inline-block"
+                        data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+                        Add Timeslots
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form class="px-4 py-2 pt-3" style="width: 620px"
+                                action="{% url 'create-timeslots' schedule.id %}"
+                                method="POST" v-scope="{ multipleTimeslots: false }">
+                                {% csrf_token %}
+                                <div class="row g-2" v-scope="{ fromDate: '', toDate: '' }">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="multiple_timeslots" @click="multipleTimeslots = $el.checked" name="multiple_timeslots">
+                                        <label class="form-check-label" for="multiple_timeslots">
+                                            <template v-if="multipleTimeslots">Multiple Timeslots</template>
+                                            <template v-else>Single Timeslot</template>
+                                        </label>
+                                    </div>
+                                    <div class="mb-3 col">
+                                        <label for="from_date" class="form-label">Date From</label>
+                                        <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate">
+                                    </div>
+                                    <div class="mb-3 col">
+                                        <label for="to_date" class="form-label">Date To</label>
+                                        <template v-if="!multipleTimeslots">
+                                            {% comment %} The disabled date field is just for show {% endcomment %}
+                                            <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
+                                            <input v-model="fromDate" type="hidden" class="form-control" name="to_date">
+                                        </template>
+                                        <input v-else type="date" class="form-control" id="to_date" name="to_date" v-model="toDate">
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="mb-3 col">
+                                        <label for="from_time" class="form-label">Time From</label>
+                                        <input type="time" class="form-control" id="from_time" name="from_time">
+                                    </div>
+                                    <div class="mb-3 col">
+                                        <label for="to_time" class="form-label">Time To</label>
+                                        <input type="time" class="form-control" id="to_time" name="to_time">
+                                    </div>
+                                </div>
+                                
+                                <div v-show="multipleTimeslots">
+                                    <div class="mb-3">
+                                        <label for="timeslot_length" class="form-label">Timeslot Length</label>
+                                        <input type="number" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length" v-bind:disabled="!multipleTimeslots">
+                                        <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="timeslot_break" class="form-label">Timeslot Break</label>
+                                        <input type="number" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break" v-bind:disabled="!multipleTimeslots">
+                                        <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="openings" class="form-label">Openings</label>
+                                    <input type="number" min="0" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings">
+                                    <div id="openingsHelp" class="form-text">The number of openings for each timeslot.</div>
+                                </div>
+            
+                                <fieldset class="text-center">
+                                    <button class="btn btn-primary w-50" type="submit">Create</button>
+                                </fieldset>
+                            </form>
+                        </li>
+                    </ul>
+                    <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success d-inline-block d-lg-none">
                     Add Timeslot +
                     </a>
                 </div>
@@ -78,11 +147,9 @@
             </div>
         </div>
     {% empty %}
-    <div class="text-center">
-        <p class="m-2">Looks like there are no available timeslots...</p>
-        {% if user.is_staff and user == schedule.owner %}
-            <a href="{% url "create-timeslots" schedule.id %}" class="btn btn-primary">Why not create some?</a>
-        {% endif %}
+    <div class="text-center h-100">
+        {% comment %} <div class="my-5 pt-1"></div> {% endcomment %}
+        <p class="m-4">Looks like there are no available timeslots...</p>
     </div>
     {% endfor %}
 {% endblock schedule_body %}

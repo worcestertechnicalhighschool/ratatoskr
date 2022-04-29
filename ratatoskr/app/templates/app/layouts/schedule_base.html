@@ -42,7 +42,7 @@
             <div v-if="editEnable" class="d-flex d-md-block flex-column mb-2">
                 <button class="btn btn-danger" v-cloak type="button" @click="editEnable = reset(theForm)">Discard Changes</button>
                 <div class="d-md-none d-inline mb-1"></div> {# padding for mobile #}
-                <button class="btn btn-success" v-cloak type="submit">Save Changes</button>
+                <button class="btn btn-success" v-cloak type="submit" onclick="return confirm(`Are you sure you want to submit your changes?`)">Save Changes</button>
             </div>
             
             
@@ -105,7 +105,7 @@
         </p>
     {% endif %}
 
-    <div class="card mt-4">
+    <div class="card mt-4" style="height: 75vh">
         <div class="card-header">
             {% block schedule_head %}
             {% endblock schedule_head %}

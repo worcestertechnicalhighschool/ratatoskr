@@ -528,7 +528,3 @@ def subscribe_schedule(request, schedule):
 def help_page(request):
     return render(request, "app/pages/help.html")
 
-
-def test(request):
-    send_confirmation_email(Reservation.objects.get())
-    return HttpResponse()

@@ -37,74 +37,90 @@
                         <a class="nav-link" href="{% url 'contact' %}">Contact</a>
                     </li>
                     {% if user.is_authenticated %}
-                    <li class="nav-item d-none d-lg-block">
-                        <div class="dropdown">
-                            <button
-                                type="button"
-                                class="btn btn-primary dropdown-toggle"
-                                data-bs-toggle="dropdown"
-                                data-bs-auto-close="false"
-                                aria-expanded="false">
-                                Create a schedule
-                            </button>
-                            <ul class="dropdown-menu mt-2 dropdown-menu-center">
-                                <form class="px-3 py-2" style="width: 450px" action="{% url 'create-schedule' %}" method="POST"
-                                    v-scope="{ autoLockEnabled: false, loading: false }" 
-                                    @submit="loading = true">
-                                    {% csrf_token %}
-                                    <div class="form-floating mb-3">
-                                        <input type="text" id="name" name="name" class="form-control" placeholder="My New Schedule" required/>
-                                        <label for="name">Schedule Name</label>
-                                    </div>
-                                    <fieldset>
-                                        {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
-                                        <input
-                                            type="checkbox"
-                                            id="should_lock_automatically"
-                                            name="should_lock_automatically"
-                                            @click="autoLockEnabled = $el.checked"/>
-                                        <label for="should_lock_automatically">Lock schedule automatically</label>
-                                        <div class="mt-2" id="autoLock">
-                                            <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
-                                            <input
-                                                type="datetime-local"
-                                                id="auto_lock_after"
-                                                name="auto_lock_after"
-                                                v-bind:disabled="!autoLockEnabled"
-                                                v-bind:required="autoLockEnabled"
-                                                class="form-control" />
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "user-schedules" user.id %}">Your Schedules</a></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "admin:index" %}">Django Admin</a></a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "user-schedules" user.id %}">Your Schedules</a></a>
+                            </li>
+                        {% endif %}
+                        {% comment %} Desktop user schedule creation dropdown {% endcomment %}
+                        <li class="pt-1 d-lg-none"></li>
+                        <li class="nav-item d-none d-lg-block">
+                            <div class="dropdown">
+                                <button
+                                    type="button"
+                                    class="btn btn-primary dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="false"
+                                    aria-expanded="false">
+                                    Create a schedule
+                                </button>
+                                <ul class="dropdown-menu mt-2 dropdown-menu-center">
+                                    <form class="px-3 py-2" style="width: 450px" action="{% url 'create-schedule' %}" method="POST"
+                                        v-scope="{ autoLockEnabled: false, loading: false }" 
+                                        @submit="loading = true">
+                                        {% csrf_token %}
+                                        <div class="form-floating mb-3">
+                                            <input type="text" id="name" name="name" class="form-control" placeholder="My New Schedule" required/>
+                                            <label for="name">Schedule Name</label>
                                         </div>
-                                    </fieldset>
-                                    <div class="my-3">
-                                        <label for="visibility-select" class="form-label">Visibility</label>
-                                        <select class="form-select" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility_select">
-                                        <option selected value="A">Public</option>
-                                        <option value="U">Unlisted</option>
-                                        <option value="P">Private</option>
-                                        </select>
-                                        <div id="visibilityHelp" class="form-text">Choose your visibility to restrict access to your schedule.</div>
-                                    </div>
-                                    <br>
-                                    <fieldset class="text-center">
-                                        <button class="btn btn-primary w-50" name="submit" type="submit" v-bind:disabled="loading">
-                                            <template v-if="loading">
-                                                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                                                Loading...
-                                            </template>
-                                            <span v-else>Create</span>
-                                        </button>
-                                    </fieldset>
-                                </form>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item d-block d-lg-none">
-                        <a href="{% url "create-schedule" %}" class="btn btn-primary ms-1">+ Create a schedule</a>
-                    </li>
+                                        <fieldset>
+                                            {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
+                                            <input
+                                                type="checkbox"
+                                                id="should_lock_automatically"
+                                                name="should_lock_automatically"
+                                                @click="autoLockEnabled = $el.checked"/>
+                                            <label for="should_lock_automatically">Lock schedule automatically</label>
+                                            <div class="mt-2" id="autoLock">
+                                                <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
+                                                <input
+                                                    type="datetime-local"
+                                                    id="auto_lock_after"
+                                                    name="auto_lock_after"
+                                                    v-bind:disabled="!autoLockEnabled"
+                                                    v-bind:required="autoLockEnabled"
+                                                    class="form-control" />
+                                            </div>
+                                        </fieldset>
+                                        <div class="my-3">
+                                            <label for="visibility-select" class="form-label">Visibility</label>
+                                            <select class="form-select" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility_select">
+                                            <option selected value="A">Public</option>
+                                            <option value="U">Unlisted</option>
+                                            <option value="P">Private</option>
+                                            </select>
+                                            <div id="visibilityHelp" class="form-text">Choose your visibility to restrict access to your schedule.</div>
+                                        </div>
+                                        <br>
+                                        <fieldset class="text-center">
+                                            <button class="btn btn-primary w-50" name="submit" type="submit" v-bind:disabled="loading">
+                                                <template v-if="loading">
+                                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                                    Loading...
+                                                </template>
+                                                <span v-else>Create</span>
+                                            </button>
+                                        </fieldset>
+                                    </form>
+                                </ul>
+                            </div>
+                        </li>
+                        {% comment %} Mobile user schedule creation link {% endcomment %}
+                        <li class="nav-item d-block d-lg-none">
+                            <a href="{% url "create-schedule" %}" class="btn btn-primary ms-1">+ Create a schedule</a>
+                        </li>
                     {% endif %}
-                    <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0">
-                      {% if user.is_authenticated %}
-                          <div class="dropdown mx-2">
+                    {% comment %} Desktop user login info stuff {% endcomment %}
+                    <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-none d-lg-block">
+                        {% if user.is_authenticated %}
+                            <div class="dropdown mx-2">
                                 <a href="#" class="nav-link dropdown-toggle py-0" data-bs-toggle="dropdown">
                                     {% comment %} does it look like i want a stupid long property chain? i just want my user's gosh darn profile picture! {% endcomment %}
                                     <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
@@ -124,12 +140,27 @@
                                         <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
                                         <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                    {% elif user|has_schedules %}
+                                    {% else %}
                                         <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
                                     <li><span class="dropdown-item-text" href="#">{% logout_button %}</span></li>
                                 </ul>
+                            </div>
+                        {% else %}
+                            {% login_button %}
+                        {% endif %}
+                    </li>
+                    {% comment %} Mobile user login info stuff {% endcomment %}
+                    <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-lg-none">
+                        {% if user.is_authenticated %}
+                            <div class="nav-link py-0" data-bs-toggle="dropdown">
+                                Logged in as:&nbsp;&nbsp;
+                                <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
+                                {{ user.socialaccount_set.all.0.extra_data.name }}
+                            </div>
+                            <div class="mt-2">
+                                {% logout_button %}
                             </div>
                         {% else %}
                             {% login_button %}

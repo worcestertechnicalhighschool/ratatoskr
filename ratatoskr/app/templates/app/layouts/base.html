@@ -121,7 +121,6 @@
                                 </ul>
                             </div>
                         </li>
-                        {% comment %} Mobile user schedule creation link {% endcomment %}
                     {% endif %}
                     {% comment %} Desktop user login info stuff {% endcomment %}
                     <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-none d-lg-block">
@@ -161,7 +160,7 @@
                     <li class="nav-item display-flex align-items-center ms-1 mb-3 mt-0 my-lg-0 d-lg-none">
                         {% if user.is_authenticated %}
                             <div class="nav-link py-0" data-bs-toggle="dropdown">
-                                Logged in as:&nbsp;&nbsp;
+                                Logged in as:&nbsp;
                                 <img style="width: 35px;" class="rounded me-2" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
                                 {{ user.socialaccount_set.all.0.extra_data.name }}
                             </div>

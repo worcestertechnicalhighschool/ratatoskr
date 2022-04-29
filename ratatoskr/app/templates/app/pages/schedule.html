@@ -69,7 +69,7 @@
                                         <template v-if="!multipleTimeslots">
                                             {% comment %} The disabled date field is just for show {% endcomment %}
                                             <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
-                                            <input v-model="fromDate" type="hidden" class="form-control" id="to_date" name="to_date">
+                                            <input v-model="fromDate" type="hidden" class="form-control" name="to_date">
                                         </template>
                                         <input v-else type="date" class="form-control" id="to_date" name="to_date" v-model="toDate">
                                     </div>

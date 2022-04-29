@@ -36,6 +36,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact' %}">Contact</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'help' %}">Help</a>
+                    </li>
                     {% comment %} Mobile nav links {% endcomment %}
                     {% if user.is_authenticated %}
                         {% if user.is_staff %}
@@ -119,9 +122,6 @@
                             </div>
                         </li>
                         {% comment %} Mobile user schedule creation link {% endcomment %}
-                        <li class="nav-item d-block d-lg-none">
-                            <a href="{% url "create-schedule" %}" class="btn btn-primary ms-1">+ Create a schedule</a>
-                        </li>
                     {% endif %}
                     {% comment %} Desktop user login info stuff {% endcomment %}
                     <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-none d-lg-block">
@@ -158,7 +158,7 @@
                         {% endif %}
                     </li>
                     {% comment %} Mobile user login info stuff {% endcomment %}
-                    <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-lg-none">
+                    <li class="nav-item display-flex align-items-center ms-1 mb-3 mt-0 my-lg-0 d-lg-none">
                         {% if user.is_authenticated %}
                             <div class="nav-link py-0" data-bs-toggle="dropdown">
                                 Logged in as:&nbsp;&nbsp;
@@ -166,6 +166,9 @@
                                 {{ user.socialaccount_set.all.0.extra_data.name }}
                             </div>
                             <div class="mt-2">
+                                <div class="d-flex justify-content-center mb-2">
+                                    <a href="{% url "create-schedule" %}" class="btn btn-primary w-100">+ Create a schedule</a>
+                                </div>
                                 {% logout_button %}
                             </div>
                         {% else %}

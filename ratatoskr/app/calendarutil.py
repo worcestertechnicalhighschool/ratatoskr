@@ -122,7 +122,7 @@ def create_calendar_for_schedule(schedule) -> tuple[dict, str]:
     client.acl().insert(calendarId=calendar_id, body=rules).execute()
 
     # Delete the dummy event, we don't need it
-    @daemon
+    @api_pool
     def del_async():
         client.events().delete(calendarId=calendar_id, eventId=event["id"]).execute()
     del_async()

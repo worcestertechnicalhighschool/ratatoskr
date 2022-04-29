@@ -47,8 +47,8 @@
                                 aria-expanded="false">
                                 Create a schedule
                             </button>
-                            <ul class="dropdown-menu mt-2">
-                                <form class="px-3 py-2" style="width: 350px" action="{% url 'create-schedule' %}" method="POST"
+                            <ul class="dropdown-menu mt-2 dropdown-menu-center">
+                                <form class="px-3 py-2" style="width: 450px" action="{% url 'create-schedule' %}" method="POST"
                                     v-scope="{ autoLockEnabled: false, loading: false }" 
                                     @submit="loading = true">
                                     {% csrf_token %}

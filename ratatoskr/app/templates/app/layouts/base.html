@@ -72,12 +72,17 @@
                                         </div>
                                         <fieldset>
                                             {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
-                                            <input
-                                                type="checkbox"
-                                                id="should_lock_automatically"
-                                                name="should_lock_automatically"
-                                                @click="autoLockEnabled = $el.checked"/>
-                                            <label for="should_lock_automatically">Lock schedule automatically</label>
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    name="should_lock_automatically"
+                                                    type="checkbox"
+                                                    id="should_lock_automatically"
+                                                    @click="autoLockEnabled = $el.checked">
+                                                <label class="form-check-label" for="should_lock_automatically">
+                                                    Lock schedule automatically
+                                                </label>
+                                            </div>
                                             <div class="mt-2" id="autoLock">
                                                 <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
                                                 <input

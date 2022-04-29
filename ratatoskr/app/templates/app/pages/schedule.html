@@ -48,7 +48,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <form class="px-4 py-2" method="POST" v-scope="{ multipleTimeslots: false }">
+                            <form class="px-4 py-2" action="{% url 'create-timeslots' schedule.id %}" method="POST" v-scope="{ multipleTimeslots: false }">
                                 {% csrf_token %}
                                 <div class="row g-2" v-scope="{ fromDate: '', toDate: '' }">
                                     <div class="form-check form-switch mb-3">
@@ -145,11 +145,9 @@
             </div>
         </div>
     {% empty %}
-    <div class="text-center">
-        <p class="m-2">Looks like there are no available timeslots...</p>
-        {% if user == schedule.owner %}
-            <a href="{% url "create-timeslots" schedule.id %}" class="btn btn-primary">Why not create some?</a>
-        {% endif %}
+    <div class="text-center h-100">
+        {% comment %} <div class="my-5 pt-1"></div> {% endcomment %}
+        <p class="m-4">Looks like there are no available timeslots...</p>
     </div>
     {% endfor %}
 {% endblock schedule_body %}

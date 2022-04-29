@@ -48,7 +48,9 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <form class="px-4 py-2" action="{% url 'create-timeslots' schedule.id %}" method="POST" v-scope="{ multipleTimeslots: false }">
+                            <form class="px-4 py-2 pt-3" style="width: 620px"
+                                action="{% url 'create-timeslots' schedule.id %}"
+                                method="POST" v-scope="{ multipleTimeslots: false }">
                                 {% csrf_token %}
                                 <div class="row g-2" v-scope="{ fromDate: '', toDate: '' }">
                                     <div class="form-check form-switch mb-3">

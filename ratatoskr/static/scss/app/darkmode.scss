@@ -1,31 +1,78 @@
 @use "../bootstrap/variables";
 
 * {
-    --bs-body-bg: #121212;
-    --bs-body-color: #dddddd;
-    --bs-dark-rgb: #dddddd;
-    --bs-light-rgb: #101010;
-
+    transition: background-color 0.2s, color 0s, border-color 0s;
 }
 
-.card {
-    background-color: #232323 !important;
-}
+.dark-root {
+    * {
+        --bs-body-bg: #121212;
+        --bs-body-color: #dddddd;
+        --bs-dark-rgb: #dddddd;
+        --bs-light-rgb: #101010;
+    }
 
-.nav-link {
-    color: #dddddd !important;
-}
+    h1, h2, h3, h4, h5, h6, a, span, label, button {
+        color: var(--bs-dark-rgb) !important;
+    }
 
-.navbar-light .navbar-brand {
-    color: #eeeeee !important;
-}
+    .navbar-toggler-icon {
+        filter: invert(1);
+    }
 
-.form-control {
-    background-color: #313131 !important;
-    color: white !important;
-}
+    hr {
+        background-color: var(--bs-dark-rgb) !important;
+    }
 
-.form-control:focus {
-    background-color: #313131 !important;
-    color: white !important;
+    .dropdown-item:hover {
+        background-color: var(--bs-light-rgb) !important;
+    }
+
+    .card {
+        background-color: #232323 !important;
+    }
+
+    .nav-link {
+        color: #dddddd !important;
+    }
+
+    .navbar-light .navbar-brand {
+        color: #eeeeee !important;
+    }
+
+    .form-control {
+        background-color: #313131 !important;
+        color: white !important;
+    }
+
+    .form-control:focus {
+        background-color: #313131 !important;
+        color: white !important;
+    }
+
+    .form-floating label {
+        color: white !important;
+    }
+
+    .list-group-item {
+        color: white !important;
+        background-color: unset !important;
+        border-color: #FFFFFF44 !important;
+    }
+
+    .list-group-item:hover {
+        color: #dddddd !important;
+    }
+
+    .toast {
+        background-color: #232323 !important;
+    }
+
+    .toast-header {
+        background-color: #313131 !important;
+    }
+
+    .dropdown-menu {
+        background-color: #232323 !important;
+    }
 }

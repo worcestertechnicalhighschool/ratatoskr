@@ -2,7 +2,7 @@
 {% load static %}
 {% load sass_tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" v-scope="{ darkmode: localStorage.getItem('dark') == 'true' }" :class="{ 'dark-root': darkmode }">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,7 +31,7 @@
                         <a class="nav-link" href="{% url 'index' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'help' %}">Help</a>
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact' %}">Contact</a>
@@ -205,6 +205,15 @@
             <p class="col-md-4 mb-md-0 mb-2 text-muted">© 2022 meetings.techhigh.us | <a class="text-muted" href="https://raw.githubusercontent.com/worcestertechnicalhighschool/ratatoskr/master/LICENSE">LICENSE</a></p>
     
             <ul class="nav justify-content-end">
+                <li class="nav-item"><button class="nav-link px-1 text-muted border-0 bg-transparent" @click="darkmode = !darkmode; localStorage.setItem('dark', darkmode);">
+                    <template v-if="darkmode">
+                        <i class="fa-solid fa-sun"></i> Switch to Light Mode
+                    </template>
+                    <template v-else>
+                        <i class="fa-solid fa-moon"></i> Switch to Dark Mode
+                    </template>
+                </button></li>
+                <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
                 <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" target="_blank" class="nav-link px-1 text-muted"><i class="fa-solid fa-code-branch"></i> Steal our code</a></li>
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
                 <li class="nav-item"><a class="nav-link px-1 text-muted" href="https://techhigh.us"><i class="fa-solid fa-school"></i> WTHS</a></li>

@@ -53,6 +53,7 @@ def contact(request):
         messages.info(request, "Message recieved! Your feedback is valuable to us!")
     return render(request, 'app/pages/contact.html')
 
+
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
@@ -174,7 +175,8 @@ def schedule(request, schedule):
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
     return render(request, "app/pages/schedules.html", {
-        "schedules": Schedule.objects.filter(owner=user_id) if request.user.id == user_id else Schedule.objects.filter(owner=user_id, visibility='P'),
+        "schedules": Schedule.objects.filter(owner=user_id) if request.user.id == user_id else Schedule.objects.filter(
+            owner=user_id, visibility='P'),
         "is_owner": request.user.id == user_id,
         "owner": User.objects.get(id=user_id)
     })
@@ -527,4 +529,3 @@ def subscribe_schedule(request, schedule):
 @require_http_methods(["GET"])
 def help_page(request):
     return render(request, "app/pages/help.html")
-

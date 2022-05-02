@@ -12,8 +12,12 @@
         --bs-light-rgb: #101010;
     }
 
-    h1, h2, h3, h4, h5, h6, a, span, label, button {
+    h1, h2, h3, h4, h5, h6, span, label, button {
         color: var(--bs-dark-rgb) !important;
+    }
+
+    a {
+        color: #aaaaaa !important;
     }
 
     .navbar-toggler-icon {

@@ -25,25 +25,25 @@
         </div>
     </section>
 
-    <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">
-        <div class="col-lg-6">
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5 justify-content-center flex-row-reverse" id="look" style="flex-direction: row !important;">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/easy.gif' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+        <div class="col-lg-6 px-5">
             <h1 class="display-5 mb-3">Scheduling made easy</h1>
             <p class="lead">
                 Scheduling is done with a single click! <br>
                 Anybody can schedule; faculty, students, teachers, staff, anyone!
             </p>
         </div>
-        <div class="col-10 col-sm-8 col-lg-6">
-            <!-- Using a placeholder for now -->
-            <img src="{% static 'assets/easy.gif' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
-        </div>
     </section>
-    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5 justify-content-center">
         <div class="col-10 col-sm-8 col-lg-6">
             <!-- Using a placeholder for now -->
-            <img src="{% static 'assets/googlecalendar.png' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            <img src="{% static 'assets/calendar.svg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 px-5">
             <h1 class="display-5 mb-3">Integration with Google</h1>
             <p class="lead">
                 We integrate with Google to sync our schedules with your Calendar!<br>
@@ -54,18 +54,18 @@
             </p>
         </div>
     </section>
-    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-lg-6">
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5 justify-content-center" style="flex-direction: row !important;">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/github.svg' %}" class="d-block mx-lg-auto img-fluid rounded invert-on-dark" alt="Bootstrap Themes" width="600" height="500" loading="lazy" style="max-height: 250px">
+        </div>
+        <div class="col-lg-6 px-5">
             <h1 class="display-5 mb-3">Free and Open Source</h1>
             <p class="lead">
                 We host our codebase on GitHub for <a href="https://github.com/worcestertechnicalhighschool/ratatoskr">all to see</a>! <br>
                 Come take a look, or if you find something wrong with our app, <br>
                 <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues/new">create a GitHub Issue</a>!
             </p>
-        </div>
-        <div class="col-10 col-sm-8 col-lg-6">
-            <!-- Using a placeholder for now -->
-            <img src="{% static 'assets/gitsnub.png' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="600" height="500" loading="lazy">
         </div>
     </section>
 {% endblock body %}

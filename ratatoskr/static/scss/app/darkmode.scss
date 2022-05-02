@@ -1,7 +1,9 @@
 @use "../bootstrap/variables";
 
-* {
-    transition: background-color 0.2s, color 0s, border-color 0s;
+html:not(.dark-root) {
+    * {
+        transition: background-color 0.3s, color 0s, border-color 0s;
+    }
 }
 
 .dark-root {
@@ -10,6 +12,14 @@
         --bs-body-color: #dddddd;
         --bs-dark-rgb: #dddddd;
         --bs-light-rgb: #101010;
+    }
+
+    .accordion-button, .accordion-collapse, .accordion-item {
+        background-color: #353535 !important;
+    }
+
+    .invert-on-dark {
+        filter: invert(1);
     }
 
     h1, h2, h3, h4, h5, h6, span, label, button {

@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/ratatoskr/manage.py",
             "args": ["runserver"],
-            "django": true
+            "django": true,
+            "justMyCode": false
         }
     ]
 }

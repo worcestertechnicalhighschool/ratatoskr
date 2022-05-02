@@ -15,11 +15,12 @@ from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
-from app.emailutil import send_confirmation_email, send_success_email
+from app.emailutil import send_confirmation_email, send_message_email, send_success_email
+from django.contrib.auth.decorators import login_required
 
 from ratatoskr.celery import debug_task, send_mail_task
 
-from .forms import ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
+from .forms import MessageForm, ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
 from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
@@ -37,15 +38,24 @@ def about(request):
     return render(request, 'app/pages/about.html')
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 def contact(request):
+    if request.POST:
+        form = MessageForm(request.POST)
+        # NOTE: call form.is_valid() before actually using its data.
+        # I have no idea why but for some odd reason, form.cleaned_data gets defined at some random interval if is_valid isnt called
+        # weird
+        if not form.is_valid():
+            render(request, "app/pages/contact.html", {
+                "errors": form.errors
+            })
+        send_message_email(form)
+        messages.info(request, "Message recieved! Your feedback is valuable to us!")
     return render(request, 'app/pages/contact.html')
 
-
+@login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
-    if not request.user.is_authenticated:
-        raise PermissionDenied()
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
@@ -108,7 +118,7 @@ def update_schedule(request, schedule):
             })
         case "delete_schedule":
             schedule.delete()
-            return redirect("/")
+            return redirect("schedules", schedule.owner.id)
     return None
 
 
@@ -190,6 +200,7 @@ def schedule_day(request, schedule, date):
     })
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
     if schedule.owner != request.user:
@@ -324,6 +335,7 @@ def reserve_timeslot(request, schedule, date, timeslot):
     })
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def view_reservations(request, schedule, date, timeslot):
     if schedule.owner.id != request.user.id:
@@ -345,6 +357,7 @@ def view_reservations(request, schedule, date, timeslot):
     })
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def view_schedule_reservations(request, schedule):
     if schedule.owner.id != request.user.id:
@@ -404,6 +417,7 @@ def cancel_reservation(request, reservation):
     return render(request, "app/pages/reserve_cancelled.html", {"reservation": reservation})
 
 
+@login_required
 @require_http_methods(["GET", "POST"])
 def edit_schedule(request, schedule):
     if schedule.owner != request.user:
@@ -414,7 +428,9 @@ def edit_schedule(request, schedule):
         schedule.visibility = request.POST["visibility-select"]
         schedule.save()
 
-        return redirect(f'/schedule/{schedule.id}')
+        messages.info(request, "Edits successfully applied!")
+
+        return redirect("schedule", schedule.id)
 
     return render(request, "app/pages/schedule_edit.html", {
         "schedule": schedule
@@ -440,6 +456,7 @@ def find_reservation(request):
     })
 
 
+@login_required
 @require_http_methods(["POST"])
 def copy_timeslots(request, schedule):
     if schedule.owner != request.user:
@@ -487,6 +504,7 @@ def reserve_confirmed(request):
     })
 
 
+@login_required
 @require_http_methods(["POST"])
 def subscribe_schedule(request, schedule):
     if request.user is None:
@@ -510,7 +528,3 @@ def subscribe_schedule(request, schedule):
 def help_page(request):
     return render(request, "app/pages/help.html")
 
-
-def test(request):
-    send_confirmation_email(Reservation.objects.get())
-    return HttpResponse()

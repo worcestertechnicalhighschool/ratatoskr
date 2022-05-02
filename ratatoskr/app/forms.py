@@ -48,3 +48,9 @@ class ScheduleCreationForm(forms.Form):
     should_lock_automatically = forms.BooleanField()
     auto_lock_after = forms.TimeField(widget=forms.DateTimeInput(attrs={'type': 'time'}), required=False)
     visibility_select = forms.CharField(max_length=1)
+
+
+class MessageForm(forms.Form):
+    message = forms.CharField(max_length=8192)
+    contact_info = forms.CharField(max_length=256)
+    message_type = forms.CharField(max_length=256)

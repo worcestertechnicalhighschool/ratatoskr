@@ -8,7 +8,7 @@
                         .length,
             shiftClicked: []
         }"
-        class="m-0 p-0"
+        class="m-0 p-0 h-100"
         method="POST"
         action="">
         {% csrf_token %}
@@ -19,6 +19,7 @@
                 <button class="btn btn-primary mb-2" type="button" @click="selectAll(checkboxes)">
                     <div class="border border-light d-inline-flex m-0 mt-1 me-1 p-0 rounded">
                         <input
+                            aria-label="Select All"
                             class="text-danger form-check-input p-0 m-0"
                             type="checkbox"
                             v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"
@@ -59,7 +60,7 @@
                 </button>
             </div>
         {% endif %}
-        <div class="card-body" id="timeslot-body">
+        <div class="card-body h-100" id="timeslot-body">
             {% block schedule_body %}
             {% endblock schedule_body %}
         </div>
@@ -90,4 +91,5 @@
         shiftClicked.pop()
     }
 </script>
+{{ block.super }}
 {% endblock scripts %}

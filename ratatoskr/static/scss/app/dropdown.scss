@@ -1,0 +1,23 @@
+// @use "../bootstrap/_dropdown.scss";
+
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+    }
+  
+    100% {
+        opacity: 1;
+    }
+  }
+
+.dropdown-menu-center {
+    // right: auto;
+    // left: 50%;
+    transform: translate(-30%, 0);
+}
+
+.dropdown-menu {
+    animation-name: slide-in;
+    animation-fill-mode: both;
+    animation-duration: 250ms;
+}

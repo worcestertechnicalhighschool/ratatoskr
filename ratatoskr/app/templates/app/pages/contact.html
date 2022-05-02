@@ -3,58 +3,65 @@
 
 {% block body %}
 
-    <div class="d-flex justify-content-center">
-        <div class="card" style="width: 35rem;">
-            <div class="card-body">
-                <h2 class="ps-5 pb-2">Contact Us!</h1>
-                <form>
-                    <div class="d-flex justify-content-center mb-2">
-                        <div class="mb-3">
-                            <label class="form-label ps-1">Full Name</label>    
-                            <div class="input-group">
-                                <label for="firstName"></label>
-                                <input type="text" class="form-control" name="firstName" placeholder="First Name" aria-label="FirstName">
-                                <label for="lastName"></label>
-                                <input type="text" class="form-control" name="lastName" placeholder="Last Name" aria-label="LastName">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center mb-2">
-                        <div class="mb-3">
-                            <label class="form-label ps-1">Email Address</label>  
-                            <div class="input-group" style="width:26rem;">
-                                <span class="input-group-text" id="at-addon1">@</span>
-                                <label for="email"></label>
-                                <input type="text" class="form-control" name="email" placeholder="Email" aria-label="email" aria-describedby="at-addon1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center mb-2">
-                        <div class="mb-3">
-                            <label class="form-label ps-1">Send any questions!</label>  
-                            <div class="input-group mb-3" style="width:26rem;">
-                                <span class="input-group-text" id="message-addon1"><i class="fa-solid fa-message"></i></span>
-                                <label for="message"></label>
-                                <textarea class="form-control" name="atsign" placeholder="Comments/Questions/Concerns" aria-label="message" aria-describedby="message-addon1"> </textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center mb-2">
-                        <div class="mb-3">
-                            <div class="input-group mb-3">
-                                <button type="submit" class="btn btn-primary">Submit!</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <h6>Our email is <a href="mailto:ratatoskr@techhigh.us">ratatoskr@techhigh.us</a>!</h6>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <h6>Here is our <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues">github issues</a> page!</h6>
+    <h1 class="display-3">Contact us!</h1>
+    <p class="lead">You may contact us through the following channels:</p>
+    <div class="row">
+        <div class="col-lg-6">
+            <section class="d-lg-inline-block d-flex flex-column justify-content-center w-100 mb-4">
+                <h3>Fill out this feedback form</h3>
+                <form class="card d-inline-block w-100" method="POST">
+                    {% csrf_token %}
+                    {{ errors }}
+                    <div class="card-body">
+                        <p class="lead">Your feedback is valuable to us!</p>
+                        <textarea class="my-1 form-control" name="message" rows="5" placeholder="Enter your message..." required></textarea>
+                        <input class="my-1 form-control" type="text" name="contact_info" id="" placeholder="Contact info, name, etc. (optional)">
+                        <label class="lead">Feedback type:</label>
+                        <fieldset id="message-type">
+                            {# just add to this list here to add another message type #}
+                            <template v-for="(item, i) in ['Bug Report', 'Question', 'Comment', 'Suggestion']">
+                                <div>
+                                    <input type="radio" name="message_type" v-bind:value="item" v-bind:id="i" required>
+                                    <label v-bind:for="i">${ item }</label>
+                                </div>
+                            </template>
+                        </fieldset>
+                        <button class="btn btn-primary w-100 my-2" type="submit">Send!</button>
                     </div>
                 </form>
+            </section>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <section>
+                    <h3>Email us</h3>
+                    <p>Our email is <a href="mailto:ratatoskr@techhigh.us">ratatoskr@techhigh.us</a></p>
+                </section>
+            </div>
+            <div class="row">
+                <section>
+                    <h3>Submit a GitHub Issue</h3>
+                    <p>
+                        We are open source on GitHub! 
+                        If you have a GitHub account, you can <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues">submit an issue</a> there.
+                    </p>    
+                </section>
+            </div>
+            <div class="row">
+                <section>
+                    <h3>Come see us at Worcester Tech</h3>
+                    <p>
+                        We are work in room B216!
+                    </p>
+                    <h5>Or you can meet us at these coordinates:</h5>
+                    <p>
+                        Latitude: 42.27717596333914 / N 42° 16' 37.833''<br/>
+                        Longitude: -71.77783864112546 / W 71° 46' 40.219''
+                    </p>    
+                </section>
             </div>
         </div>
     </div>
+    
 
 {% endblock body %}

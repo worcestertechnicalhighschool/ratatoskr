@@ -1,23 +1,71 @@
 {% extends 'app/layouts/base.html' %}
+
+{% load static %}
+
 {% block title %}Home{% endblock title %}
 
-{% load socialaccount %}
-
 {% block body %}
-    <h1 class="px-4"><strong>All Schedules</strong></h1>
-    <hr />
-    <div class="container">
-        {% if schedules %}
-        <div class="row row-cols-lg-3">
-            {% for schedule in schedules %}
-            <div class="col mb-3">
-                    {% schedule_card schedule %}
-                </div>
-            {% endfor %}
+    <section class="d-flex flex-column justify-content-center align-items-center pb-2" style="height: 100vh">
+        <div class="text-center">
+            <h1 class="display-1">ratatoskr</h1>
+            <hr>
+            <p class="lead">Worcester Tech's Meeting Scheduling System</p>
         </div>
-        {% else %}
-        <p class="text-center pt-4">There aren't any schedules here yet...</p>
-        {% endif %}
-    </div>
+        <div class="pt-5 mt-5"></div>
 
+        <div class="text-center pt-5 mt-5">
+            {% comment %}
+                Hiding this button from aria because a hard of seeing person would not have that much a use for this button...
+            {% endcomment %}
+            <a href="#look" class="btn btn-success btn-circle shadow-sm animate" aria-hidden="true">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <h1 class="mb-1" style="font-size: 40px"><i class="fa-solid fa-arrow-down-long"></i></h1>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Scheduling made easy</h1>
+            <p class="lead">
+                Scheduling is done with a single click! <br>
+                Anybody can schedule; faculty, students, teachers, staff, anyone!
+            </p>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/easy.gif' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+    </section>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/googlecalendar.png' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Integration with Google</h1>
+            <p class="lead">
+                We integrate with Google to sync our schedules with your Calendar!<br>
+            </p>
+            <div class="mt-5"></div>
+            <p class="lead mt-5 pt-5 text-muted">
+                <span style="font-size: 12pt">*can only sign in with a Worcester Public Schools domain account</span>
+            </p>
+        </div>
+    </section>
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-lg-6">
+            <h1 class="display-5 mb-3">Free and Open Source</h1>
+            <p class="lead">
+                We host our codebase on GitHub for <a href="https://github.com/worcestertechnicalhighschool/ratatoskr">all to see</a>! <br>
+                Come take a look, or if you find something wrong with our app, <br>
+                <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues/new">create a GitHub Issue</a>!
+            </p>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/gitsnub.png' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="600" height="500" loading="lazy">
+        </div>
+    </section>
 {% endblock body %}

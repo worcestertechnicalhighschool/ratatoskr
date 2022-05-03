@@ -25,44 +25,44 @@
                             </label>
                         </div>
                         <div class="mb-3 col">
-                            <label for="from_date" class="form-label">Date From</label>
-                            <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate">
+                            <label for="from_date" class="form-label">Date From <span class="text-danger fw-bold">*</span></label>
+                            <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate" required>
                         </div>
                         <div class="mb-3 col">
-                            <label for="to_date" class="form-label">Date To</label>
+                            <label for="to_date" class="form-label">Date To <template v-if="multipleTimeslots"><span class="text-danger fw-bold">*</span></template><template v-else></template></label>
                             <template v-if="!multipleTimeslots">
                                 {% comment %} The disabled date field is just for show {% endcomment %}
                                 <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
                                 <input v-model="fromDate" type="hidden" class="form-control" id="to_date" name="to_date">
                             </template>
-                            <input v-else type="date" class="form-control" id="to_date" name="to_date" v-model="toDate">
+                            <input v-else type="date" class="form-control" id="to_date" name="to_date" v-model="toDate" required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="mb-3 col">
-                            <label for="from_time" class="form-label">Time From</label>
-                            <input type="time" class="form-control" id="from_time" name="from_time">
+                            <label for="from_time" class="form-label">Time From <span class="text-danger fw-bold">*</span></label>
+                            <input type="time" class="form-control" id="from_time" name="from_time" required>
                         </div>
                         <div class="mb-3 col">
-                            <label for="to_time" class="form-label">Time To</label>
-                            <input type="time" class="form-control" id="to_time" name="to_time">
+                            <label for="to_time" class="form-label">Time To <span class="text-danger fw-bold">*</span></label>
+                            <input type="time" class="form-control" id="to_time" name="to_time" required>
                         </div>
                     </div>
                     
                     <div v-show="multipleTimeslots">
                         <div class="mb-3">
-                            <label for="timeslot_length" class="form-label">Timeslot Length</label>
+                            <label for="timeslot_length" class="form-label">Timeslot Length <span class="text-danger fw-bold">*</span></label>
                             <input type="number" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length" v-bind:disabled="!multipleTimeslots">
                             <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
                         </div>
                         <div class="mb-3">
-                            <label for="timeslot_break" class="form-label">Timeslot Break</label>
+                            <label for="timeslot_break" class="form-label">Timeslot Break <span class="text-danger fw-bold">*</span></label>
                             <input type="number" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break" v-bind:disabled="!multipleTimeslots">
                             <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="openings" class="form-label">Openings</label>
+                        <label for="openings" class="form-label">Openings <span class="text-danger fw-bold">*</span></label>
                         <input type="number" min="0" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings">
                         <div id="openingsHelp" class="form-text">The number of openings for each timeslot.</div>
                     </div>

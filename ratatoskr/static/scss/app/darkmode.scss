@@ -22,6 +22,7 @@ html:not(.dark-root) {
         filter: invert(1);
     }
 
+
     h1, h2, h3, h4, h5, h6, span, label, button {
         color: var(--bs-dark-rgb) !important;
     }
@@ -55,11 +56,16 @@ html:not(.dark-root) {
     }
 
     .form-control {
-        background-color: #313131 !important;
-        color: white !important;
-    }
+        :disabled {
+            color: #dedede !important;
+            background-color: #222222 !important;
+        }
 
-    .form-control:focus {
+        :focus {
+            background-color: #313131 !important;
+            color: white !important;
+        }
+
         background-color: #313131 !important;
         color: white !important;
     }

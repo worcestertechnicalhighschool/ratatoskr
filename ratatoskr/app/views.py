@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
+from django.contrib.admin.models import LogEntry
 import pytz
 from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
@@ -30,6 +31,29 @@ from django.contrib import messages
 def index(request):
     return render(request, 'app/pages/index.html', {
         "schedules": Schedule.objects.filter(visibility='A')
+    })
+
+
+@require_http_methods(["GET"])
+@login_required
+def dashboard(request):
+    all_timeslots = []
+    history = []
+    for schedule in Schedule.objects.filter(owner=request.user.id):
+        timeslots = schedule.timeslot_set.all()
+        for timeslot in timeslots:
+            all_timeslots += Reservation.objects.filter(timeslot=timeslot)
+    for t in all_timeslots:
+        delta = t.history.first().diff_against(t.history.last())
+        for change in delta.changes:
+            print("{} changed from {} to {}".format(change.field, change.old, change.new))
+            if change.field == "confirmed":
+                history.append({"type": "confirmed", "object": t})
+        if len(delta.changes) == 0:
+            history.append({"type": "made", "object": t})
+    return render(request, 'app/pages/dashboard.html', {
+        "schedules": Schedule.objects.filter(owner=request.user.id),
+        "events": history
     })
 
 

@@ -1,0 +1,42 @@
+{% extends 'app/layouts/base.html' %}
+{% block title %}My Dashboard{% endblock title %}
+
+{% block body %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-12 mb-3">
+            <div class="card p-3"> Hello </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card p-3"> Hello </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card p-3"> Hello </div>
+        </div>
+      </div>
+      <div class="row">
+         <div class="col-md-8 mb-3">
+            <div class="card p-3">
+                <a class="btn text-end mb-2" href="{% url 'user-schedules' user.id %}">View All Schedules&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a>
+                <div class="row row-cols-lg-3">
+                    {% for schedule in schedules|slice:":3" %}
+                        <div class="col mb-3">{% schedule_card schedule %}</div>
+                    {% endfor %}
+                </div>
+            </div>
+         </div>
+
+         <div class="col-md-4 mb-3">
+            <div class="card p-3">
+                {% for event in events %}
+                    <p>{{ event.object.name }} has {{ event.type }} a reservation at {{ event.object.timeslot.time_from }}</p>
+                {% endfor %}
+            </div>
+         </div>
+      </div>
+    </div>
+
+{% endblock body %}

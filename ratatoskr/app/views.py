@@ -38,6 +38,7 @@ def index(request):
 @login_required
 def dashboard(request):
     history = {}
+    reservations = []
     for s in Schedule.objects.filter(owner=request.user.id):
         timeslots = s.timeslot_set.all()
         for timeslot in timeslots:
@@ -47,10 +48,13 @@ def dashboard(request):
                      groupby(sorted(Reservation.history.filter(timeslot=timeslot), key=lambda x: x.history_date), lambda x: x.id)}.items()
                 )
             ))
+            if timeslot.time_from >= make_aware(datetime.datetime.now()):
+                reservations += list(Reservation.objects.filter(timeslot=timeslot))
 
     return render(request, 'app/pages/dashboard.html', {
         "schedules": Schedule.objects.filter(owner=request.user.id),
-        "events": dict(sorted(history.items(), key=lambda x: x[1].history_date, reverse=True)[0:4])
+        "events": dict(sorted(history.items(), key=lambda x: x[1].history_date, reverse=True)[0:4]),
+        "upcoming": sorted(reservations, key=lambda x: x.timeslot.time_from)[0:2]
     })
 
 

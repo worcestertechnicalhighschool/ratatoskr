@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
 from django.utils import dateparse
 from django.utils.timezone import make_aware
+from django.contrib.admin.models import LogEntry
 import pytz
 from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
@@ -34,6 +35,30 @@ def index(request):
 
 
 @require_http_methods(["GET"])
+@login_required
+def dashboard(request):
+    history = {}
+    reservations = []
+    for s in Schedule.objects.filter(owner=request.user.id):
+        timeslots = s.timeslot_set.all()
+        for timeslot in timeslots:
+            history.update(dict(
+                sorted(
+                    {k: list(v)[-1] for k, v in
+                     groupby(sorted(Reservation.history.filter(timeslot=timeslot), key=lambda x: x.history_date), lambda x: x.id)}.items()
+                )
+            ))
+            if timeslot.time_from >= make_aware(datetime.datetime.now()):
+                reservations += list(Reservation.objects.filter(timeslot=timeslot))
+
+    return render(request, 'app/pages/dashboard.html', {
+        "schedules": Schedule.objects.filter(owner=request.user.id),
+        "events": dict(sorted(history.items(), key=lambda x: x[1].history_date, reverse=True)[0:4]),
+        "upcoming": sorted(reservations, key=lambda x: x.timeslot.time_from)[0:2]
+    })
+
+
+@require_http_methods(["GET"])
 def about(request):
     return render(request, 'app/pages/about.html')
 
@@ -50,8 +75,9 @@ def contact(request):
                 "errors": form.errors
             })
         send_message_email(form)
-        messages.info(request, "Message recieved! Your feedback is valuable to us!")
+        messages.info(request, "Message received! Your feedback is valuable to us!")
     return render(request, 'app/pages/contact.html')
+
 
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -62,15 +88,12 @@ def create_schedule(request):
             render(request, 'app/pages/create_schedule.html', {
                 "errors": form.errors
             })  # TODO: Render form errors in template or something
-        lock_date = datetime.datetime.now() + datetime.timedelta(days=99999)
-        if form.cleaned_data.get("should_lock_automatically"):
-            lock_date = form.cleaned_data.get("auto_lock_after")
 
         new_schedule = Schedule.objects.create(
             owner=request.user,
             name=form.cleaned_data["name"],
             visibility=form.cleaned_data["visibility_select"],
-            auto_lock_after=make_aware(lock_date),
+            auto_lock_after=form.cleaned_data.get("auto_lock_after") or (datetime.datetime.now() + datetime.timedelta(days=99999)),
             is_locked=False,
         )
         messages.add_message(request, messages.INFO, 'Successfully created schedule!')
@@ -118,7 +141,7 @@ def update_schedule(request, schedule):
             })
         case "delete_schedule":
             schedule.delete()
-            return redirect("schedules", schedule.owner.id)
+            return redirect(f"/schedules/{schedule.owner.id}")
     return None
 
 
@@ -174,7 +197,8 @@ def schedule(request, schedule):
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
     return render(request, "app/pages/schedules.html", {
-        "schedules": Schedule.objects.filter(owner=user_id) if request.user.id == user_id else Schedule.objects.filter(owner=user_id, visibility='P'),
+        "schedules": Schedule.objects.filter(owner=user_id) if request.user.id == user_id else Schedule.objects.filter(
+            owner=user_id, visibility='A'),
         "is_owner": request.user.id == user_id,
         "owner": User.objects.get(id=user_id)
     })
@@ -319,15 +343,18 @@ def reserve_timeslot(request, schedule, date, timeslot):
                 "timeslot": timeslot,
                 "form": reservation_form
             })
-        res = Reservation.objects.create(
-            timeslot=timeslot,
-            comment=reservation_form.cleaned_data["comment"],
-            email=reservation_form.cleaned_data["email"],
-            name=reservation_form.cleaned_data["name"],
-        )
-        messages.add_message(request, messages.INFO, 'Timeslot reserved!')
-        send_confirmation_email(res)
-        return redirect("reserve-confirmed")
+        if Reservation.objects.filter(timeslot=timeslot, email=reservation_form.cleaned_data["email"]).count() > 0:
+            messages.add_message(request, messages.ERROR, 'You have already reserved on this timeslot!')
+        else:
+            res = Reservation.objects.create(
+                timeslot=timeslot,
+                comment=reservation_form.cleaned_data["comment"],
+                email=reservation_form.cleaned_data["email"],
+                name=reservation_form.cleaned_data["name"],
+            )
+            messages.add_message(request, messages.INFO, 'Timeslot reserved!')
+            send_confirmation_email(res)
+            return redirect("reserve-confirmed")
     return render(request, "app/pages/reserve_timeslot.html", {
         "schedule": schedule,
         "timeslot": timeslot,
@@ -464,7 +491,8 @@ def copy_timeslots(request, schedule):
 
     form = CopyTimeslotsForm(request.POST)
     if not form.is_valid():
-        raise UnsupportedOperation()
+        messages.add_message(request, messages.ERROR, 'Not all fields were provided with valid data!')
+        return redirect(request.META.get('HTTP_REFERER'))
 
     from_time = sorted(form.cleaned_data["timeslots"], key=lambda x: x.time_from)[0].time_from
     to_time = make_aware(datetime.datetime.combine(form.cleaned_data["to_date"], form.cleaned_data["to_time"]))
@@ -493,7 +521,7 @@ def copy_timeslots(request, schedule):
                 timeslot.time_to += delta_time
                 timeslot.save()
                 Reservation.objects.filter(timeslot=timeslot).delete()
-                messages.add_message(request, messages.SUCCESS, "Timeslots moved!")
+            messages.add_message(request, messages.SUCCESS, "Timeslots moved!")
     return redirect(request.POST["next"])
 
 
@@ -527,4 +555,3 @@ def subscribe_schedule(request, schedule):
 @require_http_methods(["GET"])
 def help_page(request):
     return render(request, "app/pages/help.html")
-

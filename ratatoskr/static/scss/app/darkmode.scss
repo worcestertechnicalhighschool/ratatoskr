@@ -1,0 +1,98 @@
+@use "../bootstrap/variables";
+
+html:not(.dark-root) {
+    * {
+        transition: background-color 0.3s, color 0s, border-color 0s;
+    }
+}
+
+.dark-root {
+    * {
+        --bs-body-bg: #121212;
+        --bs-body-color: #dddddd;
+        --bs-dark-rgb: #dddddd;
+        --bs-light-rgb: #101010;
+    }
+
+    .accordion-button, .accordion-collapse, .accordion-item {
+        background-color: #353535 !important;
+    }
+
+    .invert-on-dark {
+        filter: invert(1);
+    }
+
+
+    h1, h2, h3, h4, h5, h6, span, label, button {
+        color: var(--bs-dark-rgb) !important;
+    }
+
+    a {
+        color: #aaaaaa !important;
+    }
+
+    .navbar-toggler-icon {
+        filter: invert(1);
+    }
+
+    hr {
+        background-color: var(--bs-dark-rgb) !important;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--bs-light-rgb) !important;
+    }
+
+    .card {
+        background-color: #232323 !important;
+    }
+
+    .nav-link {
+        color: #dddddd !important;
+    }
+
+    .navbar-light .navbar-brand {
+        color: #eeeeee !important;
+    }
+
+    .form-control {
+        :disabled {
+            color: #dedede !important;
+            background-color: #222222 !important;
+        }
+
+        :focus {
+            background-color: #313131 !important;
+            color: white !important;
+        }
+
+        background-color: #313131 !important;
+        color: white !important;
+    }
+
+    .form-floating label {
+        color: white !important;
+    }
+
+    .list-group-item {
+        color: white !important;
+        background-color: unset !important;
+        border-color: #FFFFFF44 !important;
+    }
+
+    .list-group-item:hover {
+        color: #dddddd !important;
+    }
+
+    .toast {
+        background-color: #232323 !important;
+    }
+
+    .toast-header {
+        background-color: #313131 !important;
+    }
+
+    .dropdown-menu {
+        background-color: #232323 !important;
+    }
+}

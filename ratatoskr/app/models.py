@@ -6,6 +6,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
 from googleapiclient.errors import HttpError
 from threading import Thread
+from simple_history.models import HistoricalRecords
 
 from .calendarutil import create_calendar_for_schedule, delete_calendar_for_schedule, delete_timeslot_event, \
     update_timeslot_event, add_subscriber, remove_subscriber, change_visibility
@@ -54,6 +55,7 @@ class Reservation(models.Model):
     email = models.EmailField()
     comment = models.CharField(max_length=256)
     confirmed = models.BooleanField(default=False)
+    history = HistoricalRecords()
 
 
 class ScheduleSubscription(models.Model):
@@ -61,6 +63,7 @@ class ScheduleSubscription(models.Model):
     schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     add_as_guest = models.BooleanField(default=False)
+    history = HistoricalRecords()
 
 
 # Signals for hooking into Google Calendar API

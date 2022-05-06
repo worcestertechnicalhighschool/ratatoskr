@@ -1,0 +1,13 @@
+@media screen and (max-width: 992px) {
+    .center-sm * {
+        text-align: center;
+    }
+
+    #vertical-bar {
+        display: none;
+    }
+
+    .center-sm a {
+        width: 100% !important;
+    }
+}

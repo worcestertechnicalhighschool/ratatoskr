@@ -34,11 +34,11 @@
 
                     <div class="row g-2">
                         <div class="mb-3 col">
-                            <label for="to_date" class="form-label">Copy To Date</label>
+                            <label for="to_date" class="form-label">Copy To Date <span class="text-danger fw-bold">*</span></label>
                             <input type="date" class="form-control" id="to_date" name="to_date">
                         </div>
                         <div class="mb-3 col">
-                            <label for="to_time" class="form-label">Copy To Time</label>
+                            <label for="to_time" class="form-label">Copy To Time <span class="text-danger fw-bold">*</span></label>
                             <input type="time" class="form-control" id="to_time" name="to_time" value="{{ timeslots.0.time_from|date:'H:i:s' }}">
                         </div>
                     </div>

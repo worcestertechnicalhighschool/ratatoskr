@@ -56,7 +56,7 @@
                         <a
                             href="{% url 'view-reservations' schedule.id timeslot.time_from.date timeslot.id %}"
                             class="btn btn-primary ms-lg-auto mt-3 mt-lg-0 {% if timeslot|confirmed_count < 1 %}disabled{% endif %}">
-                            View {{ timeslot|confirmed_count }} Reserved Slot{{ timeslot|confirmed_count|pluralize }}
+                            View {{ timeslot|confirmed_count }}/{{ timeslot.reservation_limit }} Reserved Slot{{ timeslot.reservation_limit|pluralize }}
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     {% else %}

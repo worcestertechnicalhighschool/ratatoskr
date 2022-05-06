@@ -37,23 +37,20 @@ def index(request):
 @require_http_methods(["GET"])
 @login_required
 def dashboard(request):
-    all_timeslots = []
-    history = []
-    for schedule in Schedule.objects.filter(owner=request.user.id):
-        timeslots = schedule.timeslot_set.all()
+    history = {}
+    for s in Schedule.objects.filter(owner=request.user.id):
+        timeslots = s.timeslot_set.all()
         for timeslot in timeslots:
-            all_timeslots += Reservation.objects.filter(timeslot=timeslot)
-    for t in all_timeslots:
-        delta = t.history.first().diff_against(t.history.last())
-        for change in delta.changes:
-            print("{} changed from {} to {}".format(change.field, change.old, change.new))
-            if change.field == "confirmed":
-                history.append({"type": "confirmed", "object": t})
-        if len(delta.changes) == 0:
-            history.append({"type": "made", "object": t})
+            history.update(dict(
+                sorted(
+                    {k: list(v)[-1] for k, v in
+                     groupby(sorted(Reservation.history.filter(timeslot=timeslot), key=lambda x: x.history_date), lambda x: x.id)}.items()
+                )
+            ))
+
     return render(request, 'app/pages/dashboard.html', {
         "schedules": Schedule.objects.filter(owner=request.user.id),
-        "events": history
+        "events": dict(sorted(history.items(), key=lambda x: x[1].history_date, reverse=True)[0:4])
     })
 
 

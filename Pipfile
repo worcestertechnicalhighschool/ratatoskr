@@ -27,6 +27,7 @@ gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
 django-compressor = "*"
+django-simple-history = "*"
 
 [dev-packages]
 

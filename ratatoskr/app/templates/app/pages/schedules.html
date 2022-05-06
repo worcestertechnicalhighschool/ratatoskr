@@ -15,11 +15,11 @@
                     data-bs-toggle="tooltip"
                     title="Copy share link"
                     @click="navigator.clipboard.writeText(window.location.href)">
-                    <i class="fas fa-link h1 m-0 p-0"></i>
+                    <i class="fas fa-link h1 m-0 p-0" style="font-size: 1.25em"></i>
                 </button>
             </h1>
         </div>
-        <a href="{% url "create-schedule" %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>
+        <a href="{% url 'create-schedule' %}"><i class='fa-solid fa-plus' style="font-size: 25px;"></i></a>
         {% else %}
         <div class="d-flex flex-row align-items-center">
             <img class="me-3 rounded" src="{{ owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ owner.get_full_name }}'s profile picture" style="width: 40px">
@@ -39,7 +39,7 @@
         </div>
         {% else %}
             {% if is_owner %}
-            <p class="text-center pt-4">It looks like you don't have any schedules, ready to <a href="/create-schedule">get started</a>?</p>
+            <p class="text-center pt-4">It looks like you don't have any schedules, ready to <a href="{% url 'create-schedule' %}">get started</a>?</p>
             {% else %}
             <p class="text-center pt-4">This user doesn't have any schedules yet.</p>
             {% endif %}

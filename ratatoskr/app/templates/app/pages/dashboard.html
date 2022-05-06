@@ -1,0 +1,66 @@
+{% extends 'app/layouts/base.html' %}
+{% block title %}My Dashboard{% endblock title %}
+
+{% block body %}
+
+    <div class="container">
+      <div class="row">
+          <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card p-3 h-100">
+                <h4 class="mb-3">Account</h4>
+                <img style="width: 50px;" class="rounded mx-auto d-block" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="" srcset="">
+                <p class="text-center fw-bold mt-2">{{ user.socialaccount_set.all.0.extra_data.name }}</p>
+                {% logout_button %}
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card p-3 h-100">
+                <h4 class="mb-3">Quick Actions</h4>
+                <div class="row">
+                    <a class="col btn btn-outline-primary m-2" href="{% url 'create-schedule' %}"><i class="fa-solid fa-circle-plus"></i>&nbsp;&nbsp;Create a Schedule</a>
+                    <a class="col btn btn-outline-info m-2" href=""><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;View Subscriptions</a>
+                </div>
+                <div class="row">
+                    <a class="col btn btn-outline-danger m-2" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help Articles</a>
+                    <a class="col btn btn-outline-warning m-2" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find a Reservation</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 mb-3">
+            <div class="card p-3 h-100">
+                <h4 class="mb-3">Upcoming</h4>
+                {% for reservation in upcoming %}
+                    <p><b>{{ reservation.timeslot.time_from }}</b> | <a href="{% url 'schedule' reservation.timeslot.schedule.id %}">{{ reservation.timeslot.schedule.name }}</a> with {{ reservation.name }}.</p>
+                {% endfor %}
+            </div>
+        </div>
+      </div>
+      <div class="row">
+         <div class="col-md-8 mb-3">
+            <div class="card p-3 h-100">
+                <a class="btn text-end mb-2" href="{% url 'user-schedules' user.id %}">View All Schedules&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a>
+                <div class="row row-cols-lg-3">
+                    {% for schedule in schedules|slice:":3" %}
+                        <div class="col mb-3">{% schedule_card schedule %}</div>
+                    {% endfor %}
+                </div>
+            </div>
+         </div>
+
+         <div class="col-md-4 mb-3">
+            <div class="card p-3 h-100">
+                <h4 class="mb-3">Recent Changes</h4>
+                {% for k, event in events.items %}
+                    {% if event.instance.confirmed or event.get_history_type_display == 'Deleted' %}
+                        <p class="mb-1">{{ event.instance.name }} has {% if event.get_history_type_display == 'Deleted' %}cancelled{% elif event.instance.confirmed %}confirmed{% endif %} their reservation on <a href="{% url 'view-reservations' event.instance.timeslot.schedule.id event.instance.timeslot.time_from.date event.instance.timeslot.id %}">{{ event.instance.timeslot.time_from }}</a> for <a href="{% url 'schedule' event.instance.timeslot.schedule.id %}">{{ event.instance.timeslot.schedule.name }}</a>.</p>
+                        <small class="text-end text-muted mb-2">At {{ event.history_date }}</small>
+                    {% endif %}
+                {% endfor %}
+            </div>
+         </div>
+      </div>
+    </div>
+
+{% endblock body %}

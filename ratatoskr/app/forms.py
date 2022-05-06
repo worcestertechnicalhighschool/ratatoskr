@@ -5,10 +5,10 @@ from .models import TimeSlot
 
 
 class TimeslotGenerationForm(forms.Form):
-    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    from_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}))
-    to_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}))
+    from_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}), required=True)
+    to_time = forms.TimeField(widget=forms.DateInput(attrs={'type': 'time'}), required=True)
     multiple_timeslots = forms.BooleanField(initial=False, required=False)
     timeslot_length = forms.IntegerField(required=False)
     timeslot_break = forms.IntegerField(required=False)
@@ -16,10 +16,11 @@ class TimeslotGenerationForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        # st = cleaned_data['from_time']
-        # end = cleaned_data['to_time']
-        # if st > end :
-        #      raise forms.ValidationError('The start time must be earlier than the end time.')
+        st = cleaned_data.get('from_time')
+        end = cleaned_data.get('to_time')
+        if st > end:
+            raise forms.ValidationError('The start time must be earlier than the end time!')
+
         return cleaned_data
 
 
@@ -39,14 +40,15 @@ class CopyTimeslotsForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        cleaned_data["timeslots"] = list(map(lambda x: TimeSlot.objects.get(pk=int(x)), cleaned_data["timeslots"].split(",")))
+        cleaned_data["timeslots"] = list(
+            map(lambda x: TimeSlot.objects.get(pk=int(x)), cleaned_data["timeslots"].split(",")))
         return cleaned_data
 
 
 class ScheduleCreationForm(forms.Form):
     name = forms.CharField(max_length=64)
     should_lock_automatically = forms.BooleanField()
-    auto_lock_after = forms.TimeField(widget=forms.DateTimeInput(attrs={'type': 'time'}), required=False)
+    auto_lock_after = forms.DateTimeField(required=False)
     visibility_select = forms.CharField(max_length=1)
 
 

@@ -17,7 +17,7 @@
             {% comment %}
                 Hiding this button from aria because a hard of seeing person would not have that much a use for this button...
             {% endcomment %}
-            <a href="#look" class="btn btn-success btn-circle shadow-sm animate" aria-hidden="true">
+            <a href="#look" class="btn btn-primary btn-circle shadow-sm animate" aria-hidden="true">
                 <div class="d-flex justify-content-center align-items-center h-100">
                     <h1 class="mb-1" style="font-size: 40px"><i class="fa-solid fa-arrow-down-long"></i></h1>
                 </div>
@@ -25,47 +25,70 @@
         </div>
     </section>
 
-    <section class="row flex-lg-row-reverse align-items-center g-5 py-5"  id="look">
-        <div class="col-lg-6">
-            <h1 class="display-5 mb-3">Scheduling made easy</h1>
-            <p class="lead">
-                Scheduling is done with a single click! <br>
-                Anybody can schedule; faculty, students, teachers, staff, anyone!
-            </p>
+    <div id="look" class="mb-5"></div>
+    <h2 class="text-center mt-5 pt-5">Get Started</h2>
+    <hr class="w-50 mx-auto">
+    <section class="d-flex flex-column justify-content-center align-items-center py-5">
+        <div class="row w-75 center-sm">
+            <div class="col text-end" style="min-width: 350px">
+                <h4>Making a Reservation</h4>
+                <p>Here to make a reservation? Ask your teacher or organizer for a link to their Ratatoskr schedule. From there, you can get started with scheduling from available timeslots.</p>
+            </div>
+            <div style="width: 1px; background-color: #dddddd" class="px-0" id="vertical-bar"></div>
+            <div class="col text-start" style="min-width: 350px">
+                <h4>Managing a Schedule</h4>
+                <p>If you are a teacher or schedule organizer, get started here!</p>
+                {% if not user.is_authenticated %}
+                    {% login_button %}
+                {% else %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2 w-50" style="color: white !important;">My Dashboard</a>
+                {% endif %}
+            </div>
         </div>
+    </section>
+
+    <h2 class="text-center mt-5 pt-5">Learn More About Ratatoskr</h2>
+    <hr class="w-50 mx-auto">
+
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5 justify-content-center flex-row-reverse" style="flex-direction: row !important;">
         <div class="col-10 col-sm-8 col-lg-6">
             <!-- Using a placeholder for now -->
             <img src="{% static 'assets/easy.gif' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
+        <div class="col-lg-6 px-5">
+            <h1 class="display-5 mb-3">Scheduling Made Easy</h1>
+            <p class="lead">
+                Scheduling is done with a single click! <br>
+                Anybody can schedule: faculty, students, teachers, staff, anyone!
+            </p>
+        </div>
     </section>
-    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5 justify-content-center">
         <div class="col-10 col-sm-8 col-lg-6">
             <!-- Using a placeholder for now -->
-            <img src="{% static 'assets/googlecalendar.png' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            <img src="{% static 'assets/calendar.svg' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 px-5">
             <h1 class="display-5 mb-3">Integration with Google</h1>
             <p class="lead">
                 We integrate with Google to sync our schedules with your Calendar!<br>
             </p>
-            <div class="mt-5"></div>
-            <p class="lead mt-5 pt-5 text-muted">
-                <span style="font-size: 12pt">*can only sign in with a Worcester Public Schools domain account</span>
+            <p class="lead text-black-50">
+                <span style="font-size: 12pt">Note: you can only sign in with a Worcester Public Schools domain account!</span>
             </p>
         </div>
     </section>
-    <section class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-lg-6">
+    <section class="row flex-lg-row-reverse align-items-center g-5 py-5 justify-content-center" style="flex-direction: row !important;">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Using a placeholder for now -->
+            <img src="{% static 'assets/github.svg' %}" class="d-block mx-lg-auto img-fluid rounded invert-on-dark" alt="Bootstrap Themes" width="600" height="500" loading="lazy" style="max-height: 200px">
+        </div>
+        <div class="col-lg-6 px-5">
             <h1 class="display-5 mb-3">Free and Open Source</h1>
             <p class="lead">
                 We host our codebase on GitHub for <a href="https://github.com/worcestertechnicalhighschool/ratatoskr">all to see</a>! <br>
-                Come take a look, or if you find something wrong with our app, <br>
-                <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues/new">create a GitHub Issue</a>!
+                Come take a look, or if you find something wrong with our app, <a href="https://github.com/worcestertechnicalhighschool/ratatoskr/issues/new">create a GitHub Issue</a>!
             </p>
-        </div>
-        <div class="col-10 col-sm-8 col-lg-6">
-            <!-- Using a placeholder for now -->
-            <img src="{% static 'assets/gitsnub.png' %}" class="d-block mx-lg-auto img-fluid rounded" alt="Bootstrap Themes" width="600" height="500" loading="lazy">
         </div>
     </section>
 {% endblock body %}

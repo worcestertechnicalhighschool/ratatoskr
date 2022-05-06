@@ -2,7 +2,7 @@
 {% load static %}
 {% load sass_tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" v-scope="{ darkmode: localStorage.getItem('dark') == 'true' }" :class="{ 'dark-root': darkmode }">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,7 +31,7 @@
                         <a class="nav-link" href="{% url 'index' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'help' %}">Help</a>
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact' %}">Contact</a>
@@ -53,74 +53,7 @@
                                 <a class="nav-link" href="{% url "user-schedules" user.id %}">Your Schedules</a></a>
                             </li>
                         {% endif %}
-                        {% comment %} Desktop user schedule creation dropdown {% endcomment %}
-                        <li class="pt-1 d-lg-none"></li>
-                        <li class="nav-item d-none d-lg-block">
-                            <div class="dropdown">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                    data-bs-auto-close="false"
-                                    aria-expanded="false">
-                                    Create a schedule
-                                </button>
-                                <ul class="dropdown-menu mt-2 dropdown-menu-center">
-                                    <form class="px-3 py-2" style="width: 450px" action="{% url 'create-schedule' %}" method="POST"
-                                        v-scope="{ autoLockEnabled: false, loading: false }" 
-                                        @submit="loading = true">
-                                        {% csrf_token %}
-                                        <div class="form-floating mb-3">
-                                            <input type="text" id="name" name="name" class="form-control" placeholder="My New Schedule" required/>
-                                            <label for="name">Schedule Name</label>
-                                        </div>
-                                        <fieldset>
-                                            {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
-                                            <div class="form-check">
-                                                <input
-                                                    class="form-check-input"
-                                                    name="should_lock_automatically"
-                                                    type="checkbox"
-                                                    id="should_lock_automatically"
-                                                    @click="autoLockEnabled = $el.checked">
-                                                <label class="form-check-label" for="should_lock_automatically">
-                                                    Lock schedule automatically
-                                                </label>
-                                            </div>
-                                            <div class="mt-2" id="autoLock">
-                                                <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
-                                                <input
-                                                    type="datetime-local"
-                                                    id="auto_lock_after"
-                                                    name="auto_lock_after"
-                                                    v-bind:disabled="!autoLockEnabled"
-                                                    v-bind:required="autoLockEnabled"
-                                                    class="form-control" />
-                                            </div>
-                                        </fieldset>
-                                        <div class="my-3">
-                                            <label for="visibility-select" class="form-label">Visibility</label>
-                                            <select class="form-select" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility_select">
-                                            <option selected value="A">Public</option>
-                                            <option value="U">Unlisted</option>
-                                            <option value="P">Private</option>
-                                            </select>
-                                            <div id="visibilityHelp" class="form-text">Choose your visibility to restrict access to your schedule.</div>
-                                        </div>
-                                        <br>
-                                        <fieldset class="text-center">
-                                            <button class="btn btn-primary w-50" name="submit" type="submit" v-bind:disabled="loading">
-                                                <template v-if="loading">
-                                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                                                    Loading...
-                                                </template>
-                                                <span v-else>Create</span>
-                                            </button>
-                                        </fieldset>
-                                    </form>
-                                </ul>
-                            </div>
-                        </li>
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
                     {% endif %}
                     {% comment %} Desktop user login info stuff {% endcomment %}
                     <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-none d-lg-block">
@@ -204,7 +137,16 @@
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top flex-column flex-md-row">
             <p class="col-md-4 mb-md-0 mb-2 text-muted">© 2022 meetings.techhigh.us | <a class="text-muted" href="https://raw.githubusercontent.com/worcestertechnicalhighschool/ratatoskr/master/LICENSE">LICENSE</a></p>
     
-            <ul class="nav justify-content-end">
+            <ul class="nav justify-content-center justify-content-lg-end">
+                <li class="nav-item"><button class="nav-link px-1 text-muted border-0 bg-transparent" @click="darkmode = !darkmode; localStorage.setItem('dark', darkmode);">
+                    <template v-if="darkmode">
+                        <i class="fa-solid fa-sun"></i> Switch to Light Mode
+                    </template>
+                    <template v-else>
+                        <i class="fa-solid fa-moon"></i> Switch to Dark Mode
+                    </template>
+                </button></li>
+                <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
                 <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" target="_blank" class="nav-link px-1 text-muted"><i class="fa-solid fa-code-branch"></i> Steal our code</a></li>
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
                 <li class="nav-item"><a class="nav-link px-1 text-muted" href="https://techhigh.us"><i class="fa-solid fa-school"></i> WTHS</a></li>

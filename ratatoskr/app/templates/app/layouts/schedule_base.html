@@ -28,7 +28,7 @@
             </div>
             <h1 class="mb-2" v-else>
                 {{ schedule.name }}
-                <button class="btn btn-link p-0" aria-label="Start Editing Schedule" @click="editEnable = true"><i class="fas fa-pencil float-right h2"></i></button>
+                <button class="btn btn-link p-0" aria-label="Start Editing Schedule" @click="editEnable = true"><i class="fas fa-pencil float-right h2" style="font-size: 1.25em"></i></button>
             </h1>
 
             <script>
@@ -53,7 +53,7 @@
                     {{ schedule.description }} 
                 </textarea>
             </div>
-            <div v-show="!editEnable" class="mt-2">
+            <div v-show="!editEnable" class="mt-2" style="word-break: break-all;">
                 {{ schedule.description|safe }}
             </div>
     </form>
@@ -105,7 +105,7 @@
         </p>
     {% endif %}
 
-    <div class="card mt-4" style="height: 75vh">
+    <div class="card mt-4">
         <div class="card-header">
             {% block schedule_head %}
             {% endblock schedule_head %}

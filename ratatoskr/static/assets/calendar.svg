@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="319px" height="154px" viewBox="0 0 319 154" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" jetway-hooks="{}">
+    <title>hybrid3</title>
+    <defs>
+        <polygon id="path-1" points="0 125 105 125 105 0 0 0"></polygon>
+    </defs>
+    <g jetway-hook-id="A5893B6E-D0BB-41B8-B762-714E6D5AB875" id="hybrid3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g jetway-hook-id="661C06F6-77C5-463D-81ED-DB575243D66C" id="Group-10" transform="translate(85.000000, 1.000000)">
+            <rect jetway-hook-id="4237A9BC-1279-490B-AC70-C35F24183670" id="Rectangle" stroke="#9AA0A6" fill="#FFFFFF" fill-rule="nonzero" stroke-linejoin="round" x="0" y="0" width="219" height="119" rx="2"></rect>
+            <g jetway-hook-id="57A430C4-DB3D-4497-944E-270CBA971783" id="Group-8-Copy" transform="translate(79.500000, 96.633673)">
+                <g jetway-hook-id="D1F3DF5C-9DDA-4130-99B7-ABED8ED6AC09" id="Group-7">
+                    <rect jetway-hook-id="44DEE101-DD41-4FF3-BE1C-083038D41CC8" id="Rectangle" fill="#FFFFFF" x="89" y="10.3663265" width="16" height="6"></rect>
+                    <g jetway-hook-id="F1990C59-2CAE-4619-A71D-04899FA3F83B" id="business-tutorial-plan-mtg-copy">
+                        <path d="M59.83,53.8163265 L0,53.8163265 C7.27,48.5263265 12.17,40.5863265 13.63,31.7163265 L15,23.3663265 L44.83,23.3663265 L46.2,31.7163265 C47.66,40.5863265 52.56,48.5263265 59.83,53.8163265" jetway-hook-id="D65F75EF-9114-4FC3-B37E-0E3E27536206" id="Fill-5" fill="#E8EAED" fill-rule="nonzero"></path>
+                        <path d="M60.5899,53.8163265 L0.7599,53.8163265 C8.0299,48.5263265 12.9299,40.5863265 14.3899,31.7163265 L15.7599,23.3663265 L45.5899,23.3663265 L46.9599,31.7163265 C48.4199,40.5863265 53.3199,48.5263265 60.5899,53.8163265 Z" jetway-hook-id="C1F498F5-DBCF-4972-9B19-124FEE75F346" id="Stroke-7" stroke="#9AA0A6"></path>
+                        <polygon jetway-hook-id="610C7293-D526-489E-B085-329C6A1F89EA" id="Fill-9" fill="#3C4043" fill-rule="nonzero" points="46.6799 30.0163265 15.7099 23.7163265 15.7699 23.3663265 45.5899 23.3663265 46.6699 29.9463265"></polygon>
+                        <polygon jetway-hook-id="A46F990F-2038-4238-B5C2-8A8ABD1FDFAD" id="Stroke-11" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round" points="46.6799 30.0163265 15.7099 23.7163265 15.7699 23.3663265 45.5899 23.3663265 46.6699 29.9463265"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g jetway-hook-id="7FF7FA36-090A-4252-9CAF-EC8C0A19AA54" id="Group-9" transform="translate(142.000000, 31.000000)" stroke="#9AA0A6">
+            <line x1="1" y1="0.5" x2="155" y2="0.5" jetway-hook-id="29F0B1B1-804B-4C55-9D8C-DFCBBAA748F5" id="Line-2" stroke-linecap="round"></line>
+            <line x1="1" y1="22.5" x2="155" y2="22.5" jetway-hook-id="09BD2025-A416-4769-B292-F0BA97BF0D50" id="Line-2" stroke-linecap="round"></line>
+            <line x1="1" y1="45.5" x2="155" y2="45.5" jetway-hook-id="40A98530-78C8-4BE6-B0E0-8DC832F28BF2" id="Line-2" stroke-linecap="round"></line>
+            <line x1="1" y1="67.5" x2="155" y2="67.5" jetway-hook-id="6A0CF861-654D-429C-B971-61554E8CC023" id="Line-2" stroke-linecap="round"></line>
+            <line x1="22.5" y1="0.693877551" x2="22.5" y2="67.3061224" jetway-hook-id="D7C60117-EA56-4D67-8B66-22191A527181" id="Line-3" stroke-linecap="square"></line>
+            <line x1="0.5" y1="0.693877551" x2="0.5" y2="67.3061224" jetway-hook-id="5C253C4D-0CAF-4E3D-9F12-FEF7971B061D" id="Line-3" stroke-linecap="square"></line>
+            <line x1="155.5" y1="0.693877551" x2="155.5" y2="67.3061224" jetway-hook-id="AB10255B-75D9-417E-984F-C912C6BFDC5B" id="Line-3" stroke-linecap="square"></line>
+            <line x1="66.5" y1="0.693877551" x2="66.5" y2="67.3061224" jetway-hook-id="CF8AFA57-2CE1-429E-802D-AC39F1A61C2B" id="Line-3" stroke-linecap="square"></line>
+            <line x1="89.5" y1="0.693877551" x2="89.5" y2="67.3061224" jetway-hook-id="9AB26049-CE4D-4B4B-B7A1-9036C0EEEEBD" id="Line-3" stroke-linecap="square"></line>
+            <line x1="111.5" y1="0.693877551" x2="111.5" y2="67.3061224" jetway-hook-id="867B4E11-7B85-4067-B903-DADBB340AE99" id="Line-3" stroke-linecap="square"></line>
+            <line x1="133.5" y1="0.693877551" x2="133.5" y2="67.3061224" jetway-hook-id="210FE168-54FE-4CF1-AAA6-BDB9AB51F17A" id="Line-3" stroke-linecap="square"></line>
+            <line x1="44.5" y1="0.693877551" x2="44.5" y2="67.3061224" jetway-hook-id="12A8F936-A297-4551-B07C-1B9AC1F6BB1B" id="Line-3" stroke-linecap="square"></line>
+        </g>
+        <rect jetway-hook-id="F332DA29-1535-4F52-89F0-80271B3B69DD" id="Rectangle" fill="#D2E3FC" x="165" y="54" width="21" height="11"></rect>
+        <rect jetway-hook-id="2C3175A0-8434-474C-9483-420FCE418C03" id="Rectangle" fill="#D2E3FC" x="209" y="54" width="22" height="11"></rect>
+        <rect jetway-hook-id="EC250F89-F9B5-45DB-9F6F-22F0B5325A15" id="Rectangle" fill="#2CB469" x="254" y="54" width="21" height="22"></rect>
+        <rect jetway-hook-id="57F3216C-DD86-40C2-B3CB-33D6D61D44E7" id="Rectangle" fill="#D2E3FC" x="254" y="82" width="21" height="11"></rect>
+        <rect jetway-hook-id="D2959EEA-3D96-43D0-BDB2-F6344E718859" id="Rectangle" fill="#D2E3FC" x="232" y="82" width="21" height="11"></rect>
+        <g jetway-hook-id="3BA59910-CBE6-4593-A0BF-4284BA949A8C" id="Group" transform="translate(97.000000, 41.000000)" fill="#9AA0A6" stroke="#979797">
+            <circle jetway-hook-id="BA344C67-D7ED-4A0F-98EA-E2CA5071BAA2" id="Oval" cx="0.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="EF272B98-6420-439F-890D-7997AA132439" id="Oval" cx="5.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="EA8C402C-16B4-40F9-873E-EF8A04AEB455" id="Oval" cx="15.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="9932E951-9FEB-422D-B75E-106630550AAB" id="Oval" cx="25.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="2E88D1A3-A738-418C-BDFE-29E5875252CE" id="Oval" cx="30.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="AD75363B-D8DE-4ECD-93C1-F265B96942D3" id="Oval" cx="20.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="5DEE584C-7D1C-423A-BF3A-24FBA5B30B07" id="Oval" cx="10.5" cy="0.5" r="1"></circle>
+            <circle jetway-hook-id="D0214D33-9D73-4563-93D0-41FE99376A1D" id="Oval" cx="0.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="5C4079EB-D16A-4071-8297-CD0A4107B8EE" id="Oval" cx="5.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="518FAC67-4A02-453E-8B39-0AF214042F98" id="Oval" cx="15.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="5BAE5093-9935-4163-B3E3-AF05E4E2B70D" id="Oval" cx="25.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="731F45A2-38E4-4371-88B4-FD43867F2666" id="Oval" cx="30.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="FAFCA0A8-297E-4F3F-832E-6D9157144D96" id="Oval" cx="20.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="715EE1B8-6768-4D4C-8951-BE44D976339B" id="Oval" cx="10.5" cy="5.5" r="1"></circle>
+            <circle jetway-hook-id="A4040DF7-3697-4A1B-B535-44C8C4FB965E" id="Oval" cx="0.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="4332CB3A-94DA-4170-A7FB-7220E23E7B94" id="Oval" cx="5.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="4BE8B367-5897-43AF-92F1-E59DA5451B8F" id="Oval" cx="15.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="E346C4B6-CA2F-461C-9A78-670C45DA6AF3" id="Oval" cx="25.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="D9226D66-7B62-4CA3-BE51-E4846F01D679" id="Oval" cx="30.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="AB250C7E-D112-4491-8B21-185565935963" id="Oval" cx="20.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="B1636AEE-D979-4D69-BC9C-FE1C8BB4378F" id="Oval" cx="10.5" cy="10.5" r="1"></circle>
+            <circle jetway-hook-id="1CD3E359-21AF-42EE-8467-851EBF5BCDB6" id="Oval" cx="0.5" cy="15.5" r="1"></circle>
+            <circle jetway-hook-id="4E4E986C-1878-4B0F-A37E-6AA13A0456CD" id="Oval" cx="5.5" cy="15.5" r="1"></circle>
+            <circle jetway-hook-id="B7B56B28-C81C-4456-A468-1741E0A551EC" id="Oval" cx="15.5" cy="15.5" r="1"></circle>
+            <circle jetway-hook-id="2D42E5A1-4F1F-4DFE-A932-E4A82875A0C6" id="Oval" cx="25.5" cy="15.5" r="1"></circle>
+            <circle jetway-hook-id="3FA2F9D8-499B-4A9D-9C87-D4934A8E79EF" id="Oval" cx="30.5" cy="15.5" r="1"></circle>
+            <circle jetway-hook-id="08005619-CAF9-4479-B424-99F64C01A034" id="Oval" cx="20.5" cy="15.5" r="1"></circle>
+            <circle jetway-hook-id="25ED6791-8ED0-4809-A7CF-85A771408594" id="Oval" cx="10.5" cy="15.5" r="1"></circle>
+        </g>
+        <line x1="97" y1="69.5" x2="128" y2="69.5" jetway-hook-id="C5134B68-C9FB-46D6-8597-1F2EC74072CC" id="Line-2" stroke="#9AA0A6" stroke-linecap="round"></line>
+        <line x1="97" y1="77.5" x2="128" y2="77.5" jetway-hook-id="D18C1122-3784-4CCD-A6E6-EEB5FD4550AF" id="Line-2" stroke="#9AA0A6" stroke-linecap="round"></line>
+        <line x1="97" y1="85.5" x2="128" y2="85.5" jetway-hook-id="3563E31C-0A5B-45F4-8F34-F88F47B67DF7" id="Line-2" stroke="#9AA0A6" stroke-linecap="round"></line>
+        <g jetway-hook-id="5289B675-C663-4C0F-8699-D8296D0FCE06" id="Group-4" transform="translate(97.000000, 10.000000)" stroke="#3C4043">
+            <g jetway-hook-id="450BC33D-75F9-4526-A534-BB854A043D45" id="Group-2">
+                <path d="M13.5,0 L13.5,4.75 L4.5,4.749 L4.5,12.35 L0,12.35 L0,2 C-1.3527075e-16,0.8954305 0.8954305,2.02906125e-16 2,0 L13.5,0 Z" jetway-hook-id="15D6ADD2-E4DF-4E16-9A6B-7BA8589E6001" id="Combined-Shape" fill="#4285F4" opacity="0.845994495"></path>
+                <path d="M13.5,0 L16,0 C17.1045695,-4.2495073e-16 18,0.8954305 18,2 L18,12.35 L18,12.35 L13.5,12.35 L13.5,0 Z" jetway-hook-id="1C761AE3-7198-4555-BE33-88233D0F9B08" id="Rectangle" fill="#FCC934"></path>
+                <path d="M13.5,0 L16,0 C17.1045695,-2.02906125e-16 18,0.8954305 18,2 L18,4.75 L18,4.75 L13.5,4.75 L13.5,0 Z" jetway-hook-id="EB8340B1-53A8-4243-868B-8D5596C7B6DA" id="Rectangle" fill="#669DF6"></path>
+                <path d="M0,12.35 L13.5,12.35 L13.5,17.1 L2,17.1 C0.8954305,17.1 1.3527075e-16,16.2045695 0,15.1 L0,12.35 L0,12.35 Z" jetway-hook-id="1C44D5BF-B563-44AC-A833-F9EF5A76FBF4" id="Rectangle" fill="#81C995"></path>
+                <path d="M18.6216659,12.364916 L13.4764706,17.7815836 L13.4764706,12.364916 L18.6216659,12.364916 Z" jetway-hook-id="35D834AC-2A76-4267-9BC7-CE97FAFA0D8E" id="Path-5" fill="#F28B82" stroke-linejoin="round"></path>
+                <path d="M0,12.35 L2.5,12.35 C3.6045695,12.35 4.5,13.2454305 4.5,14.35 L4.5,17.1 L4.5,17.1 L0,17.1 L0,12.35 Z" jetway-hook-id="54169BEE-C2F4-446B-8BBE-FBDECFEB020C" id="Rectangle-Copy" fill="#5BB974" transform="translate(2.250000, 14.725000) scale(-1, -1) translate(-2.250000, -14.725000) "></path>
+            </g>
+        </g>
+        <rect jetway-hook-id="4805262B-FEAC-44D7-BF50-A2A31D0E2DA0" id="Rectangle" fill="#FBBC04" x="165" y="32" width="132" height="6"></rect>
+        <g jetway-hook-id="6505F2C8-AA86-4B56-93B3-5AC2405790D1" id="Group-5" transform="translate(216.000000, 7.000000)">
+            <rect jetway-hook-id="CCE2CAB8-0A16-495E-8AFF-3C197C7A6990" id="Rectangle" stroke="#3C4043" fill="#FFFFFF" x="0" y="0" width="46" height="59"></rect>
+            <g jetway-hook-id="57A67F11-C208-4A6E-AC26-495F14CD35F0" id="Group-3" transform="translate(8.000000, 10.000000)">
+                <line x1="0" y1="0.5" x2="31" y2="0.5" jetway-hook-id="69248187-AA0C-4361-BA69-5F47A9D83FD3" id="Line-2" stroke="#3C4043" stroke-linecap="round"></line>
+                <line x1="0" y1="25.5" x2="31" y2="25.5" jetway-hook-id="CA93AE1B-B0C5-40A4-AB74-BC5F0CC8B1A4" id="Line-2" stroke="#3C4043" stroke-linecap="round"></line>
+                <line x1="0" y1="31.5" x2="31" y2="31.5" jetway-hook-id="19CF6476-84A7-40B8-8012-BBB0B22F7FD5" id="Line-2" stroke="#3C4043" stroke-linecap="round"></line>
+                <line x1="0" y1="37.5" x2="31" y2="37.5" jetway-hook-id="A9EA1AAE-482F-407B-8CCC-B57C9004DF81" id="Line-2" stroke="#3C4043" stroke-linecap="round"></line>
+                <rect jetway-hook-id="6A1371EA-7294-4A80-8AD7-0906496E8284" id="Rectangle" fill="#4285F4" x="0" y="8.5" width="31" height="7"></rect>
+            </g>
+        </g>
+        <rect jetway-hook-id="B4B46F8D-6B3E-4536-B774-D94E26D3A6DE" id="Rectangle" fill="#E8EAED" x="141.5" y="14" width="65" height="8"></rect>
+        <rect jetway-hook-id="9D4FD4C7-6390-4ACB-AEA5-682B542E6491" id="Rectangle" fill="#FFFFFF" fill-rule="nonzero" x="84.5" y="90" width="25" height="31"></rect>
+        <g jetway-hook-id="6078F3D7-C568-44F6-B299-0E931971A737" id="Group-30" transform="translate(-7.000000, 27.000000)">
+            <g jetway-hook-id="BDD45D1B-C4AD-49CC-B48B-93876E01F866" id="Group-29">
+                <line x1="84.3392479" y1="74.0998" x2="84.3392479" y2="78.2812847" jetway-hook-id="F28776E2-9D4B-494E-89EC-50CF1732B432" id="Stroke-1" stroke="#3C4043"></line>
+                <g jetway-hook-id="B28C1745-1EC7-4625-80BD-8AE071F510C2" id="Group-28">
+                    <path d="M64.4431939,91.6592576 C58.7566208,87.0471216 51.2486758,84.6577017 44.0048994,84.1575906 C35.2595339,83.5602356 35.4541843,90.5062236 39.1108316,96.4242054 C41.4188294,100.161147 44.6861758,103.384085 48.2176907,105.954101 C53.9181674,110.080018 60.9255826,112.469438 67.9886123,112.302734" jetway-hook-id="F8D7D8A8-1CEE-496A-805C-940B55BD0D0F" id="Stroke-2" stroke="#D2E3FC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M59.9245233,0.722382752 C59.8689089,0.708490776 59.8132945,0.708490776 59.7576801,0.6945988" jetway-hook-id="E80E98F0-973D-478A-9E30-25DECF8772E2" id="Stroke-4" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M70.7137182,3.23683041 C68.8506356,2.4866637 66.8485169,1.95876862 64.8046875,1.52811736" jetway-hook-id="D460789D-678C-4CA5-BD87-D55904594882" id="Stroke-6" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M81.2526483,64.8755279 C81.822696,61.5970216 81.2943591,57.6933763 78.9307468,55.1789287 C76.4698093,52.5672372 71.3949947,53.234052 69.8655985,49.7054901 C68.3501059,46.1908202 72.5211864,43.0373416 74.6901483,40.9257613 C76.8869174,38.786397 78.9724576,36.3275172 80.529661,33.6741498 C85.2568856,25.5890198 84.1445975,14.5448989 77.6377119,7.80729051" jetway-hook-id="C5E00DFB-05CA-445C-B020-A214DCCC7999" id="Stroke-8" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M35.954714,27.783952 C40.876589,27.8256279 45.7845604,27.9367637 50.650821,28.7286064 C55.1416843,29.4509891 62.0517744,30.0622361 64.5266155,34.5632363 C65.3330244,36.0218938 65.1800847,37.8417426 64.5405191,39.3837519 C63.1501589,42.7178262 59.0903072,45.3573016 59.5908369,49.3442987 C59.7993909,51.0252278 60.8560646,52.4699933 62.2881356,53.3868637 C65.8474576,55.6512558 70.1297669,54.984441 73.8559322,56.4153145 C75.3853284,56.9987775 76.6227489,58.1101356 77.6238083,59.4715492" jetway-hook-id="61EA958C-B3E9-4298-9CE1-ECB708EB1517" id="Stroke-10" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M11.0950742,25.2972883 C15.4051907,26.7003779 20.1324153,27.2282729 24.2478814,27.5061125 C26.4307468,27.6450322 28.6275159,27.7144921 30.824285,27.7422761" jetway-hook-id="24B5B656-6574-452B-89D3-381DE7AC836C" id="Stroke-12" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M60.5223782,112.927873 C51.9021451,98.4246499 50.8871822,75.238942 50.8871822,75.238942 L104.30482,75.238942 C104.30482,75.238942 102.149762,124.319293 77.5960011,124.319293 C69.9212129,124.319293 64.4431939,119.526561 60.5223782,112.927873" jetway-hook-id="31F3F2D6-D378-4428-992F-DFA461984452" id="Fill-18" fill="#D2E3FC"></path>
+                    <path d="M60.5223782,112.927873 C51.9021451,98.4246499 50.8871822,75.238942 50.8871822,75.238942 L104.30482,75.238942 C104.30482,75.238942 102.149762,124.319293 77.5960011,124.319293 C69.9212129,124.319293 64.4431939,119.526561 60.5223782,112.927873 Z" jetway-hook-id="97983584-78A8-470E-BECB-8CF6F91CA500" id="Stroke-20" stroke="#D2E3FC" stroke-width="0.92" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M87.5092691,81.2680596 L87.5092691,74.1136919 C87.5092691,73.2384974 86.8001854,72.5300067 85.9242585,72.5300067 C85.0483316,72.5300067 84.3392479,73.2384974 84.3392479,74.1136919 L84.3392479,74.0998" jetway-hook-id="3B932AE7-A0E7-409E-AEF2-DDE1297C4105" id="Stroke-22" stroke="#3C4043"></path>
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g jetway-hook-id="7114074E-302F-4A9F-883B-207787CB36BB" id="Clip-25"></g>
+                    <polygon jetway-hook-id="4A1B36B8-864E-4698-AC71-44C74F1E2E78" id="Fill-24" fill="#FFFFFF" mask="url(#mask-2)" points="81.4751059 96.7715048 93.5434322 96.7715048 93.5434322 81.2680596 81.4751059 81.2680596"></polygon>
+                    <polygon jetway-hook-id="C1409252-20BB-423D-AB32-AF4003D7DF19" id="Stroke-26" stroke="#3C4043" mask="url(#mask-2)" points="81.4751059 96.7715048 93.5434322 96.7715048 93.5434322 81.2680596 81.4751059 81.2680596"></polygon>
+                    <path d="M104.304959,75.238942 C104.304959,75.238942 103.679297,89.5615692 99.2301443,102.717271 C95.4483647,113.928095 88.8858647,124.305401 77.5961401,124.305401" jetway-hook-id="3D274C05-FCF4-4A75-A45B-525D8911C718" id="Stroke-27" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round" mask="url(#mask-2)"></path>
+                </g>
+            </g>
+        </g>
+        <line x1="1" y1="151.5" x2="305.5" y2="151.5" jetway-hook-id="BD97E859-966A-41FE-8B1B-D29B3B2CBC58" id="Stroke-29" stroke="#3C4043" stroke-linecap="round" stroke-linejoin="round"></line>
+    </g>
+</svg>

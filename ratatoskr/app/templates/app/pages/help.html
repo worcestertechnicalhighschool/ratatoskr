@@ -1,6 +1,8 @@
 {% extends 'app/layouts/base.html' %}
 {% block title %}Help{% endblock title %}
 
+{% load static %}
+
 {% block body %}
     <h1 class="px-4">Help</h1>
     <hr/>
@@ -23,8 +25,9 @@
             Signing In
           </div>
           <div class="card-body">
-            <h5 class="card-title">Placeholder Help Title</h5>
-            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+            <h5 class="card-title">How to Sign In</h5>
+            <p class="card-text">At the right of the navigation bar (the top right of the screen) there is a button that says "Login with Google". Click this button and you will be brought to a sign-in page, allowing you to sign in with your worcester schools account. Signing in successfully will return you to the home page.</p>
+            <img src="{% static 'assets/sign_in.png' %}" class="rounded mx-auto d-block">
           </div>
         </div>
         <div class="card mb-3" id="creating-schedule">
@@ -32,8 +35,11 @@
             Creating a Schedule
           </div>
           <div class="card-body">
-            <h5 class="card-title">Placeholder Help Title</h5>
-            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+            <h5 class="card-title">How to Create a Schedule</h5>
+            <p class="card-text">Once you're in the "Create Schedule" page, be sure to fill in the required fields. These will initially include your name and the visibility of the schedule.</p>
+            <img src="{% static 'assets/create_a_schedule.png' %}" class="rounded mx-auto d-block w-50">
+            <p class="card-text">Once created, you'll be brought to view your schedule.</p>
+            <img src="{% static 'assets/create_a_schedule_2.png' %}" class="rounded mx-auto d-block w-75">
           </div>
         </div>
         <div class="card mb-3" id="sharing-schedule">
@@ -41,8 +47,9 @@
             Sharing a Schedule
           </div>
           <div class="card-body">
-            <h5 class="card-title">Placeholder Help Title</h5>
-            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+            <h5 class="card-title">How to Share a Schedule</h5>
+            <p class="card-text">Under the "Actions" dropdown menu in your schedule, the "Copy Share Link" button will copy the link for your schedule to your clipboard and allow you to paste it. This way, you can share your schedule however you like, from emails to classroom announcements.</p>
+            <img src="{% static 'assets/sharing_a_schedule.png' %}" class="rounded mx-auto d-block">
           </div>
         </div>
         <div class="card mb-3" id="editing-schedule">
@@ -50,8 +57,11 @@
             Editing a Schedule
           </div>
           <div class="card-body">
-            <h5 class="card-title">Placeholder Help Title</h5>
-            <p class="card-text">Placeholder help description to solve problems and stuff.</p>
+            <h5 class="card-title">How to Edit Your Schedule</h5>
+            <p class="card-text">Next to the title of your schedule is a small pencil icon. Clicking on this icon will bring you to the editing window, which lets you change the name and visibility of your schedule, and add a description if you want to.</p>
+            <img src="{% static 'assets/edit_schedule.png' %}" class="rounded mx-auto d-block">
+            <img src="{% static 'assets/edit_schedule_2.png' %}" class="rounded mx-auto d-block w-75">
+            <p class="card-text">As an additional note: a public schedule is a schedule that others can view on your profile. An unlisted schedule can only be accessed through a share link. And finally, a private schedule can only be viewed by you even with a share link.</p>
           </div>
         </div>
         <div class="card mb-3" id="adding-timeslots">

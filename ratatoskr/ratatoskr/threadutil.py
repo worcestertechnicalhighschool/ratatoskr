@@ -17,6 +17,8 @@ def threadpool_decorator(threads=None):
     pool = ThreadPoolExecutor(threads)
     def decorator(func):
         def inner(*args, **kwargs):
-            pool.submit(func, *args, **kwargs)
+            future = pool.submit(func, *args, **kwargs)
+            future.add_done_callback(lambda x: x.result())
+            return future
         return inner
     return decorator

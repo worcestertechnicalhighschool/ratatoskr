@@ -1,8 +1,11 @@
 @use "../bootstrap/variables";
 
-html:not(.dark-root) {
+html {
     * {
-        transition: background-color 0.3s, color 0s, border-color 0s;
+        transition:
+            background-color 0.3s,
+            color 0s,
+            border-color 0s;
     }
 }
 
@@ -24,11 +27,7 @@ html:not(.dark-root) {
 
 
     h1, h2, h3, h4, h5, h6, span, label, button {
-        color: var(--bs-dark-rgb) !important;
-    }
-
-    a {
-        color: #aaaaaa !important;
+        color: var(--bs-dark-rgb);
     }
 
     .navbar-toggler-icon {
@@ -39,8 +38,11 @@ html:not(.dark-root) {
         background-color: var(--bs-dark-rgb) !important;
     }
 
-    .dropdown-item:hover {
-        background-color: var(--bs-light-rgb) !important;
+    .dropdown-item {
+        &:hover {
+            background-color: var(--bs-light-rgb) !important;
+        }
+        color: var(--bs-dark-rgb)
     }
 
     .card {
@@ -48,7 +50,11 @@ html:not(.dark-root) {
     }
 
     .nav-link {
-        color: #dddddd !important;
+        color: var(--bs-dark-rgb) !important;
+    }
+
+    .btn-link, a:not(.btn, .dropdown-item) {
+        color: rgb(113, 179, 199);
     }
 
     .navbar-light .navbar-brand {
@@ -81,7 +87,7 @@ html:not(.dark-root) {
     }
 
     .list-group-item:hover {
-        color: #dddddd !important;
+        color: var(--bs-dark-rgb) !important;
     }
 
     .toast {

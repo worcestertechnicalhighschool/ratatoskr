@@ -1,12 +1,10 @@
 @use "../bootstrap/variables";
 
-html {
-    * {
-        transition:
-            background-color 0.3s,
-            color 0s,
-            border-color 0s;
-    }
+html > * {
+    transition:
+        background-color 0.3s,
+        color 0s,
+        border-color 0s;
 }
 
 .dark-root, .anti-flashbang:not(.light-root) {
@@ -61,7 +59,7 @@ html {
         color: #eeeeee !important;
     }
 
-    .form-control {
+    .form-control, .form-select {
         :disabled {
             color: #dedede !important;
             background-color: #222222 !important;

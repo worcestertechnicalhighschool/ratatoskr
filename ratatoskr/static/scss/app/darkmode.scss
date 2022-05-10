@@ -6,7 +6,7 @@ html:not(.dark-root) {
     }
 }
 
-.dark-root {
+.dark-root, .anti-flashbang:not(.light-root) {
     * {
         --bs-body-bg: #121212;
         --bs-body-color: #dddddd;

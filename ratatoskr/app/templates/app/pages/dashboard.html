@@ -41,7 +41,7 @@
          <div class="col-md-8 mb-3">
             <div class="card p-3 h-100">
                 <a class="btn text-end mb-2" href="{% url 'user-schedules' user.id %}">View All Schedules&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a>
-                <div class="row row-cols-lg-3">
+                <div class="row row-cols-lg-3 h-100">
                     {% for schedule in schedules|slice:":3" %}
                         <div class="col mb-3">{% schedule_card schedule %}</div>
                     {% endfor %}

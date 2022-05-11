@@ -19,6 +19,8 @@ html > * {
         --bs-dark-rgb: 221, 221, 221;
         --bs-light-rgb: 16, 16, 16;
         --form-select-indicator: var(--form-select-indicator-dark);
+        --accordion-button-icon: var(--accordion-button-icon-dark);
+        --accordion-button-icon-active: var(--accordion-button-icon-active-dark);
     }
 
     .accordion-button, .accordion-collapse, .accordion-item {

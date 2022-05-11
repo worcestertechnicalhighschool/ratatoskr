@@ -60,12 +60,12 @@ html > * {
     }
 
     .form-control, .form-select {
-        :disabled {
-            color: #dedede !important;
+        &:disabled {
+            color: gray !important;
             background-color: #222222 !important;
         }
 
-        :focus {
+        &:focus {
             background-color: #313131 !important;
             color: white !important;
         }

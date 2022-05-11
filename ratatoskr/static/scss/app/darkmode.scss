@@ -13,6 +13,7 @@ html > * {
         --bs-body-color: #dddddd;
         --bs-dark-rgb: #dddddd;
         --bs-light-rgb: #101010;
+        --form-select-indicator: var(--form-select-indicator-dark)
     }
 
     .accordion-button, .accordion-collapse, .accordion-item {
@@ -59,6 +60,10 @@ html > * {
         color: #eeeeee !important;
     }
 
+    input {
+        color-scheme: dark;
+    }
+
     .form-control, .form-select {
         &:disabled {
             color: gray !important;
@@ -72,6 +77,7 @@ html > * {
 
         background-color: #313131 !important;
         color: white !important;
+
     }
 
     .form-floating label {

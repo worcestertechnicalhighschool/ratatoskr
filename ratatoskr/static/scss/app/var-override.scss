@@ -1,3 +1,30 @@
 @use "../bootstrap/variables";
 
-// All variable overrides go here
+// Bootstrap/SCSS variables
+
+// these two urls is the arrow icon for the select field
+// yes, this is literally an inline defined svg in a url
+$form-dark: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'>" +
+        "<path fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/>" +
+    "</svg>");
+
+$form-light: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'>" +
+        "<path fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/>" +
+    "</svg>");
+
+$form-select-indicator: var(--form-select-indicator);
+
+// CSS Variables
+
+:root {
+    // Form indicator
+    --form-select-indicator-light: #{$form-dark};
+    --form-select-indicator-dark: #{$form-light};
+    // set --form-select-indicator to the above two variables at runtime for theming
+    --form-select-indicator: var(--form-select-indicator-light)
+}
+

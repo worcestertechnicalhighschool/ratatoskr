@@ -29,6 +29,10 @@ html > * {
         color: var(--bs-dark-rgb);
     }
 
+    .btn:not(.btn-outline-primary, .btn-outline-secondary, .btn-outline-danger, .btn-outline-warning, .btn-outline-success, .btn-outline-info) {
+        color: white;
+    }
+
     .navbar-toggler-icon {
         filter: invert(1);
     }

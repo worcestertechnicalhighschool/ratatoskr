@@ -8,11 +8,16 @@ html > * {
 }
 
 .dark-root, .anti-flashbang:not(.light-root) {
+    // Sass has its own rgb function that is incompatible with CSS variables
+    // These variables force scss to input the proper usage of rgb literally
+    $bs-dark-rgb: unquote("rgb(var(--bs-dark-rgb))");
+    $bs-light-rgb: unquote("rgb(var(--bs-light-rgb))");
     * {
         --bs-body-bg: #121212;
         --bs-body-color: #dddddd;
-        --bs-dark-rgb: #dddddd;
-        --bs-light-rgb: #101010;
+        // These values should be 3 value lists, with rgb
+        --bs-dark-rgb: 221, 221, 221;
+        --bs-light-rgb: 16, 16, 16;
         --form-select-indicator: var(--form-select-indicator-dark)
     }
 
@@ -26,14 +31,14 @@ html > * {
 
 
     h1, h2, h3, h4, h5, h6, span, label, button, .btn {
-        color: var(--bs-dark-rgb);
+        color: $bs-dark-rgb;
     }
 
     .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger, .btn-outline-warning, .btn-outline-success, .btn-outline-info {
         &:hover {
             color: black;
         }
-        color: var(--bs-dark-rgb);
+        color: $bs-dark-rgb;
     }
 
     .btn:not(.btn-outline-primary, .btn-outline-secondary, .btn-outline-danger, .btn-outline-warning, .btn-outline-success, .btn-outline-info) {
@@ -45,22 +50,23 @@ html > * {
     }
 
     hr {
-        background-color: var(--bs-dark-rgb) !important;
+        background-color: $bs-dark-rgb !important;
     }
 
     .dropdown-item {
         &:hover {
-            background-color: var(--bs-light-rgb) !important;
+            background-color: $bs-light-rgb !important;
         }
-        color: var(--bs-dark-rgb)
+        color: $bs-dark-rgb
     }
 
     .card {
         background-color: #232323 !important;
+        border: solid rgb(77, 77, 77) 1px;
     }
 
     .nav-link {
-        color: var(--bs-dark-rgb) !important;
+        color: $bs-dark-rgb !important;
     }
 
     .btn-link, a:not(.btn, .dropdown-item) {
@@ -98,11 +104,11 @@ html > * {
     .list-group-item {
         color: white !important;
         background-color: unset !important;
-        border-color: #FFFFFF44 !important;
+        border-color: #ffffff !important;
     }
 
     .list-group-item:hover {
-        color: var(--bs-dark-rgb) !important;
+        color: $bs-dark-rgb !important;
     }
 
     .toast {

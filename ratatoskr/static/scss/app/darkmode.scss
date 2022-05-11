@@ -18,7 +18,7 @@ html > * {
         // These values should be 3 value lists, with rgb
         --bs-dark-rgb: 221, 221, 221;
         --bs-light-rgb: 16, 16, 16;
-        --form-select-indicator: var(--form-select-indicator-dark)
+        --form-select-indicator: var(--form-select-indicator-dark);
     }
 
     .accordion-button, .accordion-collapse, .accordion-item {
@@ -30,7 +30,7 @@ html > * {
     }
 
 
-    h1, h2, h3, h4, h5, h6, span, label, button, .btn {
+    h1, h2, h3, h4, h5, h6, span, label, button {
         color: $bs-dark-rgb;
     }
 
@@ -41,8 +41,8 @@ html > * {
         color: $bs-dark-rgb;
     }
 
-    .btn:not(.btn-outline-primary, .btn-outline-secondary, .btn-outline-danger, .btn-outline-warning, .btn-outline-success, .btn-outline-info) {
-        color: white;
+    .btn-secondary, .btn-warning, .btn-info {
+        color: black;
     }
 
     .navbar-toggler-icon {

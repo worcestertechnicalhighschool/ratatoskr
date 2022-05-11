@@ -29,6 +29,13 @@ html > * {
         color: var(--bs-dark-rgb);
     }
 
+    .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger, .btn-outline-warning, .btn-outline-success, .btn-outline-info {
+        &:hover {
+            color: black;
+        }
+        color: var(--bs-dark-rgb);
+    }
+
     .btn:not(.btn-outline-primary, .btn-outline-secondary, .btn-outline-danger, .btn-outline-warning, .btn-outline-success, .btn-outline-info) {
         color: white;
     }

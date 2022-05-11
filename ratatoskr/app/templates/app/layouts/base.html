@@ -23,7 +23,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100" v-scope>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow mb-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow mb-3 fixed-top">
         <div class="container-fluid px-3 px-lg-5">
             <a class="navbar-brand mb-0 h1" href="{% url "index" %}">ratatoskr <small class="text-secondary">meeting system</small></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,8 +43,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'help' %}">Help</a>
                     </li>
-                    {% comment %} Mobile nav links {% endcomment %}
                     {% if user.is_authenticated %}
+                        {% comment %} Mobile nav links {% endcomment %}
                         {% if user.is_staff %}
                             <li class="nav-item d-lg-none">
                                 <a class="nav-link" href="{% url "user-schedules" user.id %}">Your Schedules</a></a>
@@ -54,10 +54,13 @@
                             </li>
                         {% else %}
                             <li class="nav-item d-lg-none">
-                                <a class="nav-link" href="{% url "user-schedules" user.id %}">Your Schedules</a></a>
+                                <a class="nav-link" href="{% url "dashboard" %}">My Dashboard</a></a>
                             </li>
                         {% endif %}
-                        <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
+                        {% comment %} Desktop dashboard button {% endcomment %}
+                        <li class="nav-item d-none d-lg-block mx-0">
+                            <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
+                        </li>
                     {% endif %}
                     {% comment %} Desktop user login info stuff {% endcomment %}
                     <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-none d-lg-block">
@@ -115,6 +118,7 @@
             </div>
         </div>
     </nav>
+    <div style="height: 56px;">&nbsp;</div>
     <!-- navbar -->
 
     {% if messages %}

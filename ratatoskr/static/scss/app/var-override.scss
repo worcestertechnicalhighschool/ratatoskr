@@ -1,3 +1,64 @@
 @use "../bootstrap/variables";
 
-// All variable overrides go here
+// Bootstrap/SCSS variables
+
+// these two urls is the arrow icon for the select field
+// yes, this is literally an inline defined svg in a url
+$form-dark: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'>" +
+        "<path fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/>" +
+    "</svg>");
+
+$form-light: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'>" +
+        "<path fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/>" +
+    "</svg>");
+
+$accordion-dark: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'>" +
+        "<path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/>" +
+    "</svg>");
+
+$accordion-light: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='black'>" +
+        "<path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/>" +
+    "</svg>");
+
+$accordion-dark-active: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='lightblue'>" +
+        "<path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/>" +
+    "</svg>");
+
+$accordion-light-active: url(
+    "data:image/svg+xml," +
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='blue'>" +
+        "<path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/>" +
+    "</svg>");
+
+$form-select-indicator: var(--form-select-indicator);
+$accordion-button-icon: var(--accordion-button-icon);
+$accordion-button-active-icon: var(--accordion-button-icon-active);
+// CSS Variables
+
+:root {
+    // Form indicator
+    --form-select-indicator-light: #{$form-dark};
+    --form-select-indicator-dark: #{$form-light};
+    // set --form-select-indicator to the above two variables at runtime for theming
+    --form-select-indicator: var(--form-select-indicator-light);
+
+    // accordion indicator
+    --accordion-button-icon-dark: #{$accordion-dark};
+    --accordion-button-icon-light: #{$accordion-light};
+    --accordion-button-icon-active-dark: #{$accordion-dark-active};
+    --accordion-button-icon-active-light: #{$accordion-light-active};
+
+    --accordion-button-icon: var(--accordion-button-icon-light);
+    --accordion-button-icon-active: var(--accordion-button-icon-active-light);
+}
+

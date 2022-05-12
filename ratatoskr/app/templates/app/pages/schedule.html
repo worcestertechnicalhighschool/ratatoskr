@@ -61,11 +61,11 @@
                                         </label>
                                     </div>
                                     <div class="mb-3 col">
-                                        <label for="from_date" class="form-label">Date From <span class="text-danger fw-bold">*</span></label>
+                                        <label for="from_date" class="form-label">Date Start <span class="text-danger fw-bold">*</span></label>
                                         <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate" required>
                                     </div>
                                     <div class="mb-3 col">
-                                        <label for="to_date" class="form-label">Date To <template v-if="multipleTimeslots"><span class="text-danger fw-bold">*</span></template></label>
+                                        <label for="to_date" class="form-label">Date End <template v-if="multipleTimeslots"><span class="text-danger fw-bold">*</span></template></label>
                                         <template v-if="!multipleTimeslots">
                                             {% comment %} The disabled date field is just for show {% endcomment %}
                                             <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
@@ -76,11 +76,11 @@
                                 </div>
                                 <div class="row g-2">
                                     <div class="mb-3 col">
-                                        <label for="from_time" class="form-label">Time From <span class="text-danger fw-bold">*</span></label>
+                                        <label for="from_time" class="form-label">Time Start <span class="text-danger fw-bold">*</span></label>
                                         <input type="time" class="form-control" id="from_time" name="from_time" required>
                                     </div>
                                     <div class="mb-3 col">
-                                        <label for="to_time" class="form-label">Time To <span class="text-danger fw-bold">*</span></label>
+                                        <label for="to_time" class="form-label">Time End <span class="text-danger fw-bold">*</span></label>
                                         <input type="time" class="form-control" id="to_time" name="to_time" required>
                                     </div>
                                 </div>

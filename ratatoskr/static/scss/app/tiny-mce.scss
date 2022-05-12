@@ -1,6 +1,33 @@
 
-.tox {
-    span {
-        color: black !important;
+// follows the style of the unstylable text editor
+.dark-root {
+    .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+        border-color: black !important;
+    }
+    .tox {
+        border-color: black !important;
+    }
+    .tox-tbtn__select-label {
+        color: white;
+    }
+    .tox-collection__item-label > * {
+        color: inherit !important;
+        background-color: inherit !important;
+    }
+    .tox .tox-tbtn svg {
+        // stroke: white !important;
+        fill: white !important;
+        color: white !important;
+    }
+    .tox .tox-statusbar {
+        border-color: black;
+    }
+    .tox-statusbar, .tox-toolbar__primary {
+        color: white !important;
+        background-color: #222f3e !important;
+    }
+    .tox-statusbar__branding > a, .tox-statusbar__path-item, .tox-statusbar__resize-handle > svg {
+        color: lightgray !important;
+        fill: lightgray !important;
     }
 }

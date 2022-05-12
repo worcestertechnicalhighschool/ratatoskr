@@ -48,9 +48,14 @@
             
             {% comment %} using v-if here will throw off tinymce {% endcomment %}
             {% comment %} vue directives will be erased by tinymce on their textareas {% endcomment %}
-            <div v-cloak v-show="editEnable">
-                <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000">
+            <div v-cloak v-show="editEnable && !darkmode">
+                <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000" v-bind:disabled="darkmode">
                     {{ schedule.description }} 
+                </textarea>
+            </div>
+            <div v-cloak v-show="editEnable && darkmode">
+                <textarea class="form-control m-0" id="schedule-desc-dark" aria-describedby="descHelp" name="schedule-desc" maxlength="1000" v-bind:disabled="!darkmode">
+                    {{ schedule.description }}
                 </textarea>
             </div>
             <div v-show="!editEnable" class="mt-2" style="word-break: break-all;">
@@ -125,6 +130,12 @@
     tinymce.init({
         selector: '#schedule-desc',
         menubar: '',
+        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+    });
+    tinymce.init({
+        selector: '#schedule-desc-dark',
+        menubar: '',
+        content_css: "dark",
         toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
     });
 </script>

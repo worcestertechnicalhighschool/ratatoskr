@@ -26,4 +26,8 @@
         color: white !important;
         background-color: #222f3e !important;
     }
+    .tox-statusbar__branding > a, .tox-statusbar__path-item, .tox-statusbar__resize-handle > svg {
+        color: lightgray !important;
+        fill: lightgray !important;
+    }
 }

@@ -10,6 +10,10 @@
     .tox-tbtn__select-label {
         color: white;
     }
+    .tox-collection__item-label > * {
+        color: inherit !important;
+        background-color: inherit !important;
+    }
     .tox .tox-tbtn svg {
         // stroke: white !important;
         fill: white !important;

@@ -160,7 +160,7 @@ def schedule(request, schedule):
     est = pytz.timezone("America/New_York")
 
     if schedule.owner == request.user:
-        limit_days = 180
+        limit_days = 99999 # why is this a thing?
     timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
     timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
     timeslots = schedule.timeslot_set.filter(

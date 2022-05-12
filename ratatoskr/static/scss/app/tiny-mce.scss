@@ -1,6 +1,21 @@
 
-.tox {
-    span {
-        color: black !important;
+.dark-root {
+    .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+        border-color: black !important;
+    }
+    .tox {
+        border-color: black !important;
+    }
+    .tox .tox-tbtn svg {
+        // stroke: white !important;
+        fill: white !important;
+        color: white !important;
+    }
+    .tox .tox-statusbar {
+        border-color: black;
+    }
+    .tox-statusbar, .tox-toolbar__primary {
+        color: white !important;
+        background-color: #222f3e !important;
     }
 }

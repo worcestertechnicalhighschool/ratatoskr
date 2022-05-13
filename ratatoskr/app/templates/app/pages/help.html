@@ -126,7 +126,25 @@
             <h5 class="card-title">Adding Multiple Timeslots</h5>
             <div class="card-text">
               <p>
+                This feature is a bit complicated to explain, so lets go over the following scenario:<br><br>
+
+                Lets say you want to meet with two people at a time for 25 minutes from 1:00 PM to 2:30 PM
+                from May 01 to May 04, and you want 5 minutes in between each of these meetings to prepare for the next meeting.
+
+                <div class="row">
+                  <div class="col">
+                    Such a schedule would look like this:
                 
+                    <img src="{% static 'assets/multi-timeslot-demonstration.png' %}" width="400" height="100" class="rounded mx-auto d-block"><br>
+
+                    What this feature does is that it generates as many 25 minute timeslots as it can between the given time. The Timeslot Break
+                    field makes sure that there is 5 minutes in between each of these timeslots. <br><br>
+                    It generates these time slots for each day within the given Date Start and Date End range.
+                  </div>
+                  <div class="col">
+                    And the form to create this schedule would look like this:
+                    <img src="{% static 'assets/mutli-ts-form.png' %}" width="350" class="rounded mx-auto d-block"></div>
+                </div>
               </p>
             </div>
           </div>

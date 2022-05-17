@@ -2,6 +2,7 @@ import datetime
 from functools import reduce
 from io import UnsupportedOperation
 from itertools import groupby
+import os
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.mail import send_mail
 
@@ -555,3 +556,10 @@ def subscribe_schedule(request, schedule):
 @require_http_methods(["GET"])
 def help_page(request):
     return render(request, "app/pages/help.html")
+
+
+@require_http_methods(["GET"])
+def robots(request):
+    x = render(request, "app/robots.txt")
+    x.headers["Content-Type"] = "text/plain; charset=utf-8"
+    return x

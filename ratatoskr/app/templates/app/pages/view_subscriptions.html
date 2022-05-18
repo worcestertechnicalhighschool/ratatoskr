@@ -1,0 +1,20 @@
+{% extends 'app/layouts/base.html' %}
+
+{% block title %}Your Subscriptions{% endblock title %}
+
+{% block body %}
+
+<h1>Your Subscriptions</h1>
+<hr />
+
+<div class="container">
+    <div class="row row-cols-lg-3">
+        {% for sub in subscriptions %}
+            <div class="col mb-3">
+                {% schedule_card sub.schedule %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock body %}

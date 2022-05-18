@@ -553,6 +553,15 @@ def subscribe_schedule(request, schedule):
     return redirect(f"/schedule/{schedule.pk}")
 
 
+@login_required
+@require_http_methods(["GET"])
+def view_subscriptions(request):
+    subs = request.user.schedulesubscription_set.all()
+    return render(request, "app/pages/view_subscriptions.html", {
+        "subscriptions": subs
+    })
+
+
 @require_http_methods(["GET"])
 def help_page(request):
     return render(request, "app/pages/help.html")

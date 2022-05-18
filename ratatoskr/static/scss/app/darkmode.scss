@@ -23,6 +23,10 @@ html > * {
         --accordion-button-icon-active: var(--accordion-button-icon-active-dark);
     }
 
+    .table {
+        color: $bs-dark-rgb;
+    }
+
     .accordion-button, .accordion-collapse, .accordion-item {
         background-color: #353535 !important;
     }

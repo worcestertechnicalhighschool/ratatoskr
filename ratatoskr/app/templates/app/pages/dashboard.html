@@ -56,6 +56,11 @@
                         <div class="col mb-3">{% schedule_card schedule %}</div>
                     {% endfor %}
                 </div>
+                {% if not schedules %}
+                    <div class="my-5 text-center">
+                        <h3>You have no schedules. <a href="{% url 'create-schedule' %}">Create one?</a></h3>
+                    </div>
+                {% endif %}
             </div>
          </div>
 

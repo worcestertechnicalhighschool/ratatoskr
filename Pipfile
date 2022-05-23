@@ -27,7 +27,13 @@ gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
 django-compressor = "*"
-django-simple-history = "*"
+# To the poor human in the future who has to deal with this problem child of a dependency:
+# For some reason, on windows, package version 3.1.1 fails to install
+# If, for some reason, a future version of this package happens to also not work,
+# you can add the current version of the package to the version specifier below with
+# the string "!=" prepended.
+# Example: "!=3.1.1,!=4.2.2" (in this case, the new problem version is 4.2.2)
+django-simple-history = { version = "!=3.1.1" }
 
 [dev-packages]
 

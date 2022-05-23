@@ -10,7 +10,8 @@
         }"
         class="m-0 p-0 h-100"
         method="POST"
-        action="">
+        action=""
+        @click.exact="shiftClicked = []">
         {% csrf_token %}
         
         <div v-effect="onChanged(shiftClicked); "></div>

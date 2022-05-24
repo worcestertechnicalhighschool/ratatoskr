@@ -8,12 +8,16 @@ from allauth.socialaccount.models import SocialApp
 class Command(BaseCommand):
     help = 'Helper for registering a social application. Handy if you don\'t like going clicky clicky!'
 
+    def add_arguments(self, parser) -> None:
+        parser.add_argument("-c", "--config", action="store_true")
+        return super().add_arguments(parser)
+
     def handle(self, *args, **options):
         override_socialapp = False
 
         # -c get from environment variables
-        if "-c" in args:
-            app = SocialApp.objects.create(
+        if options['config']:
+            app = SocialApp(
                 provider = "google",
                 name = "ratatoskr",
                 client_id = os.environ["GOOGLE_CLIENT_ID"],
@@ -26,6 +30,8 @@ class Command(BaseCommand):
             site.name = os.environ["SITE_URL"]
 
             site.save()
+
+            app.save()
 
             return
 

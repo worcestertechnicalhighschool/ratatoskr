@@ -86,7 +86,7 @@ def create_schedule(request):
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
-            render(request, 'app/pages/create_schedule.html', {
+            return render(request, 'app/pages/create_schedule.html', {
                 "errors": form.errors
             })  # TODO: Render form errors in template or something
 
@@ -96,6 +96,7 @@ def create_schedule(request):
             visibility=form.cleaned_data["visibility_select"],
             auto_lock_after=form.cleaned_data.get("auto_lock_after") or (datetime.datetime.now() + datetime.timedelta(days=99999)),
             is_locked=False,
+            description=form.cleaned_data['schedule_description']
         )
         messages.add_message(request, messages.INFO, 'Successfully created schedule!')
         return redirect("schedule", new_schedule.id)

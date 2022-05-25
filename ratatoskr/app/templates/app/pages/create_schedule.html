@@ -3,7 +3,9 @@
 
 {% block title %}Create Schedule{% endblock title %}
 
-{% block head %}{% endblock head %}
+{% block head %}
+<script src='https://cdn.tiny.cloud/1/caeyxgo4fa2jxe88pszl10kub0l48pdc15dze2r3dwd10k0m/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+{% endblock head %}
 
 {% block body %}
     {% comment %} autoLockEnabled is what handles the disabled state of the auto lock date input {% endcomment %}
@@ -21,7 +23,8 @@
                 </div>
                 <fieldset>
                     {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
-                    <div class="form-check">
+                    <input type="hidden" name="should_lock_automatically">
+                    {% comment %} <div class="form-check">
                         <input
                             class="form-check-input"
                             type="checkbox"
@@ -35,6 +38,20 @@
                     <div class="mt-2" id="autoLock">
                         <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
                         <input type="datetime-local" id="auto_lock_after" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" class="form-control" />
+                    </div> {% endcomment %}
+                </fieldset>
+                <fieldset>
+                    <div v-cloak v-show="!darkmode">
+                        <label for="schedule-desc" class="form-label">Schedule Description</label>
+                        <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="darkmode">
+                            {{ schedule.description }} 
+                        </textarea>
+                    </div>
+                    <div v-cloak v-show="darkmode">
+                        <label for="schedule-desc-dark" class="form-label">Schedule Description</label>
+                        <textarea class="form-control m-0" id="schedule-desc-dark" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="!darkmode">
+                            {{ schedule.description }}
+                        </textarea>
                     </div>
                 </fieldset>
                 <div class="my-3">
@@ -61,3 +78,19 @@
     </div>
 </div>
 {% endblock body %}
+
+{% block scripts %}
+<script>
+    tinymce.init({
+        selector: '#schedule-desc',
+        menubar: '',
+        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+    });
+    tinymce.init({
+        selector: '#schedule-desc-dark',
+        menubar: '',
+        content_css: "dark",
+        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+    });
+</script>
+{% endblock scripts %}

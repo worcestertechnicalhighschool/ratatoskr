@@ -50,6 +50,7 @@ class ScheduleCreationForm(forms.Form):
     should_lock_automatically = forms.BooleanField()
     auto_lock_after = forms.DateTimeField(required=False)
     visibility_select = forms.CharField(max_length=1)
+    schedule_description = forms.CharField(max_length=1000)
 
 
 class MessageForm(forms.Form):

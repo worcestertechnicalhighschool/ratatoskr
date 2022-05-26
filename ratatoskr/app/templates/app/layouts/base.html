@@ -143,7 +143,11 @@
     </main>
     <div class="container">
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top flex-column flex-md-row">
-            <p class="col-md-4 mb-md-0 mb-2 text-muted">© 2022 meetings.techhigh.us | <a class="text-muted" href="https://raw.githubusercontent.com/worcestertechnicalhighschool/ratatoskr/master/LICENSE">LICENSE</a></p>
+            <p class="col-md-4 mb-md-0 mb-2 text-muted">
+                © 2022 meetings.techhigh.us | 
+                <a class="text-muted" href="https://raw.githubusercontent.com/worcestertechnicalhighschool/ratatoskr/master/LICENSE">LICENSE</a> |
+                <a class="text-muted" href="{% url 'privacy' %}">PRIVACY</a>
+            </p> 
     
             <ul class="nav justify-content-center justify-content-lg-end">
                 <li class="nav-item"><button class="nav-link px-1 text-muted border-0 bg-transparent" @click="darkmode = !darkmode; Cookies.set('darkmode', darkmode.toString());">

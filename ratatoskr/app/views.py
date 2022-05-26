@@ -573,3 +573,6 @@ def robots(request):
     x = render(request, "app/robots.txt")
     x.headers["Content-Type"] = "text/plain; charset=utf-8"
     return x
+
+def privacy(request):
+    return render(request, "app/pages/privacy.html")

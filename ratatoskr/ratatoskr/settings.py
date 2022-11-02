@@ -45,7 +45,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "ratatoskr-meeting-system.herokuapp.com",
     "meetings.techhigh.us",
-    "ratatoskr.app"
+    "www.ratatoskr.app"
 ]
 
 SITE_ID = 1

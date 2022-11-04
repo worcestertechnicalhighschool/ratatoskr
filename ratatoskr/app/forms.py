@@ -47,7 +47,7 @@ class CopyTimeslotsForm(forms.Form):
 
 class ScheduleCreationForm(forms.Form):
     name = forms.CharField(max_length=64)
-    should_lock_automatically = forms.BooleanField()
+    # should_lock_automatically = forms.BooleanField()
     auto_lock_after = forms.DateTimeField(required=False)
     visibility_select = forms.CharField(max_length=1)
     schedule_description = forms.CharField(max_length=1000)

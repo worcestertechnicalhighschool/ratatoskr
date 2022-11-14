@@ -15,7 +15,8 @@
                 </small>
             </div>
         </a>
-        <a href="{% url 'schedule' schedule.id %}" class="text-decoration-none text-dark"><h3 class="card-title mt-3">{{ schedule.name }}</h3></a>
-        <p class="text-muted mt-3 text-truncate">{{ schedule.description |textified }}</p>
+        <a href="{% url 'schedule' schedule.id %}" class="text-decoration-none text-dark"><h3 class="card-title mt-3">{{ schedule.name }}</h3>
+            <p class="text-muted mt-3 text-truncate">{{ schedule.description |textified }}</p>
+        </a>
     </div>
 </div>

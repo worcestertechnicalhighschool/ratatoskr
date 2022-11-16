@@ -24,8 +24,8 @@ urlpatterns = [
     path('logout', LogoutView.as_view(), name="logout"),
 ]
 
-handler404 = 'app.errors.error404'
-handler400 = 'app.errors.error400'
-handler403 = 'app.errors.error403'
-handler500 = 'app.errors.error500'
+handler404 = 'app.views.error_404'
+handler400 = 'app.views.error_400'
+handler403 = 'app.views.error_403'
+handler500 = 'app.views.error_500'
 

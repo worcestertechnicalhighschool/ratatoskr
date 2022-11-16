@@ -577,3 +577,18 @@ def robots(request):
 def privacy(request):
     return render(request, "app/pages/privacy.html")
 
+def error_404(request, exception):
+    data = {}
+    return render(request, "app/error/404.html", data)
+
+def error_500(request):
+    data = {}
+    return render(request, "app/error/500.html", data)
+
+def error_403(request, exception):
+    data = {}
+    return render(request, "app/error/403.html", data)
+
+def error_400(request, exception):
+    data = {}
+    return render(request, "app/error/400.html", data)

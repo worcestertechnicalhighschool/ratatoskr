@@ -576,3 +576,4 @@ def robots(request):
 
 def privacy(request):
     return render(request, "app/pages/privacy.html")
+

@@ -581,7 +581,7 @@ def error_404(request, exception):
     data = {}
     return render(request, "app/error/404.html", data)
 
-def error_500(request, exception):
+def error_500(request):
     data = {}
     return render(request, "app/error/500.html", data)
 

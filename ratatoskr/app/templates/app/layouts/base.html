@@ -25,7 +25,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow mb-3 fixed-top">
         <div class="container-fluid px-3 px-lg-5">
-            <a class="navbar-brand mb-0 h1" href="{% url "index" %}"><img src="{% static 'assets/ratatoskr-wordmark.svg' %}" class="d-block mx-lg-auto img-fluid rounded invert-on-dark" alt="Ratatoskr" width="130" height="100" loading="lazy" style="max-height: 200px"></a>
+            <a class="navbar-brand mb-0 h1" href="{% url "index" %}">ratatoskr <small class="text-secondary">meeting system</small></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -137,7 +137,7 @@
         </ul>
     {% endif %}
 
-    <main class="container my-auto height-100">
+    <main class="container my-5 height-100 mb-auto">
         {% block body %}
         {% endblock body %}
     </main>

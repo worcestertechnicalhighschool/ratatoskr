@@ -189,7 +189,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 SASS_PROCESSOR_ROOT = STATIC_ROOT
-
+SASS_PRECISION = 8
 SASS_PROCESSOR_STORAGE = 'django.contrib.staticfiles.storage.FileSystemStorage'
 SASS_PROCESSOR_STORAGE_OPTIONS = {
     'location': STATIC_ROOT,

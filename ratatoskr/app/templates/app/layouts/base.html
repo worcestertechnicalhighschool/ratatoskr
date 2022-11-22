@@ -44,18 +44,18 @@
                         <a class="nav-link" href="{% url 'help' %}">Help</a>
                     </li>
                     {% if user.is_authenticated %}
-                        {% comment %} Mobile nav links {% endcomment %}
-                        {% if user.is_staff %}
-                            <li class="nav-item d-lg-none">
-                                <a class="nav-link" href="{% url "user-schedules" user.id %}">Your Schedules</a></a>
-                            </li>
+                        {% comment %} Mobile nav links. d-lg-none makes it not appear on large screens {% endcomment %}
+                        {% if True %}
                             <li class="nav-item d-lg-none">
                                 <a class="nav-link" href="{% url "admin:index" %}">Django Admin</a></a>
                             </li>
-                        {% else %}
-                            <li class="nav-item d-lg-none">
-                                <a class="nav-link" href="{% url "dashboard" %}">My Dashboard</a></a>
+                            <li class="nav-item mx-0 mb-2 d-lg-none">
+                                <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
                             </li>
+                        {% else %}
+                        <li class="nav-item mx-0 mt-1 mb-2 d-lg-none">
+                            <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
+                        </li>
                         {% endif %}
                         {% comment %} Desktop dashboard button {% endcomment %}
                         <li class="nav-item d-none d-lg-block mx-0">
@@ -105,9 +105,6 @@
                                 {{ user.socialaccount_set.all.0.extra_data.name }}
                             </div>
                             <div class="mt-2">
-                                <div class="d-flex justify-content-center mb-2">
-                                    <a href="{% url "create-schedule" %}" class="btn btn-primary w-100">+ Create a schedule</a>
-                                </div>
                                 {% logout_button %}
                             </div>
                         {% else %}

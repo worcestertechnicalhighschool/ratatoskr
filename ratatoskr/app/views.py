@@ -98,6 +98,8 @@ def create_schedule(request):
             is_locked=False,
             description=form.cleaned_data['schedule_description']
         )
+        if  request.user.email.startswith("student."):
+            messages.add_message(request, messages.INFO, 'Since you have a student account, a Google Meet could not be created')
         messages.add_message(request, messages.INFO, 'Successfully created schedule!')
         return redirect("schedule", new_schedule.id)
     return render(request, 'app/pages/create_schedule.html', {})

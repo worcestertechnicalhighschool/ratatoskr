@@ -27,6 +27,13 @@
                                 <i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;Google Calendar
                             </a>
                         </li>
+                        {% if schedule.get_meet_url is not None %}
+                        <li>
+                            <a class="dropdown-item" href="{{ schedule.get_meet_url }}">
+                                <i class="fa-solid fa-phone"></i>&nbsp;&nbsp;Google Meet
+                            </a>
+                        </li>
+                        {% endif %}
                         <li>
                             <form action="" method="POST">
                                 {% csrf_token %}

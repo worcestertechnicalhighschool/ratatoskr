@@ -36,6 +36,11 @@ class Schedule(models.Model):
         # Direct link to calendar. cid is base 64 encoded
         # For some reason, b64encode has these two "==" at the end of the decoded string, so I just striped them out.
         return f"https://calendar.google.com/calendar/u/0?cid={b64encode(self.calendar_id.encode('ascii')).decode('ascii')[:-2]}"
+ 
+    def get_meet_url(self):
+        if len(self.calendar_meet_data) == 0:
+            return None
+        return self.calendar_meet_data['entryPoints'][0]['uri']
 
 
 class TimeSlot(models.Model):

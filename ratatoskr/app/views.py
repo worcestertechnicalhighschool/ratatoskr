@@ -72,7 +72,7 @@ def contact(request):
         # I have no idea why but for some odd reason, form.cleaned_data gets defined at some random interval if is_valid isnt called
         # weird
         if not form.is_valid():
-            render(request, "app/pages/contact.html", {
+            render(request, "app/pages/form-error.html", {
                 "errors": form.errors
             })
         send_message_email(form)

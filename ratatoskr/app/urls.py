@@ -27,5 +27,6 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('help/', views.help_page, name='help'),
     path('robots.txt', views.robots, name='robots'),
-    path('privacy/', views.privacy, name="privacy")
+    path('privacy/', views.privacy, name='privacy'),
+    path('form-error/', views.form_error, name='form-error')
 ]

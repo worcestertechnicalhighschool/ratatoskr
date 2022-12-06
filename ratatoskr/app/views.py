@@ -86,7 +86,7 @@ def create_schedule(request):
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
-            return render(request, 'app/pages/create_schedule.html', {
+            return render(request, 'app/pages/form_error.html', {
                 "errors": form.errors
             })  # TODO: Render form errors in template or something
 
@@ -575,6 +575,11 @@ def robots(request):
     x = render(request, "app/robots.txt")
     x.headers["Content-Type"] = "text/plain; charset=utf-8"
     return x
+
+@login_required
+@require_http_methods(["GET"])
+def form_error(request):
+    return render(request, "app/pages/form_error.html")
 
 def privacy(request):
     return render(request, "app/pages/privacy.html")

@@ -72,7 +72,7 @@ def contact(request):
         # I have no idea why but for some odd reason, form.cleaned_data gets defined at some random interval if is_valid isnt called
         # weird
         if not form.is_valid():
-            render(request, "app/pages/contact.html", {
+            render(request, "app/pages/form-error.html", {
                 "errors": form.errors
             })
         send_message_email(form)
@@ -86,7 +86,7 @@ def create_schedule(request):
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
-            return render(request, 'app/pages/create_schedule.html', {
+            return render(request, 'app/pages/form_error.html', {
                 "errors": form.errors
             })  # TODO: Render form errors in template or something
 
@@ -98,7 +98,7 @@ def create_schedule(request):
             is_locked=False,
             description=form.cleaned_data['schedule_description']
         )
-        if  request.user.email.startswith("student."):
+        if request.user.email.startswith("student."):
             messages.add_message(request, messages.INFO, 'Since you have a student account, a Google Meet could not be created')
         messages.add_message(request, messages.INFO, 'Successfully created schedule!')
         return redirect("schedule", new_schedule.id)
@@ -237,7 +237,7 @@ def create_timeslots(request, schedule):
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
-            return render(request, "app/pages/create_timeslots.html", {"errors": form.errors})
+            return render(request, "app/pages/form_error.html", {"errors": form.errors})
 
         # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
         from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
@@ -575,6 +575,11 @@ def robots(request):
     x = render(request, "app/robots.txt")
     x.headers["Content-Type"] = "text/plain; charset=utf-8"
     return x
+
+@login_required
+@require_http_methods(["GET"])
+def form_error(request):
+    return render(request, "app/pages/form_error.html")
 
 def privacy(request):
     return render(request, "app/pages/privacy.html")

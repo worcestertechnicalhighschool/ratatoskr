@@ -1,5 +1,6 @@
 import datetime
 from functools import reduce
+import functools
 from io import UnsupportedOperation
 from itertools import groupby
 import os
@@ -27,6 +28,18 @@ from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
 
+def no_students(view_func, redirect_url='schedule/<schedule:schedule>'):
+    """
+    This is a decorator that will prevent any student accounts
+    from accessing the create_schedule and create_timeslots views.
+    """
+    @functools.wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.email.startswith("student."):
+            raise PermissionDenied()
+        return redirect(redirect_url)
+    return wrapper
+    
 
 @require_http_methods(["GET"])
 def index(request):
@@ -82,6 +95,7 @@ def contact(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
+@no_students
 def create_schedule(request):
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
@@ -230,6 +244,7 @@ def schedule_day(request, schedule, date):
 
 @login_required
 @require_http_methods(["GET", "POST"])
+@no_students
 def create_timeslots(request, schedule):
     if schedule.owner != request.user:
         raise PermissionDenied()

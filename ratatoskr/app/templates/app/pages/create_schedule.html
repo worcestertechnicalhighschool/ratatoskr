@@ -43,13 +43,13 @@
                 <fieldset>
                     <div v-cloak v-show="!darkmode">
                         <label for="schedule-desc" class="form-label">Schedule Description</label>
-                        <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="darkmode">
+                        <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="darkmode" required="">
                             {{ schedule.description }} 
                         </textarea>
                     </div>
                     <div v-cloak v-show="darkmode">
                         <label for="schedule-desc-dark" class="form-label">Schedule Description</label>
-                        <textarea class="form-control m-0" id="schedule-desc-dark" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="!darkmode">
+                        <textarea class="form-control m-0" id="schedule-desc-dark" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="!darkmode" required="">
                             {{ schedule.description }}
                         </textarea>
                     </div>

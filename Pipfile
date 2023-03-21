@@ -34,6 +34,7 @@ django-compressor = "*"
 # the string "!=" prepended.
 # Example: "!=3.1.1,!=4.2.2" (in this case, the new problem version is 4.2.2)
 django-simple-history = { version = "!=3.1.1" }
+asgiref = "*"
 
 [dev-packages]
 

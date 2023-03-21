@@ -46,9 +46,6 @@
                     {% if user.is_authenticated %}
                         {% comment %} Mobile nav links. d-lg-none makes it not appear on large screens {% endcomment %}
                         {% if True %}
-                            <li class="nav-item d-lg-none">
-                                <a class="nav-link" href="{% url "admin:index" %}">Django Admin</a></a>
-                            </li>
                             <li class="nav-item mx-0 mb-2 d-lg-none">
                                 <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
                             </li>
@@ -74,7 +71,7 @@
                                 </a>
                                 <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
                                     {% if user.is_superuser %}
-                                        <li><span class="dropdown-item-text">THE A D M I N</span></li>
+                                        <li><span class="dropdown-item-text">Django Admin</span></li>
                                     {% elif user.is_staff %}
                                         <li><span class="dropdown-item-text">Staff</span></li>
                                     {% else %}

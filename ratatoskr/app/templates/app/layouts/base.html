@@ -70,19 +70,11 @@
                                     <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
-                                    {% if user.is_superuser %}
-                                        <li><span class="dropdown-item-text">Django Admin</span></li>
-                                    {% elif user.is_staff %}
-                                        <li><span class="dropdown-item-text">Staff</span></li>
-                                    {% else %}
-                                        <li><span class="dropdown-item-text">User</span></li>
-                                    {% endif %}
                                     <li><hr class="dropdown-divider"></li>
-                                    {% if user.is_staff %}
-                                        <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
+                                    {% if user.is_superuser %}
                                         <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    {% else %}
+                                    {% endif %}
+                                    {% if request.user.email|last in 'worcesterschools.net' and not request.user.email|first in 'student.' %}
                                         <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}

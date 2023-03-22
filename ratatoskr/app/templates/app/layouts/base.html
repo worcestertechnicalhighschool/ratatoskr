@@ -23,9 +23,10 @@
 </head>
 <body class="d-flex flex-column min-vh-100" v-scope>
     <!-- Navbar -->
+    
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow mb-3 fixed-top">
         <div class="container-fluid px-3 px-lg-5">
-            <a class="navbar-brand mb-0 h1" href="{% url "index" %}"><img src="{% static 'assets/ratatoskr-wordmark.svg' %}" class="d-block mx-lg-auto img-fluid rounded invert-on-dark" alt="Ratatoskr" width="130" height="100" loading="lazy" style="max-height: 200px"></a>
+            <a class="navbar-brand mb-0 h1" href="{% url 'index' %}"><img src="{% static 'assets/ratatoskr-wordmark.svg' %}" class="d-block mx-lg-auto img-fluid rounded invert-on-dark" alt="Ratatoskr" width="130" height="100" loading="lazy" style="max-height: 200px"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -43,12 +44,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'help' %}">Help</a>
                     </li>
+                    
                     {% if user.is_authenticated %}
                         {% comment %} Mobile nav links. d-lg-none makes it not appear on large screens {% endcomment %}
                         {% if True %}
-                            <li class="nav-item d-lg-none">
-                                <a class="nav-link" href="{% url "admin:index" %}">Django Admin</a></a>
-                            </li>
                             <li class="nav-item mx-0 mb-2 d-lg-none">
                                 <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
                             </li>
@@ -73,22 +72,16 @@
                                     <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu mt-2 w-100" aria-labelledby="profile-dropdown">
+                                        
+                                    {% if request|is_teacher:user %}
+                                        <li><a class="dropdown-item" href="{% url 'user-schedules' user.id %}">Your Schedules</a></li>
+                                    {% endif %}
+                                    
                                     {% if user.is_superuser %}
-                                        <li><span class="dropdown-item-text">THE A D M I N</span></li>
-                                    {% elif user.is_staff %}
-                                        <li><span class="dropdown-item-text">Staff</span></li>
-                                    {% else %}
-                                        <li><span class="dropdown-item-text">User</span></li>
+                                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">Django Admin</a></li> 
+                                        
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
-                                    {% if user.is_staff %}
-                                        <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
-                                        <li><a class="dropdown-item" href="{% url "admin:index" %}">Django Admin</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    {% else %}
-                                        <li><a class="dropdown-item" href="{% url "user-schedules" user.id %}">Your Schedules</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    {% endif %}
                                     <li><span class="dropdown-item-text" href="#">{% logout_button %}</span></li>
                                 </ul>
                             </div>

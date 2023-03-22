@@ -28,5 +28,6 @@ urlpatterns = [
     path('help/', views.help_page, name='help'),
     path('robots.txt', views.robots, name='robots'),
     path('privacy/', views.privacy, name='privacy'),
-    path('form-error/', views.form_error, name='form-error')
+    path('form-error/', views.form_error, name='form-error'),
+    
 ]

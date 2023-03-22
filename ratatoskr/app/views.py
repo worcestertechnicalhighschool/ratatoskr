@@ -28,14 +28,14 @@ from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
 
-def no_students(view_func, redirect_url='schedule/<schedule:schedule>'):
+def no_students(view_func, redirect_url='dashboard'):
     """
     This is a decorator that will prevent any student accounts
     from accessing the create_schedule and create_timeslots views.
     """
     @functools.wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if request.user.email.startswith("student."):
+        if request.user.email.startswith("student.") and request.user.email.endswith("worcesterschools.net"):
             raise PermissionDenied()
         return redirect(redirect_url)
     return wrapper

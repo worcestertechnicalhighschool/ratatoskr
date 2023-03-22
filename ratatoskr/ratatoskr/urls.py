@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
     path('accounts/', include('allauth.socialaccount.providers.google.urls')), # This is probably not the best idea ever. Effectively only import the urls needed to do google auth
+    # path('accounts/', include('allauth.urls')), # This is probably not the best idea ever. Effectively only import the urls needed to do google auth
     path('logout', LogoutView.as_view(), name="logout"),
 ]
 

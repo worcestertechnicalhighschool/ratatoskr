@@ -52,3 +52,12 @@ def has_schedules(user):
 @register.filter
 def last(l):
     return l[-1]
+
+@register.filter
+def is_student(request, user):
+    return request.user.email.startswith("student.")
+
+
+@register.filter
+def is_teacher(request, user):
+    return not request.user.email.startswith("student.") and request.user.email.endswith("worcesterschools.net")

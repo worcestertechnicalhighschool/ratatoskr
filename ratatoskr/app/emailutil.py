@@ -122,3 +122,4 @@ def send_message_email(message):
         from_email="ratatoskr@techhigh.us",
         recipient_list=["ratatoskr@techhigh.us"]
     )
+

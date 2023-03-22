@@ -97,6 +97,8 @@ def contact(request):
 @require_http_methods(["GET", "POST"])
 @no_students
 def create_schedule(request):
+    # if request.user.email.startswith("student."):
+    #     raise PermissionDenied()
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
@@ -117,6 +119,8 @@ def create_schedule(request):
         messages.add_message(request, messages.INFO, 'Successfully created schedule!')
         return redirect("schedule", new_schedule.id)
     return render(request, 'app/pages/create_schedule.html', {})
+
+
 
 
 def update_schedule(request, schedule):

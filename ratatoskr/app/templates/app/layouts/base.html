@@ -44,16 +44,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'help' %}">Help</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>  
+                    </li>
                     
                     {% if user.is_authenticated %}
                         {% comment %} Mobile nav links. d-lg-none makes it not appear on large screens {% endcomment %}
-                            <li class="nav-item mx-0 mb-2 d-lg-none">
+                            <!-- <li class="nav-item mx-0 mb-2 d-lg-none">
                                 <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
-                            </li>
+                            </li> -->
                         {% else %}
-                        <li class="nav-item mx-0 mt-1 mb-2 d-lg-none">
+                        <!-- <li class="nav-item mx-0 mt-1 mb-2 d-lg-none">
                             <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
-                        </li>
+                        </li> -->
                         
                         {% comment %} Desktop dashboard button {% endcomment %}
                         <li class="nav-item d-none d-lg-block mx-0">

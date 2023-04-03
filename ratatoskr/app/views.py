@@ -38,6 +38,7 @@ def no_students(view_func):
         if request.user.email.startswith("student.") and request.user.email.endswith("worcesterschools.net"):
             raise PermissionDenied()
         return render(request, 'app/pages/create_schedule.html')
+        
     return wrapper
     
 
@@ -112,7 +113,7 @@ def create_schedule(request):
             visibility=form.cleaned_data["visibility_select"],
             auto_lock_after=form.cleaned_data.get("auto_lock_after") or (datetime.datetime.now() + datetime.timedelta(days=99999)),
             is_locked=False,
-            description=form.cleaned_data['schedule_description']
+            description=form.cleaned_data['schedule_description'],
         )
         if request.user.email.startswith("student."):
             messages.add_message(request, messages.INFO, 'Since you have a student account, a Google Meet could not be created')
@@ -178,15 +179,13 @@ def schedule(request, schedule):
     if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
         raise PermissionDenied()
 
-    limit_days = 30
+    limit_days = 999999
     est = pytz.timezone("America/New_York")
 
-    if schedule.owner == request.user:
-        limit_days = 99999 # why is this a thing?
     timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
     timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
     timeslots = schedule.timeslot_set.filter(
-        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
+    time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
                           est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
     )
 

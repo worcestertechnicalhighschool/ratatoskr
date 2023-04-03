@@ -45,20 +45,14 @@
                         <a class="nav-link" href="{% url 'help' %}">Help</a>
                     </li>
                     
+                    
                     {% if user.is_authenticated %}
                         {% comment %} Mobile nav links. d-lg-none makes it not appear on large screens {% endcomment %}
-                            <li class="nav-item mx-0 mb-2 d-lg-none">
+                            <li class="nav-item mx-0 mb-2">
                                 <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
                             </li>
                         {% else %}
-                        <li class="nav-item mx-0 mt-1 mb-2 d-lg-none">
-                            <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
-                        </li>
-                        
-                        {% comment %} Desktop dashboard button {% endcomment %}
-                        <li class="nav-item d-none d-lg-block mx-0">
-                            <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2" style="color: white !important;">My Dashboard</a>
-                        </li>
+                       
                     {% endif %}
                     {% comment %} Desktop user login info stuff {% endcomment %}
                     <li class="nav-item display-flex align-items-center ms-1 my-3 my-lg-0 d-none d-lg-block">
@@ -148,7 +142,7 @@
                     </template>
                 </button></li>
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
-                <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" target="_blank" class="nav-link px-1 text-muted"><i class="fa-solid fa-code-branch"></i> Steal our code</a></li>
+                <li class="nav-item"><a href="https://github.com/worcestertechnicalhighschool/ratatoskr" target="_blank" class="nav-link px-1 text-muted"><i class="fa-solid fa-code-branch"></i> View our code</a></li>
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>
                 <li class="nav-item"><a class="nav-link px-1 text-muted" href="https://techhigh.us"><i class="fa-solid fa-school"></i> WTHS</a></li>
                 <li class="nav-item"><span class="nav-link px-1 text-muted">|</span></li>

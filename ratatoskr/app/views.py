@@ -30,12 +30,12 @@ from django.contrib import messages
 
 def no_students(view_func, redirect_url='dashboard'):
     """
-    This is a decorator that will prevent any student accounts
+    This is a decorator that will prevent any non teacher accounts
     from accessing the create_schedule and create_timeslots views.
     """
     @functools.wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if request.user.email.startswith("student.") and request.user.email.endswith("worcesterschools.net"):
+        if request.user.email.startswith("student.") or not request.user.email.endswith("worcesterschools.net"):
             raise PermissionDenied()
         return redirect(redirect_url)
     return wrapper
@@ -95,7 +95,7 @@ def contact(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-# @no_students
+@no_students
 def create_schedule(request):
     # if request.user.email.startswith("student."):
     #     raise PermissionDenied()
@@ -112,7 +112,7 @@ def create_schedule(request):
             visibility=form.cleaned_data["visibility_select"],
             auto_lock_after=form.cleaned_data.get("auto_lock_after") or (datetime.datetime.now() + datetime.timedelta(days=99999)),
             is_locked=False,
-            description=form.cleaned_data['schedule_description']
+            description=form.cleaned_data['schedule_description'],
         )
         if request.user.email.startswith("student."):
             messages.add_message(request, messages.INFO, 'Since you have a student account, a Google Meet could not be created')
@@ -178,16 +178,13 @@ def schedule(request, schedule):
     if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
         raise PermissionDenied()
 
-    limit_days = 30
+    limit_days = 99999
     est = pytz.timezone("America/New_York")
-
-    if schedule.owner == request.user:
-        limit_days = 99999 # why is this a thing?
     timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
     timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
     timeslots = schedule.timeslot_set.filter(
         time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
-                          est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
+                          est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days))),
     )
 
     timeslots = dict(

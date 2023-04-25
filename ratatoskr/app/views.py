@@ -28,17 +28,16 @@ from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
 
-def no_students(view_func):
+def no_students(view_func, redirect_url='dashboard'):
     """
-    This is a decorator that will prevent any student accounts
+    This is a decorator that will prevent any non teacher accounts
     from accessing the create_schedule and create_timeslots views.
     """
     @functools.wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if request.user.email.startswith("student.") and request.user.email.endswith("worcesterschools.net"):
+        if request.user.email.startswith("student.") or not request.user.email.endswith("worcesterschools.net"):
             raise PermissionDenied()
-        return render(request, 'app/pages/create_schedule.html')
-        
+        return redirect(redirect_url)
     return wrapper
     
 
@@ -179,14 +178,13 @@ def schedule(request, schedule):
     if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
         raise PermissionDenied()
 
-    limit_days = 999999
+    limit_days = 99999
     est = pytz.timezone("America/New_York")
-
     timefrom = datetime.datetime.now(est).replace(tzinfo=pytz.utc)
     timeto = (datetime.datetime.now(est) + datetime.timedelta(days=limit_days)).replace(tzinfo=pytz.utc)
     timeslots = schedule.timeslot_set.filter(
-    time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
-                          est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days)))
+        time_from__range=(datetime.datetime.now(est).replace(tzinfo=pytz.utc),
+                          est.localize(datetime.datetime.now() + datetime.timedelta(days=limit_days))),
     )
 
     timeslots = dict(

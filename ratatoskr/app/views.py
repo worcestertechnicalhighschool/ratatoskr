@@ -14,19 +14,19 @@ from django.utils import dateparse
 from django.utils.timezone import make_aware
 from django.contrib.admin.models import LogEntry
 import pytz
-from app.calendarutil import build_calendar_client
+# from app.calendarutil import build_calendar_client
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
 from googleapiclient.errors import HttpError
 from app.emailutil import send_confirmation_email, send_message_email, send_success_email
 from django.contrib.auth.decorators import login_required
 
-from ratatoskr.celery import debug_task, send_mail_task
-
+# from ratatoskr.celery import debug_task, send_mail_task
 from .forms import MessageForm, ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
 from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
+from .tokenutil import refresh_token
 
 @require_http_methods(["GET"])
 def index(request):
@@ -38,6 +38,7 @@ def index(request):
 @require_http_methods(["GET"])
 @login_required
 def dashboard(request):
+    refresh_token(request.user)
     history = {}
     reservations = []
     for s in Schedule.objects.filter(owner=request.user.id):
@@ -83,8 +84,6 @@ def contact(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
-    # if request.user.email.startswith("student."):
-    #     raise PermissionDenied()
 
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
@@ -151,7 +150,7 @@ def update_schedule(request, schedule):
             return redirect(f"/schedules/{schedule.owner.id}")
     return None
 
-
+# view schedule
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
     response = None

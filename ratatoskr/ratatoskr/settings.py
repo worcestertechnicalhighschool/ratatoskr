@@ -73,8 +73,6 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'sass_processor',
     "mathfilters",
-    "django_celery_beat",
-    "django_celery_results",
     'simple_history',
 ]
 
@@ -110,6 +108,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                # `allauth` needs this from django
                 'django.contrib.messages.context_processors.messages',
             ],
         },

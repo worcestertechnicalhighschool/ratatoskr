@@ -1,5 +1,6 @@
 from allauth.socialaccount.models import SocialApp
 import requests
+from django.utils import timezone
 
 # this code was made entirely by ChatGPT-4
 # idk how it works but it refreshes the user's token
@@ -11,6 +12,12 @@ def refresh_token(user):
         return False
 
     social_token = social_account.socialtoken_set.first()
+    
+    # Check to see if the token has expired. 
+    # If not, return early
+    if social_token.expires_at < timezone.now():
+        return False
+    
     app = SocialApp.objects.get(provider=social_account.provider)
     
     # Google's token endpoint

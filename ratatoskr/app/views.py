@@ -80,7 +80,7 @@ def contact(request):
         messages.info(request, "Message received! Your feedback is valuable to us!")
     return render(request, 'app/pages/contact.html')
 
-
+# Maybe Here.
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
@@ -106,7 +106,7 @@ def create_schedule(request):
 
 
 
-
+# Possbilely
 def update_schedule(request, schedule):
     dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     ids = [int(i) for i in request.POST.getlist("timeslot_id")]
@@ -150,7 +150,7 @@ def update_schedule(request, schedule):
             return redirect(f"/schedules/{schedule.owner.id}")
     return None
 
-# view schedule
+# Could be in view schedule but there's a risk of an error.
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
     response = None
@@ -196,7 +196,7 @@ def schedule(request, schedule):
         "timeslots": timeslot_meta
     })
 
-
+# Could be but this function might be for viewing other users schedules.
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
     return render(request, "app/pages/schedules.html", {

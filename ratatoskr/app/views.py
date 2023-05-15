@@ -80,11 +80,11 @@ def contact(request):
         messages.info(request, "Message received! Your feedback is valuable to us!")
     return render(request, 'app/pages/contact.html')
 
-# Maybe Here.
+# Ok, I'm leaving it in just in case.
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
-
+    refresh_token(request.user)
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
@@ -104,9 +104,6 @@ def create_schedule(request):
         return redirect("schedule", new_schedule.id)
     return render(request, 'app/pages/create_schedule.html', {})
 
-
-
-# Possbilely
 def update_schedule(request, schedule):
     dates = [make_aware(datetime.datetime.strptime(i, '%Y-%m-%d')) for i in request.POST.getlist("timeslot_date")]
     ids = [int(i) for i in request.POST.getlist("timeslot_id")]
@@ -150,9 +147,10 @@ def update_schedule(request, schedule):
             return redirect(f"/schedules/{schedule.owner.id}")
     return None
 
-# Could be in view schedule but there's a risk of an error.
+# View Schedule
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
+    refresh_token(request.user)
     response = None
     if request.POST:
         if schedule.owner != request.user:
@@ -196,7 +194,6 @@ def schedule(request, schedule):
         "timeslots": timeslot_meta
     })
 
-# Could be but this function might be for viewing other users schedules.
 @require_http_methods(["GET"])
 def user_schedules(request, user_id):
     return render(request, "app/pages/schedules.html", {
@@ -230,6 +227,7 @@ def schedule_day(request, schedule, date):
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
+    refresh_token(request.user)
     if schedule.owner != request.user:
         raise PermissionDenied()
 
@@ -368,6 +366,7 @@ def reserve_timeslot(request, schedule, date, timeslot):
 @login_required
 @require_http_methods(["GET", "POST"])
 def view_reservations(request, schedule, date, timeslot):
+    refresh_token(request.user)
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
@@ -390,6 +389,7 @@ def view_reservations(request, schedule, date, timeslot):
 @login_required
 @require_http_methods(["GET", "POST"])
 def view_schedule_reservations(request, schedule):
+    refresh_token(request.user)
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 

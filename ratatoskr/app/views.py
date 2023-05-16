@@ -150,9 +150,9 @@ def update_schedule(request, schedule):
 # View Schedule
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
-    refresh_token(request.user)
     response = None
     if request.POST:
+        refresh_token(schedule.owner)
         if schedule.owner != request.user:
             raise PermissionDenied()
         response = update_schedule(request, schedule)

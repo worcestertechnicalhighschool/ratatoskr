@@ -18,9 +18,11 @@
             <div class="card p-3 h-100">
                 <h4 class="mb-3">Quick Actions</h4>
                 <div class="row h-100">
+                    {% if request|is_teacher:user %}
                         <a class="col btn btn-outline-primary m-2 d-flex align-items-center d-flex align-items-center justify-content-center" href="{% url 'create-schedule' %}">
                             <span><i class="fa-solid fa-circle-plus me-2"></i>Create a Schedule</span>
                         </a>
+                    {% endif %}
                     <a class="col btn btn-outline-info m-2 d-flex align-items-center justify-content-center" href="{% url 'view-subscriptions' %}">
                         <span><i class="fa-solid fa-calendar-days me-2"></i>View Subscriptions</span>
                     </a>

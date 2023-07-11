@@ -14,7 +14,7 @@ def give_staff_permission_if_staff_in_worceterschools_domain(request, user, **kw
     email_user, email_domain = user.email.split("@")
 
     if email_domain not in ("worcesterschools.net", "techhigh.us"):
-        messages.error(request, "Only Google accounts registered within the `worcesterschools` domain are allowed to login")
+        messages.error(request, "Only teacher accounts registered within the `worcesterschools` domain are allowed to login")
         if not DEBUG:
             logout(request)
 

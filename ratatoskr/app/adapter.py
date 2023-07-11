@@ -1,9 +1,10 @@
-# from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from allauth.exceptions import ImmediateHttpResponse
-from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
+# from allauth.exceptions import ImmediateHttpResponse
 
 class RatatoskrAccountAdapter(DefaultSocialAccountAdapter):
+    def authentication_error(self, request, provider_id, error, exception, extra_context):
+        print(error)
 
     def pre_social_login(self, request, sociallogin):
         """
@@ -25,11 +26,10 @@ class RatatoskrAccountAdapter(DefaultSocialAccountAdapter):
 
         # Authorized domains only
         if domain != "worcesterschools.net" and domain != "techhigh.us":
-            # Students are restricted. all student emails begin with 'student.'
-            raise ImmediateHttpResponse(HttpResponse('Sorry, you are not allowed'))
+            raise PermissionDenied()
         
         # No Students allowed
         if domain == "worcesterschools.net" and username.startswith('student.'):
-            raise ImmediateHttpResponse(HttpResponse('Sorry, you are not allowed'))
+            raise PermissionDenied()
 
         pass

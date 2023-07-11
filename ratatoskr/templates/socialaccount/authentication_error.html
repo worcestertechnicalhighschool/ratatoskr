@@ -1,0 +1,18 @@
+{% extends 'app/layouts/base.html' %}
+{% block title %}
+    Permission Denied
+{% endblock title %}
+
+{% block body %}
+    <p class="text-center text-danger fs-1 fw-bold">Permission Denied</p>
+    <p class="text-center fs-3 fw-light"> <a href = {% url 'index' %}>Go home?</a></p>
+    <p>
+        Access to this app is currently restricted to staff registered 
+        to the worcesterschools.net domain. If you are a staff member 
+        receiving this message, try logging out of all other google 
+        accounts within your browser. If you continue to have access 
+        issues, please contact the <a href="{% url "contact" %}">RatatoskrApp team</a>
+        and report the issue. Please include your contact information.
+    </p>
+    <p>To request access, please email your administrator.</p>
+{% endblock body %}

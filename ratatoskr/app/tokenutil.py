@@ -2,9 +2,6 @@ from allauth.socialaccount.models import SocialApp
 import requests
 from django.utils import timezone
 
-# this code was made entirely by ChatGPT-4
-# idk how it works but it refreshes the user's token
-# lmao
 def refresh_token(user):
     try:
         social_account = user.socialaccount_set.get(provider='google')

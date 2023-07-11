@@ -84,7 +84,7 @@ def contact(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
-
+    refresh_token(request.user)
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
         if not form.is_valid():
@@ -155,6 +155,7 @@ def update_schedule(request, schedule):
 def schedule(request, schedule):
     response = None
     if request.POST:
+        refresh_token(request.user)
         if schedule.owner != request.user:
             raise PermissionDenied()
         response = update_schedule(request, schedule)
@@ -230,6 +231,7 @@ def schedule_day(request, schedule, date):
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
+    refresh_token(request.user)
     if schedule.owner != request.user:
         raise PermissionDenied()
 
@@ -368,6 +370,7 @@ def reserve_timeslot(request, schedule, date, timeslot):
 @login_required
 @require_http_methods(["GET", "POST"])
 def view_reservations(request, schedule, date, timeslot):
+    refresh_token(request.user)
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 
@@ -390,6 +393,7 @@ def view_reservations(request, schedule, date, timeslot):
 @login_required
 @require_http_methods(["GET", "POST"])
 def view_schedule_reservations(request, schedule):
+    refresh_token(request.user)
     if schedule.owner.id != request.user.id:
         raise PermissionDenied()
 

@@ -220,6 +220,15 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# Point to custom account adapter.
+SOCIALACCOUNT_ADAPTER = 'app.adapter.RatatoskrAccountAdapter' # Not working at all
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+
+
+
+
 # Celery
 
 CELERY_TIMEZONE = "America/New_York"

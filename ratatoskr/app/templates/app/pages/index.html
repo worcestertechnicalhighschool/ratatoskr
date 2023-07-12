@@ -41,7 +41,7 @@
                 {% if not user.is_authenticated %}
                     {% login_button %}
                 {% else %}
-                    <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2 w-50" style="color: white !important;">My Dashboard</a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary ms-lg-2 w-50" >My Dashboard</a>
                 {% endif %}
             </div>
         </div>

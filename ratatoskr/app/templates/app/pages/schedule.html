@@ -6,7 +6,7 @@
         {% if schedule.owner == user %}
             <div class="ms-lg-auto mt-2 mt-lg-0">
                 <div class="">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     Actions
                     </button>
                     {% comment %} Z index so that the form does not overlap this menu {% endcomment %}
@@ -49,7 +49,7 @@
                         </li>
                     </ul>
                     <button
-                        type="button" class="btn btn-success dropdown-toggle d-none d-lg-inline-block"
+                        type="button" class="btn btn-primary dropdown-toggle d-none d-lg-inline-block"
                         data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
                         Add Timeslots
                     </button>
@@ -116,8 +116,8 @@
                             </form>
                         </li>
                     </ul>
-                    <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-success d-inline-block d-lg-none">
-                    Add Timeslot +
+                    <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-primary d-inline-block d-lg-none">
+                    Add Timeslots +
                     </a>
                 </div>
             </div>

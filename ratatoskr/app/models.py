@@ -32,6 +32,9 @@ class Schedule(models.Model):
     calendar_id = models.CharField(max_length=1024)
     calendar_meet_data = models.JSONField()
 
+    def __str__(self):
+        return f"{self.name} ({self.owner})"
+
     def get_calendar_url(self):
         # Direct link to calendar. cid is base 64 encoded
         # For some reason, b64encode has these two "==" at the end of the decoded string, so I just striped them out.
@@ -52,6 +55,9 @@ class TimeSlot(models.Model):
     is_locked = models.BooleanField()
     reservation_limit = models.IntegerField()
 
+    def __str__(self):
+        return f"{self.schedule}, time: {self.time_from} - {self.time_to}"
+
 
 class Reservation(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True)
@@ -61,6 +67,9 @@ class Reservation(models.Model):
     comment = models.CharField(max_length=256)
     confirmed = models.BooleanField(default=False)
     history = HistoricalRecords()
+
+    def __str__(self):
+        return f"{self.name}, {self.timeslot}"
 
 
 class ScheduleSubscription(models.Model):

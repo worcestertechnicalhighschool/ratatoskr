@@ -1,0 +1,22 @@
+.btn-outline-primary {
+    color: #688B58;
+    border-color: #688B58;
+    // need other psuedo-classes
+    &:hover {
+        background-color: #688B58;
+        border-color: #688B58;
+        color: white;
+    }
+}
+
+.btn-primary {
+    border-color: #688B58;
+    background-color: #688B58;
+    color: white;
+    // need other psuedo-classes
+    &:hover {
+        background-color: transparent;
+        border-color: #688B58;
+        color: #688B58;
+    }
+}

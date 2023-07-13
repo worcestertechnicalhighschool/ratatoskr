@@ -22,14 +22,8 @@
 }
 
 .schedule-header-controls {
-    // Todo:
-    // Schedule Dates ------ Add Timeslots+
-    // s c h e d u l e   c o n t r o l s
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    flex-direction: column;
+    padding: 15px 0;
+
     .link-primary, .link-danger {
         display: inline-block;
         padding: 0 10px;

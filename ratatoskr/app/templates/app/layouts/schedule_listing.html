@@ -17,13 +17,13 @@
         
         <div v-effect="onChanged(shiftClicked); "></div>
         {% if user == schedule.owner %}
-            <div class="row w-100 ps-3 p-2 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
+            <div class="d-flex align-items-center justify-content-between w-100 p-3 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
                 <!-- TODO: FIX THIS UI MESS - ugh bootstrap, why?? -->
                 <div class="form-check d-inline-flex align-items-center">
                     <input
                         id="select-all"
                         aria-label="Select All"
-                        class="text-danger form-check-input p-0 m-0 col-xs"
+                        class="text-danger form-check-input"
                         type="checkbox"
                         v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"
                         style="width: 15px; height: 15px;" @click="selectAll(checkboxes)"/>
@@ -32,7 +32,7 @@
                 </div>
 
                 <select @change="action = $el.value.length" 
-                    class="form-select col-xs" aria-label="Actions" name="action" id="action" required>
+                    class="form-select w-auto flex-grow-1" aria-label="Actions" name="action" id="action" required>
                     <option value="" disabled selected>Actions</option>
                     <option value="copy"><i class="fa-solid fa-copy"></i>&nbsp;Copy</option>
                     <option value="lock"><i class="fas fa-lock"></i>&nbsp;Lock</option>

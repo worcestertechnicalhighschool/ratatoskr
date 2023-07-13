@@ -44,3 +44,10 @@
     }
 
 }
+
+select:required:invalid {
+    color: #666;
+  }
+  option[value=""][disabled] {
+    display: none;
+  }

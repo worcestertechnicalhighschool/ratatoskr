@@ -3,32 +3,51 @@
 {% block schedule_card %}
     <form
         v-scope="{ 
+            action: document.querySelector('#action').value.length,
             checked: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]'))
                         .filter(x => x.checked)
                         .length,
             shiftClicked: []
         }"
         class="m-0 p-0 h-100"
-        method="POST"
+        method="POST" 
         action=""
         @click.exact="shiftClicked = []">
         {% csrf_token %}
         
         <div v-effect="onChanged(shiftClicked); "></div>
         {% if user == schedule.owner %}
-            <div class="w-100 ps-3 p-2 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
-                <button class="btn btn-primary mb-2" type="button" @click="selectAll(checkboxes)">
-                    <div class="border border-light d-inline-flex m-0 mt-1 me-1 p-0 rounded">
-                        <input
-                            aria-label="Select All"
-                            class="text-danger form-check-input p-0 m-0"
-                            type="checkbox"
-                            v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"
-                            style="width: 15px; height: 15px;" />
-                    </div>
-                    Select All
-                </button>
+            <div class="row w-100 ps-3 p-2 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
+                <!-- TODO: FIX THIS UI MESS - ugh bootstrap, why?? -->
+                <div class="form-check d-inline-flex align-items-center">
+                    <input
+                        id="select-all"
+                        aria-label="Select All"
+                        class="text-danger form-check-input p-0 m-0 col-xs"
+                        type="checkbox"
+                        v-bind:checked="checkboxes.length == checked && checkboxes.length != 0"
+                        style="width: 15px; height: 15px;" @click="selectAll(checkboxes)"/>
+                    &nbsp;
+                    <label for="select-all">Select All</label>
+                </div>
+
+                <select @change="action = $el.value.length" 
+                    class="form-select col-xs" aria-label="Actions" name="action" id="action" required>
+                    <option value="" disabled selected>Actions</option>
+                    <option value="copy"><i class="fa-solid fa-copy"></i>&nbsp;Copy</option>
+                    <option value="lock"><i class="fas fa-lock"></i>&nbsp;Lock</option>
+                    <option value="unlock"><i class="fas fa-unlock"></i>&nbsp;Unlock</option>
+                    <option value="delete"><i class="far fa-trash-alt"></i>&nbsp;Delete</option>
+                </select>
+
                 <button
+                    onclick="return confirm(`This operation cannot be undone. Proceed?`)"
+                    class="btn btn-secondary mb-2"
+                    v-bind:disabled="checked == 0 || action == 0">
+                    Go&nbsp;<i class="fa-solid fa-caret-right"></i>
+                </button>
+
+                <!-- <button
                     onclick="return confirm(`Are you sure you want to delete these timeslots?`)"
                     name="action"
                     value="delete"
@@ -58,12 +77,12 @@
                     class="btn btn-info mb-2"
                     v-bind:disabled="checked == 0">
                     <i class="fa-solid fa-copy"></i> Copy
-                </button>
+                </button> -->
             </div>
         {% endif %}
         <div class="card-body" id="timeslot-body">
-            {% block schedule_body %}
-            {% endblock schedule_body %}
+        {% block schedule_body %}
+        {% endblock schedule_body %}
         </div>
     </form>
 {% endblock schedule_card %}

@@ -33,7 +33,7 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="navbar-nav ms-auto flex-nowrap align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'about' %}">About</a>
@@ -120,9 +120,10 @@
         </ul>
     {% endif %}
 
-    <main class="container my-auto height-100">
-        {% block body %}
-        {% endblock body %}
+    <main class="container my-auto mt-5 height-100">
+
+                {% block body %}
+                {% endblock body %}
     </main>
     <div class="container">
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top flex-column flex-md-row">

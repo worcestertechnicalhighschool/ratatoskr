@@ -1,4 +1,5 @@
 {% extends 'app/layouts/schedule_listing.html' %}
+{% load static %}
 
 {% block schedule_head %}
     {% if schedule.owner == user %}
@@ -80,28 +81,36 @@
         <div class="ms-lg-auto mt-2 mt-lg-0 schedule-header-controls ">
             <ul class="nav d-flex justify-content-between">
                 <li>
-                    <a class="link-primary" href="{% url 'view-schedule-reservations' schedule.id %}" title="View Reservations">
+                    <a class="link-secondary" href="{% url 'view-schedule-reservations' schedule.id %}" title="View Reservations">
                         <i class="fa-solid fa-calendar-day"></i>
                         <span class="d-none d-lg-inline">View Reservations</span>
                     </a>
                 </li>
                 {% comment %} vue @click does not work here for some reason {% endcomment %}
                 <li>
-                    <button type="button" title="Copy Share Link" class="link-primary" onclick="navigator.clipboard.writeText(window.location.href)">
+                    <button type="button" title="Copy Share Link" class="link-secondary" onclick="navigator.clipboard.writeText(window.location.href)">
                         <i class="fas fa-link"></i>
                         <span class="d-none d-lg-inline">Copy Share Link</span>
                     </button>
                 </li>
                 <li>
-                    <a class="link-primary" title="Google Calendar" href="{{ schedule.get_calendar_url }}">
-                        <i class="fa-solid fa-calendar-days"></i>
+                    <a class="link-secondary" title="Google Calendar" href="{{ schedule.get_calendar_url }}">
+                        <!-- <i class="fa-solid fa-calendar-days"></i> -->
+                        <img 
+                                src="{% static 'assets/google_calendar.png' %}" 
+                                style="height:32px; padding-bottom:5px;"
+                                alt="Launch Google Calendar" title="launch Google Calendar">
                         <span class="d-none d-lg-inline">Google Calendar</span>
                     </a>
                 </li>
                 {% if schedule.get_meet_url is not None %}
                     <li>
-                        <a class="link-primary" title="Google Meet" href="{{ schedule.get_meet_url }}">
-                            <i class="fa-solid fa-phone"></i>
+                        <a class="link-secondary" title="Google Meet" href="{{ schedule.get_meet_url }}">
+                            <!-- <i class="fa-solid fa-phone"></i> -->
+                            <img 
+                                src="{% static 'assets/google_meet.png' %}" 
+                                style="height:32px; padding-bottom:5px;"
+                                alt="Launch Google Meet" title="launch Google Meet">
                             <span class="d-none d-lg-inline">Google Meet</span>
                         </a>
                     </li>

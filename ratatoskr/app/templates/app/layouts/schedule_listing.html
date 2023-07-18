@@ -33,10 +33,10 @@
                 <select @change="action = $el.value.length" 
                     class="form-select w-auto flex-grow-1" aria-label="Actions" name="action" id="action" required>
                     <option value="" disabled selected>Actions</option>
-                    <option value="copy"><i class="fa-solid fa-copy"></i>&nbsp;Copy</option>
-                    <option value="lock"><i class="fas fa-lock"></i>&nbsp;Lock</option>
-                    <option value="unlock"><i class="fas fa-unlock"></i>&nbsp;Unlock</option>
-                    <option value="delete"><i class="far fa-trash-alt"></i>&nbsp;Delete</option>
+                    <option value="copy">🎨 Copy</option>
+                    <option value="lock">🔒 Lock</option>
+                    <option value="unlock">🔓 Unlock</option>
+                    <option value="delete">🗑️ Delete</option>
                 </select>
 
                 <button
@@ -45,38 +45,6 @@
                     v-bind:disabled="checked == 0 || action == 0">
                     Go&nbsp;<i class="fa-solid fa-caret-right"></i>
                 </button>
-
-                <!-- <button
-                    onclick="return confirm(`Are you sure you want to delete these timeslots?`)"
-                    name="action"
-                    value="delete"
-                    class="btn btn-danger mb-2"
-                    v-bind:disabled="checked == 0">
-                    <i class="far fa-trash-alt"></i> Delete
-                </button>
-                <button
-                    onclick="return confirm(`Are you sure you want to lock these timeslots?`)"
-                    name="action"
-                    value="lock"
-                    class="btn btn-warning mb-2"
-                    v-bind:disabled="checked == 0">
-                    <i class="fas fa-lock"></i> Lock
-                </button>
-                <button
-                    onclick="return confirm(`Are you sure you want to unlock these timeslots?`)"
-                    name="action"
-                    value="unlock"
-                    class="btn btn-success mb-2"
-                    v-bind:disabled="checked == 0">
-                    <i class="fas fa-unlock"></i> Unlock
-                </button>
-                <button
-                    name="action"
-                    value="copy"
-                    class="btn btn-info mb-2"
-                    v-bind:disabled="checked == 0">
-                    <i class="fa-solid fa-copy"></i> Copy
-                </button> -->
             </div>
         {% endif %}
         <div class="card-body" id="timeslot-body">

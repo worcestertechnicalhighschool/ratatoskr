@@ -24,16 +24,19 @@
 .schedule-header-controls {
     padding: 15px 0;
 
-    .link-primary, .link-danger {
+    .link-primary, .link-danger, .link-secondary {
         display: inline-block;
         padding: 0 10px;
+        text-decoration: none;
+        border: none;
+        background: none;
+        white-space: nowrap;
+        &:hover, &:active, &:focus, &:focus-visible {
+            text-decoration: underline;
+        }
     }
     .link-primary {
         color: #688B58;
-        border: none;
-        background: none;
-        text-decoration: none;
-        white-space: nowrap;
         &:hover, &:active, &:focus, &:focus-visible {
             color: hsl(101, 22%, 25%)
         }

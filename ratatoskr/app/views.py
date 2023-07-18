@@ -30,6 +30,14 @@ from .tokenutil import refresh_token
 
 @require_http_methods(["GET"])
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'app/pages/index.html', {
+        "schedules": Schedule.objects.filter(visibility='A')
+    })
+
+@require_http_methods(["GET"])
+def home(request):
     return render(request, 'app/pages/index.html', {
         "schedules": Schedule.objects.filter(visibility='A')
     })
@@ -70,7 +78,8 @@ def contact(request):
     if request.POST:
         form = MessageForm(request.POST)
         # NOTE: call form.is_valid() before actually using its data.
-        # I have no idea why but for some odd reason, form.cleaned_data gets defined at some random interval if is_valid isnt called
+        # I have no idea why but for some odd reason, form.cleaned_data 
+        # gets defined at some random interval if is_valid isn't called
         # weird
         if not form.is_valid():
             render(request, "app/pages/form-error.html", {

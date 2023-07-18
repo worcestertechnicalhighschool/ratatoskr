@@ -7,6 +7,17 @@ from django.utils.html import strip_tags
 from app.models import ScheduleSubscription
 from app.models import Schedule
 
+@register.filter
+def addhour(t):
+    mins = t.split(':')[1]
+    hour = int(t.split(':')[0]) + 1
+    if (hour > 23):
+        hour = 0
+    # zfill pads a string with 0's if it is < 9
+    # example 2 returns "02," 13 returns "13"
+    return f"{ str(hour).zfill(2) }:{mins}"
+
+
 
 @register.filter
 def index(l, i):

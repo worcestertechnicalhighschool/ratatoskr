@@ -1,9 +1,9 @@
 {% extends 'app/layouts/schedule_listing.html' %}
 
 {% block schedule_head %}
-    <div class="d-flex flex-column flex-lg-row align-items-center p-2 justify-content-between">
-        <h3 class="mb-0">Dates</h3>
-        {% if schedule.owner == user %}
+    {% if schedule.owner == user %}
+        <div class="d-flex flex-column flex-lg-row align-items-center p-2 justify-content-between">
+            <h3 class="mb-0">Dates</h3>
             <button
                 type="button" class="btn btn-primary dropdown-toggle d-none d-lg-inline-block"
                 data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
@@ -76,53 +76,57 @@
             <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-primary d-inline-block d-lg-none">
                 Add Timeslots +
             </a>
-    </div>
-    <div class="ms-lg-auto mt-2 mt-lg-0 schedule-header-controls ">
-        <ul class="nav d-flex justify-content-between">
-            <li>
-                <a class="link-primary" href="{% url 'view-schedule-reservations' schedule.id %}" title="View Reservations">
-                    <i class="fa-solid fa-calendar-day"></i>
-                    <span class="d-none d-md-inline">View Reservations</span>
-                </a>
-            </li>
-            {% comment %} vue @click does not work here for some reason {% endcomment %}
-            <li>
-                <button type="button" title="Copy Share Link" class="link-primary" onclick="navigator.clipboard.writeText(window.location.href)">
-                    <i class="fas fa-link"></i>
-                    <span class="d-none d-md-inline">Copy Share Link</span>
-                </button>
-            </li>
-            <li>
-                <a class="link-primary" title="Google Calendar" href="{{ schedule.get_calendar_url }}">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span class="d-none d-md-inline">Google Calendar</span>
-                </a>
-            </li>
-            {% if schedule.get_meet_url is not None %}
+        </div>
+        <div class="ms-lg-auto mt-2 mt-lg-0 schedule-header-controls ">
+            <ul class="nav d-flex justify-content-between">
                 <li>
-                    <a class="link-primary" title="Google Meet" href="{{ schedule.get_meet_url }}">
-                        <i class="fa-solid fa-phone"></i>
-                        <span class="d-none d-md-inline">Google Meet</span>
+                    <a class="link-primary" href="{% url 'view-schedule-reservations' schedule.id %}" title="View Reservations">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <span class="d-none d-lg-inline">View Reservations</span>
                     </a>
                 </li>
-            {% endif %}
-            <li>
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <button
-                        title="Delete Schedule"
-                        class="link-danger"
-                        onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
-                        name="action"
-                        value="delete_schedule">
-                        <i class="fa-solid fa-trash-can"></i>
-                        <span class="d-none d-md-inline">Delete Schedule</span>
+                {% comment %} vue @click does not work here for some reason {% endcomment %}
+                <li>
+                    <button type="button" title="Copy Share Link" class="link-primary" onclick="navigator.clipboard.writeText(window.location.href)">
+                        <i class="fas fa-link"></i>
+                        <span class="d-none d-lg-inline">Copy Share Link</span>
                     </button>
-                </form>
-            </li>
-        </ul>  
-        {% endif %}
-    </div>
+                </li>
+                <li>
+                    <a class="link-primary" title="Google Calendar" href="{{ schedule.get_calendar_url }}">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span class="d-none d-lg-inline">Google Calendar</span>
+                    </a>
+                </li>
+                {% if schedule.get_meet_url is not None %}
+                    <li>
+                        <a class="link-primary" title="Google Meet" href="{{ schedule.get_meet_url }}">
+                            <i class="fa-solid fa-phone"></i>
+                            <span class="d-none d-lg-inline">Google Meet</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <button
+                            title="Delete Schedule"
+                            class="link-danger"
+                            onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
+                            name="action"
+                            value="delete_schedule">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span class="d-none d-lg-inline">Delete Schedule</span>
+                        </button>
+                    </form>
+                </li>
+            </ul>  
+        </div>
+    {% else %}
+        <div class="d-flex flex-column flex-lg-row align-items-center p-2 justify-content-between">
+            <h3 class="mb-0">Dates</h3>
+        </div>
+    {% endif %}
 {% endblock schedule_head %}
 
 {% block schedule_body %}

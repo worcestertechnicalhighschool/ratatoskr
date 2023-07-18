@@ -18,8 +18,7 @@
         <div v-effect="onChanged(shiftClicked); "></div>
         {% if user == schedule.owner %}
             <div class="d-flex align-items-center justify-content-between w-100 p-3 bg-light shadow-sm rounded" v-scope="{ checkboxes: Array.from(document.querySelectorAll('#timeslot-body input[type=checkbox]')) }">
-                <!-- TODO: FIX THIS UI MESS - ugh bootstrap, why?? -->
-                <div class="form-check d-inline-flex align-items-center">
+                <div class="form-check d-inline-flex align-items-center me-2">
                     <input
                         id="select-all"
                         aria-label="Select All"
@@ -42,7 +41,7 @@
 
                 <button
                     onclick="return confirm(`This operation cannot be undone. Proceed?`)"
-                    class="btn btn-secondary mb-2"
+                    class="btn btn-secondary ms-2"
                     v-bind:disabled="checked == 0 || action == 0">
                     Go&nbsp;<i class="fa-solid fa-caret-right"></i>
                 </button>

@@ -236,7 +236,7 @@ def schedule_day(request, schedule, date):
         "date": date
     })
 
-
+from django.utils import timezone, dateformat
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
@@ -247,7 +247,7 @@ def create_timeslots(request, schedule):
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
-            return render(request, "app/pages/form_error.html", {"errors": form.errors})
+            return render(request, "app/pages/create_timeslots.html", {"errors": dict(form.errors)})
 
         # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
         from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
@@ -339,7 +339,8 @@ def create_timeslots(request, schedule):
         messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
         return redirect("schedule", schedule.id)
 
-    return render(request, "app/pages/create_timeslots.html", {})
+    current_time = dateformat.format(timezone.now() - datetime.timedelta(hours=4), 'h:i')
+    return render(request, "app/pages/create_timeslots.html", {'current_time': current_time})
 
 
 @require_http_methods(["GET", "POST"])

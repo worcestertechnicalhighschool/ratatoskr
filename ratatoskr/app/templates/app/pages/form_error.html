@@ -5,5 +5,6 @@
 {% block body %}
     <p class="text-center text-danger fs-1 fw-bold">Uh oh!</p>
     <p class="text-center text-danger fs-3 fw-light">We encountered an error! 😓</p>
+    <p>{{ errors }}</p>
     <p class="text-center fs-3 fw-light"> <a href = {% url 'index' %}>Click here to go home.</a></p>
 {% endblock body %}

@@ -49,6 +49,7 @@ class Schedule(models.Model):
 class TimeSlot(models.Model):
     id = models.AutoField(primary_key=True)
     schedule = models.ForeignKey(to=Schedule, on_delete=models.CASCADE)
+    location = models.CharField(max_length=1024, default="Remote")
     time_from = models.DateTimeField()
     time_to = models.DateTimeField()
     auto_lock_after = models.DateTimeField()

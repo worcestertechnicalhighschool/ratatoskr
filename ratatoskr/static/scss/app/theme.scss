@@ -54,3 +54,14 @@ select:required:invalid {
   option[value=""][disabled] {
     display: none;
   }
+
+.feedback {
+    ul {
+        padding: 0;
+        padding-left: 16px;
+        margin: 0;
+        list-style-type: symbols(cyclic '*');
+        font-style: italic;
+        font-size: small;
+    }
+}

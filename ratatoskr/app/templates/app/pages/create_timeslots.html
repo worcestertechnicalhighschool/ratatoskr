@@ -3,11 +3,6 @@
 {% block title %}Create Timeslots{% endblock title %}
 
 {% block body %}
-    {% if errors %}
-        <div class="alert alert-danger" role="alert">
-          {{ errors }}
-        </div>
-    {% endif %}
     <div class="d-flex justify-content-center align-items-center h-75">
         <div class="card w-100" style="max-width: 750px;">
             <div class="card-header text-center">
@@ -25,28 +20,31 @@
                             </label>
                         </div>
                         <div class="mb-3 col">
-                            <label for="from_date" class="form-label">Date Start<span class="text-danger">*</span></label>
+                            <label for="from_date" class="form-label">Start Date<span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate" required>
+                            <div class="text-danger feedback">{{ errors.from_time }}</div>
                         </div>
                         <div class="mb-3 col">
-                            <label for="to_date" class="form-label">Date End<template v-if="multipleTimeslots"><span class="text-danger">*</span></template><template v-else></template></label>
+                            <label for="to_date" class="form-label">End Date<template v-if="multipleTimeslots"><span class="text-danger">*</span></template><template v-else></template></label>
                             <template v-if="!multipleTimeslots">
                                 {% comment %} The disabled date field is just for show {% endcomment %}
                                 <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
                                 <input v-model="fromDate" type="hidden" class="form-control" id="to_date" name="to_date" required>
                             </template>
                             <input v-else type="date" class="form-control" id="to_date" name="to_date" v-model="toDate" required>
+                            <div class="text-danger feedback">{{ errors.to_date }}</div>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="mb-3 col">
-                            <label for="from_time" class="form-label">Time Start<span class="text-danger">*</span></label>
-                            {% now 'h:i' as current_time %}
+                            <label for="from_time" class="form-label">Start Time<span class="text-danger">*</span></label>
                             <input type="time" class="form-control" id="from_time" name="from_time" value="{{ current_time }}" required>
+                            <div class="text-danger feedback">{{ errors.from_time }}</div>
                         </div>
                         <div class="mb-3 col">
-                            <label for="to_time" class="form-label">Time End<span class="text-danger">*</span></label>
+                            <label for="to_time" class="form-label">End Time<span class="text-danger">*</span></label>
                             <input type="time" class="form-control" id="to_time" name="to_time" value="{{ current_time|addhour }}" required>
+                            <div class="text-danger feedback">{{ errors.to_time }}</div>
                         </div>
                     </div>
                     
@@ -55,17 +53,20 @@
                             <label for="timeslot_length" class="form-label">Timeslot Length<span class="text-danger">*</span></label>
                             <input type="number" placeholder="25" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length" v-bind:disabled="!multipleTimeslots" required>
                             <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
+                            <div class="text-danger feedback">{{ errors.timeslot_length }}</div>
                         </div>
                         <div class="mb-3">
                             <label for="timeslot_break" class="form-label">Timeslot Break<span class="text-danger">*</span></label>
                             <input type="number" placeholder="5" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break" v-bind:disabled="!multipleTimeslots" required>
                             <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
+                            <div class="text-danger feedback">{{ errors.timeslot_break }}</div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="openings" class="form-label">Openings<span class="text-danger">*</span></label>
                         <input type="number" placeholder="1" min="1" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings" required>
                         <div id="openingsHelp" class="form-text">The number of openings for each timeslot.</div>
+                        <div class="text-danger feedback">{{ errors.openings }}</div>
                     </div>
 
                     <fieldset class="text-center">
@@ -75,4 +76,5 @@
             </div>
         </div>
     </div>
+    {{form.errors}}
 {% endblock body %}

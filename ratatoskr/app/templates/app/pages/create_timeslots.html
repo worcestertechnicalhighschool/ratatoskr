@@ -22,7 +22,7 @@
                         <div class="mb-3 col">
                             <label for="from_date" class="form-label">Start Date<span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate" required>
-                            <div class="text-danger feedback">{{ errors.from_time }}</div>
+                            <div class="text-danger feedback">{{ errors.from_date }}</div>
                         </div>
                         <div class="mb-3 col">
                             <label for="to_date" class="form-label">End Date<template v-if="multipleTimeslots"><span class="text-danger">*</span></template><template v-else></template></label>
@@ -38,12 +38,13 @@
                     <div class="row g-2">
                         <div class="mb-3 col">
                             <label for="from_time" class="form-label">Start Time<span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" id="from_time" name="from_time" value="{{ current_time }}" required>
+                            {% get_best_time as best_time %}
+                            <input type="time" class="form-control" id="from_time" name="from_time" value="{{ best_time }}" required>
                             <div class="text-danger feedback">{{ errors.from_time }}</div>
                         </div>
                         <div class="mb-3 col">
                             <label for="to_time" class="form-label">End Time<span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" id="to_time" name="to_time" value="{{ current_time|addhour }}" required>
+                            <input type="time" class="form-control" id="to_time" name="to_time" value="{{ best_time|addhour }}" required>
                             <div class="text-danger feedback">{{ errors.to_time }}</div>
                         </div>
                     </div>

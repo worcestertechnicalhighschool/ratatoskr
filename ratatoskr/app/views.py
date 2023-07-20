@@ -242,7 +242,7 @@ def create_timeslots(request, schedule):
     refresh_token(request.user)
     if schedule.owner != request.user:
         raise PermissionDenied()
-
+    form = TimeslotGenerationForm()
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
@@ -350,7 +350,7 @@ def create_timeslots(request, schedule):
     # nearest_utc_time = utc_time.replace(minute=rounded_mins, second=0, microsecond=0)
     # best_time = dateformat.format(nearest_utc_time - datetime.timedelta(hours=3), 'H:i') 
     
-    return render(request, "app/pages/create_timeslots.html", {})
+    return render(request, "app/pages/create_timeslots.html", {'form': form})
 
 
 @require_http_methods(["GET", "POST"])

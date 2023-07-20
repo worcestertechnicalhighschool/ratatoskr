@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'sass_processor',
     "mathfilters",
     'simple_history',
+    "bootstrap5",
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 import pandas as pd
 from django.core.exceptions import PermissionDenied, BadRequest
 from django.shortcuts import redirect, render
-from django.utils import dateparse
+from django.utils import dateparse, timezone, dateformat
 from django.utils.timezone import make_aware
 from django.contrib.admin.models import LogEntry
 import pytz
@@ -236,7 +236,6 @@ def schedule_day(request, schedule, date):
         "date": date
     })
 
-
 @login_required
 @require_http_methods(["GET", "POST"])
 def create_timeslots(request, schedule):
@@ -247,7 +246,7 @@ def create_timeslots(request, schedule):
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
         if not form.is_valid():
-            return render(request, "app/pages/form_error.html", {"errors": form.errors})
+            return render(request, "app/pages/create_timeslots.html", {"errors": dict(form.errors)})
 
         # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
         from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
@@ -338,7 +337,19 @@ def create_timeslots(request, schedule):
 
         messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
         return redirect("schedule", schedule.id)
-
+    
+    # This bit takes the current UTC time, 
+    # rounds to the nearest half hour,
+    # Then localizes it to localtime + 1 hour
+    # This allows the form to render with a good starting time for users.
+    # utc_time = timezone.now()
+    # mins = utc_time.minute
+    # rounded_mins = 30 * round(mins / 30)
+    # if rounded_mins > 30:
+    #     rounded_mins = 0
+    # nearest_utc_time = utc_time.replace(minute=rounded_mins, second=0, microsecond=0)
+    # best_time = dateformat.format(nearest_utc_time - datetime.timedelta(hours=3), 'H:i') 
+    
     return render(request, "app/pages/create_timeslots.html", {})
 
 

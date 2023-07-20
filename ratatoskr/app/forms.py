@@ -1,8 +1,9 @@
+import datetime
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 
 from .models import TimeSlot
-
+from django.utils import timezone, dateformat
 
 class TimeslotGenerationForm(forms.Form):
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
@@ -14,14 +15,35 @@ class TimeslotGenerationForm(forms.Form):
     timeslot_break = forms.IntegerField(required=False)
     openings = forms.IntegerField()
 
+    # def clean(self):
     def clean(self):
         cleaned_data = super().clean()
-        st = cleaned_data.get('from_time')
-        end = cleaned_data.get('to_time')
-        if st > end:
-            raise forms.ValidationError('The start time must be earlier than the end time!')
+        start_date = cleaned_data.get('from_date')
+        end_date = cleaned_data.get('to_date')
+        start_time = cleaned_data.get('from_time')
+        end_time = cleaned_data.get('to_time')
 
-        return cleaned_data
+        # vars for validation
+        current_time = timezone.now() - datetime.timedelta(hours=4)
+        today = dateformat.format(timezone.now() - datetime.timedelta(hours=4), 'Y-m-d')
+        # print(start_time > current_time.time())
+        errors = {}
+        # if start_date < today:
+        #     errors['from_date'] = 'The start date cannot be in the past'
+
+        if start_date > end_date:
+            errors['to_date'] = 'The End Date cannot be earlier than the Start Date'
+
+        if start_time < current_time.time():
+            errors['from_time'] = 'The start time cannot be in the past'
+
+        if start_time >= end_time:
+            errors['to_time'] = 'The End Time cannot be earlier than the Start Time'
+        if len(errors.keys()) > 0:
+            raise forms.ValidationError(errors)
+
+        print(cleaned_data)
+        # return cleaned_data
 
 
 class ReservationForm(forms.Form):

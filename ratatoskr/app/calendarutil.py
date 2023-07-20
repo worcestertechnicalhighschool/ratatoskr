@@ -162,8 +162,8 @@ def update_timeslot_event(timeslot) -> None:
 
     event_body = {
         "summary": f"Ratatoskr: {timeslot.schedule.name}",
-        "location": "Atop Yggdrasil",
-        "description": "Event relayed to you by Ratatoskr 🐭.",
+        "location": f"{timeslot.location}",
+        "description": "Event relayed to you by Ratatoskr 🐿️.",
         "start": {
             "dateTime": start,
         },

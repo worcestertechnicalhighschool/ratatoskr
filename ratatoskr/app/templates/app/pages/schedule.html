@@ -3,14 +3,14 @@
 
 {% block schedule_head %}
     {% if schedule.owner == user %}
-        <div class="d-flex flex-column flex-lg-row align-items-center p-2 justify-content-between">
+        <div class="d-flex flex-column flex-md-row align-items-center p-2 justify-content-between">
             <h3 class="mb-0">Dates</h3>
-            
+            <span style="font-size: 6px;">&nbsp;</span>
             <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-primary d-inline-block">
                 Add Timeslots +
             </a>
         </div>
-        <div class="ms-lg-auto mt-2 mt-lg-0 schedule-header-controls ">
+        <div class="schedule-header-controls ">
             <ul class="nav d-flex justify-content-between">
                 <li>
                     <a class="link-secondary" href="{% url 'view-schedule-reservations' schedule.id %}" title="View Reservations">

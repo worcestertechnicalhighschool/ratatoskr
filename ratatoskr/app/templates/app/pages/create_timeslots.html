@@ -5,90 +5,63 @@
 {% block title %}Create Timeslots{% endblock title %}
 
 {% block body %}
-<form action="" class="form">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">Submit</button>
-    {% endbuttons %}
-</form>
 
+<div class="d-flex justify-content-center align-items-center h-75">
+    <div class="card w-100" style="max-width: 750px;">
+        <div class="card-header text-center">
+            <h2 class="mt-2">Create Timeslots</h2>
+        </div>
+        <div class="card-body">
+            <form action="" class="form" method="post">
+                {% csrf_token %}
+                {% bootstrap_form form exclude="multiple_timeslots, timeslot_length, timeslot_break" %}
+                <div class="form-check form-switch mb-3">
+                    <input 
+                        type="checkbox" 
+                        name="multiple_timeslots" 
+                        role="switch" class="form-check-input" 
+                        id="id_multiple_timeslots"><label 
+                            class="form-check-label" 
+                            for="id_multiple_timeslots">Multiple timeslots</label>
+                </div>
+                {% bootstrap_field form.timeslot_length %}
+                {% bootstrap_field form.timeslot_break %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary w-50 d-block m-auto" type="submit">Create</button>
+                {% endbuttons %}
 
-
-
-    <div class="d-flex justify-content-center align-items-center h-75">
-        <div class="card w-100" style="max-width: 750px;">
-            <div class="card-header text-center">
-                <h2 class="mt-2">Create Timeslots</h2>
-            </div>
-            <div class="card-body">
-                <form method="POST" v-scope="{ multipleTimeslots: false }">
-                    {% csrf_token %}
-                    <div class="row g-2" v-scope="{ fromDate: '{% now "Y-m-d" %}', toDate: '{% now "Y-m-d" %}' }">
-                        <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="multiple_timeslots" @click="multipleTimeslots = $el.checked" name="multiple_timeslots">
-                            <label class="form-check-label" for="multiple_timeslots">
-                                <template v-if="multipleTimeslots">Multiple Timeslots</template>
-                                <template v-else>Single Timeslot</template>
-                            </label>
-                        </div>
-                        <div class="mb-3 col">
-                            <label for="from_date" class="form-label">Start Date<span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="from_date" name="from_date" v-model="fromDate" required>
-                            <div class="text-danger feedback">{{ errors.from_date }}</div>
-                        </div>
-                        <div class="mb-3 col">
-                            <label for="to_date" class="form-label">End Date<template v-if="multipleTimeslots"><span class="text-danger">*</span></template><template v-else></template></label>
-                            <template v-if="!multipleTimeslots">
-                                {% comment %} The disabled date field is just for show {% endcomment %}
-                                <input v-model="fromDate" type="date" class="form-control" id="to_date" name="to_date" disabled>
-                                <input v-model="fromDate" type="hidden" class="form-control" id="to_date" name="to_date" required>
-                            </template>
-                            <input v-else type="date" class="form-control" id="to_date" name="to_date" v-model="toDate" required>
-                            <div class="text-danger feedback">{{ errors.to_date }}</div>
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="mb-3 col">
-                            <label for="from_time" class="form-label">Start Time<span class="text-danger">*</span></label>
-                            {% get_best_time as best_time %}
-                            <input type="time" class="form-control" id="from_time" name="from_time" value="{{ best_time }}" required>
-                            <div class="text-danger feedback">{{ errors.from_time }}</div>
-                        </div>
-                        <div class="mb-3 col">
-                            <label for="to_time" class="form-label">End Time<span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" id="to_time" name="to_time" value="{{ best_time|addhour }}" required>
-                            <div class="text-danger feedback">{{ errors.to_time }}</div>
-                        </div>
-                    </div>
-                    
-                    <div v-show="multipleTimeslots">
-                        <div class="mb-3">
-                            <label for="timeslot_length" class="form-label">Timeslot Length<span class="text-danger">*</span></label>
-                            <input type="number" placeholder="25" class="form-control" id="timeslot_length" aria-describedby="timeslotLengthHelp" name="timeslot_length" v-bind:disabled="!multipleTimeslots" required>
-                            <div id="timeslotLengthHelp" class="form-text">This is the length of each timeslot in minutes, between the start time and the end time.</div>
-                            <div class="text-danger feedback">{{ errors.timeslot_length }}</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="timeslot_break" class="form-label">Timeslot Break<span class="text-danger">*</span></label>
-                            <input type="number" placeholder="5" class="form-control" id="timeslot_break" aria-describedby="timeslotBreakHelp" name="timeslot_break" v-bind:disabled="!multipleTimeslots" required>
-                            <div id="timeslotBreakHelp" class="form-text">This is the length of time in minutes, between each of the timeslot lengths.</div>
-                            <div class="text-danger feedback">{{ errors.timeslot_break }}</div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="openings" class="form-label">Openings<span class="text-danger">*</span></label>
-                        <input type="number" placeholder="1" min="1" class="form-control" id="openings" aria-describedby="openingsHelp" name="openings" required>
-                        <div id="openingsHelp" class="form-text">The number of openings for each timeslot.</div>
-                        <div class="text-danger feedback">{{ errors.openings }}</div>
-                    </div>
-
-                    <fieldset class="text-center">
-                        <button class="btn btn-primary w-50" type="submit">Create</button>
-                    </fieldset>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
-    {{form.errors}}
+</div>
+    
 {% endblock body %}
+
+{% block scripts %}
+<script>
+    const toggle = document.querySelector('#id_multiple_timeslots');
+    const toDate = document.querySelector('#id_to_date');
+    const tsLen = document.querySelector('#id_timeslot_length');
+    const tsBreak = document.querySelector('#id_timeslot_break');
+
+    toggle.addEventListener('change', setCheckState)
+    setCheckState();
+
+    function setCheckState() {
+        if (toggle.checked) {
+            toDate.value = document.querySelector('#id_from_date').value;
+            toDate.readOnly=false;
+            tsLen.disabled=false;
+            tsLen.value="30"
+            tsBreak.disabled=false;
+            tsBreak.value="5";
+        } else {
+            toDate.readOnly=true;
+            tsLen.disabled=true;
+            tsLen.value=""
+            tsBreak.disabled=true;
+            tsBreak.value="";
+        }
+    }
+</script>
+{% endblock scripts %}

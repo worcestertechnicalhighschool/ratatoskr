@@ -242,113 +242,105 @@ def create_timeslots(request, schedule):
     refresh_token(request.user)
     if schedule.owner != request.user:
         raise PermissionDenied()
+    
     form = TimeslotGenerationForm()
+
     if request.POST:
         form = TimeslotGenerationForm(request.POST)
-        if not form.is_valid():
-            return render(request, "app/pages/create_timeslots.html", {"errors": dict(form.errors)})
+        
+        # if not form.is_valid():
+        #     return render(request, "app/pages/create_timeslots.html", {"errors": dict(form.errors)})
 
-        # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
-        from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
-        to_time = datetime.datetime.combine(form.cleaned_data["to_date"], form.cleaned_data["to_time"])
+        if form.is_valid():
+            # The "-" operator only works on datetime objects and not time. Just use datetime.combine to get a datetime with the needed times to get the delta of
+            from_time = datetime.datetime.combine(form.cleaned_data["from_date"], form.cleaned_data["from_time"])
+            to_time = datetime.datetime.combine(form.cleaned_data["to_date"], form.cleaned_data["to_time"])
 
-        if not form.cleaned_data["multiple_timeslots"]:
-            TimeSlot(
-                schedule=schedule,
-                time_from=make_aware(from_time),
-                time_to=make_aware(to_time),
-                reservation_limit=form.cleaned_data["openings"],
-                is_locked=False,
-                auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
-            ).save()
-        else:
-            # We need to create a dict with keys from DateA to DateB where
-            # each date has an array of times that go from TimeA to TimeB.
+            if not form.cleaned_data["multiple_timeslots"]:
+                TimeSlot(
+                    schedule=schedule,
+                    time_from=make_aware(from_time),
+                    time_to=make_aware(to_time),
+                    reservation_limit=form.cleaned_data["attendees"],
+                    is_locked=False,
+                    auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
+                ).save()
+            else:
+                # We need to create a dict with keys from DateA to DateB where
+                # each date has an array of times that go from TimeA to TimeB.
 
-            # So if we need to create timeslots:
-            # from 3/10 to 3/12
-            # from 1:00 to 2:00
-            # with 20 minutes for each timeslot
-            # with a 10 minutes buffer in between each timeslot
-            # we would get the following result:
-            # (mind the pseudo-code)
-            #   3/10: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
-            #   3/11: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
-            #   3/12: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
-            # Note how there are 10 minutes in between the timeslot for (1:00, 1:20) and (1:30, 1:50).
-            # Thats the 10 minute buffer.
+                # So if we need to create timeslots:
+                # from 3/10 to 3/12
+                # from 1:00 to 2:00
+                # with 20 minutes for each timeslot
+                # with a 10 minutes buffer in between each timeslot
+                # we would get the following result:
+                # (mind the pseudo-code)
+                #   3/10: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
+                #   3/11: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
+                #   3/12: Timeslot(1:00-1:20), Timeslot(1:30-1:50)
+                # Note how there are 10 minutes in between the timeslot for (1:00, 1:20) and (1:30, 1:50).
+                # Thats the 10 minute buffer.
 
-            # To create this data, we need to do some timedelta operations starting from a base time.
-            # Let 1:00 be our base time.
-            # Let 20 minutes be our length
-            # Let 30 minutes be the total_buffer (length + buffer)
+                # To create this data, we need to do some timedelta operations starting from a base time.
+                # Let 1:00 be our base time.
+                # Let 20 minutes be our length
+                # Let 30 minutes be the total_buffer (length + buffer)
 
-            # Now, Lets step through that big scary list comprehension below.
-            # Starting off, we have a 0 minutes offset
-            # Time from will be: 1:00 + 0 minutes = 1:00 
-            # Time to will be: 1:00 + 0 minutes + 20 minutes = 1:20
+                # Now, Lets step through that big scary list comprehension below.
+                # Starting off, we have a 0 minutes offset
+                # Time from will be: 1:00 + 0 minutes = 1:00 
+                # Time to will be: 1:00 + 0 minutes + 20 minutes = 1:20
 
-            # On the next iteration, we will increase our offset by the total_buffer, 30 minutes
-            # Time from will be: 1:00 + 30 minutes = 1:30
-            # Time to will be: 1:00 + 30 minutes + 20 minutes = 1:50
+                # On the next iteration, we will increase our offset by the total_buffer, 30 minutes
+                # Time from will be: 1:00 + 30 minutes = 1:30
+                # Time to will be: 1:00 + 30 minutes + 20 minutes = 1:50
 
-            # This will result in the following timeslots:
-            # Timeslot(1:00-1:20), Timeslot(1:30-1:50)
+                # This will result in the following timeslots:
+                # Timeslot(1:00-1:20), Timeslot(1:30-1:50)
 
-            # Do this for every date and now we have all the timeslots from 3/10 to 3/12
+                # Do this for every date and now we have all the timeslots from 3/10 to 3/12
 
-            # Our date range
-            dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
-            # The total amount of time from the first timeslot's start to the last timeslot's end
-            time_delta = to_time - from_time
-            time_delta_mins = int(time_delta.seconds / 60)
-            # Total amount of time the timeslot will take up
-            length = form.cleaned_data["timeslot_length"]
-            break_length = form.cleaned_data["timeslot_break"]
-            # ...now including the break inbetween
-            total_buffer = length + break_length
+                # Our date range
+                dates = pd.date_range(form.cleaned_data["from_date"], form.cleaned_data["to_date"])
+                # The total amount of time from the first timeslot's start to the last timeslot's end
+                time_delta = to_time - from_time
+                time_delta_mins = int(time_delta.seconds / 60)
+                # Total amount of time the timeslot will take up
+                length = form.cleaned_data["timeslot_length"]
+                break_length = form.cleaned_data["timeslot_break"]
+                # ...now including the break inbetween
+                total_buffer = length + break_length
 
-            # This is the data we need as described above
-            timeslot_times = [
-                [
-                    TimeSlot(
-                        schedule=schedule,
-                        time_from=make_aware(
-                            datetime.datetime.combine(
-                                date, (from_time + datetime.timedelta(minutes=minute_offset)).time()
-                            )
-                        ),
-                        time_to=make_aware(
-                            datetime.datetime.combine(
-                                date, (from_time + datetime.timedelta(minutes=minute_offset + length)).time()
-                            )
-                        ),
-                        reservation_limit=form.cleaned_data["openings"],
-                        is_locked=False,
-                        auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
-                    ) for minute_offset in range(0, time_delta_mins, total_buffer)
-                ] for date in dates
-            ]
+                # This is the data we need as described above
+                timeslot_times = [
+                    [
+                        TimeSlot(
+                            schedule=schedule,
+                            time_from=make_aware(
+                                datetime.datetime.combine(
+                                    date, (from_time + datetime.timedelta(minutes=minute_offset)).time()
+                                )
+                            ),
+                            time_to=make_aware(
+                                datetime.datetime.combine(
+                                    date, (from_time + datetime.timedelta(minutes=minute_offset + length)).time()
+                                )
+                            ),
+                            reservation_limit=form.cleaned_data["attendees"],
+                            is_locked=False,
+                            auto_lock_after=make_aware(datetime.datetime.now() + datetime.timedelta(days=500000))
+                        ) for minute_offset in range(0, time_delta_mins, total_buffer)
+                    ] for date in dates
+                ]
 
-            # Since we get a 2d array from this, we need to flatten it
-            objects = sum(timeslot_times, [])
+                # Since we get a 2d array from this, we need to flatten it
+                objects = sum(timeslot_times, [])
 
-            TimeSlot.objects.bulk_create(objects)
+                TimeSlot.objects.bulk_create(objects)
 
-        messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
-        return redirect("schedule", schedule.id)
-    
-    # This bit takes the current UTC time, 
-    # rounds to the nearest half hour,
-    # Then localizes it to localtime + 1 hour
-    # This allows the form to render with a good starting time for users.
-    # utc_time = timezone.now()
-    # mins = utc_time.minute
-    # rounded_mins = 30 * round(mins / 30)
-    # if rounded_mins > 30:
-    #     rounded_mins = 0
-    # nearest_utc_time = utc_time.replace(minute=rounded_mins, second=0, microsecond=0)
-    # best_time = dateformat.format(nearest_utc_time - datetime.timedelta(hours=3), 'H:i') 
+            messages.add_message(request, messages.INFO, 'Timeslot successfully created!')
+            return redirect("schedule", schedule.id)
     
     return render(request, "app/pages/create_timeslots.html", {'form': form})
 

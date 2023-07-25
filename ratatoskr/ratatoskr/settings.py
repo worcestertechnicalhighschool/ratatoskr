@@ -227,9 +227,6 @@ SOCIALACCOUNT_ADAPTER = 'app.adapter.RatatoskrAccountAdapter' # Not working at a
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 
-
-
-
 # Celery
 
 CELERY_TIMEZONE = "America/New_York"

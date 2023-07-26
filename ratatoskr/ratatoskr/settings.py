@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "mathfilters",
     'simple_history',
     "bootstrap5",
+    "tinymce",
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

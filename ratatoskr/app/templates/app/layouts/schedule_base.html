@@ -2,82 +2,29 @@
 
 {% block title %}{{ schedule.name }}{% endblock title %}
 
-{% block head %}
-<script src='https://cdn.tiny.cloud/1/caeyxgo4fa2jxe88pszl10kub0l48pdc15dze2r3dwd10k0m/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
-{% endblock head %}
-
 {% block body %}
+<div class="text-muted d-flex flex-row align-items-center mb-1">
+    <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
+    <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
+</div>
+<h1 class="mb-2">
+    {{ schedule.name }}
+</h1>
+<div>{{ schedule.description|safe }}</div>
+
+<div class="d-flex flex-column flex-md-row">
     {% if user == schedule.owner %}
-        <form action="{% url 'edit-schedule' schedule.id %}" method="post" v-scope="{
-            editEnable: false,
-            theForm: null
-        }" @vue:mounted="theForm = $el">
-            {% csrf_token %}
-            <div class="text-muted d-flex flex-row align-items-center mb-1">
-                <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
-                <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
-            </div>
-
-            <div v-if="editEnable" v-cloak class="mb-2">
-                <input class="d-inline form-control w-50" type="text" name="schedule-name" value="{{ schedule.name }}">
-                <select class="d-inline form-select w-25" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility-select">
-                    <option {% if schedule.visibility == 'A' %}selected{% endif %} value="A">Public</option>
-                    <option {% if schedule.visibility == 'U' %}selected{% endif %} value="U">Unlisted</option>
-                    <option {% if schedule.visibility == 'P' %}selected{% endif %} value="P">Private</option>
-                </select>
-            </div>
-            <h1 class="mb-2" v-else>
-                {{ schedule.name }}
-                <button class="btn btn-link p-0" aria-label="Start Editing Schedule" @click="editEnable = true"><i class="fas fa-pencil float-right" style="font-size: 1.25em"></i></button>
-            </h1>
-
-            <script>
-                function reset(form) {
-                    const willReset = confirm(`Discard changes?`)
-                    if (willReset)
-                        form.reset()
-                    return !willReset
-                }
-            </script>
-            <div v-if="editEnable" class="d-flex d-md-block flex-column mb-2">
-                <button class="btn btn-danger" v-cloak type="button" @click="editEnable = reset(theForm)">Discard Changes</button>
-                <div class="d-md-none d-inline mb-1"></div> {# padding for mobile #}
-                <button class="btn btn-success" v-cloak type="submit" onclick="return confirm(`Are you sure you want to submit your changes?`)">Save Changes</button>
-            </div>
-            
-            
-            {% comment %} using v-if here will throw off tinymce {% endcomment %}
-            {% comment %} vue directives will be erased by tinymce on their textareas {% endcomment %}
-            <div v-cloak v-show="editEnable && !darkmode">
-                <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule-desc" maxlength="1000" v-bind:disabled="darkmode">
-                    {{ schedule.description }} 
-                </textarea>
-            </div>
-            <div v-cloak v-show="editEnable && darkmode">
-                <textarea class="form-control m-0" id="schedule-desc-dark" aria-describedby="descHelp" name="schedule-desc" maxlength="1000" v-bind:disabled="!darkmode">
-                    {{ schedule.description }}
-                </textarea>
-            </div>
-            <div v-show="!editEnable" class="mt-2" style="word-break: break-all;">
-                {{ schedule.description|safe }}
-            </div>
-    </form>
+        <a class="btn btn-link p-0" aria-label="Edit Schedule" href="{% url 'edit-schedule' schedule.id %}">
+            <i class="fas fa-pencil float-right"></i> Edit Schedule</a>
     {% else %}
-        <div class="text-muted d-flex flex-row align-items-center mb-1">
-            <img class="me-2 rounded" src="{{ schedule.owner.socialaccount_set.all.0.get_avatar_url }}" alt="{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}'s profile picture" style="width: 20px">
-            <h6 class="mb-0"><a href="{% url 'user-schedules' schedule.owner.id %}" class="text-muted text-decoration-none">{{ schedule.owner.socialaccount_set.all.0.extra_data.name }}</a></h6>
-        </div>
-        <h1 class="mb-4">{{ schedule.name }}</h1>
-
-        
-        <div v-else>
-            {{ schedule.description|safe }}
-        </div>
+        <a class="btn btn-outline-primary m-1" href="mailto:{{ schedule.owner.email }}">
+            <i class="fa-solid fa-envelope"></i>&nbsp;Contact Organizer</a>
+        <a class="btn btn-outline-secondary m-1" href="{% url 'find-reservation' %}">
+            <i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;Find Reservation</a>
+        <a class="btn btn-outline-secondary m-1" href="{% url 'help' %}">
+            <i class="fa-solid fa-circle-question"></i>&nbsp;Help</a>
     {% endif %}
-
-    <a class="btn btn-outline-primary mt-1" href="mailto:{{ schedule.owner.email }}"><i class="fa-solid fa-envelope"></i>&nbsp;&nbsp;Contact</a>
-    <a class="btn btn-outline-warning mt-1" href="{% url 'find-reservation' %}"><i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;&nbsp;Find Reservation</a>
-    <a class="btn btn-outline-danger mt-1" href="{% url 'help' %}"><i class="fa-solid fa-circle-question"></i>&nbsp;&nbsp;Help</a>
+</div>
     {% if user.is_authenticated and user != schedule.owner %}
         <form class="m-0 p-0 d-inline" method="POST" action="{% url 'subscription' schedule.id %}">
             {% csrf_token %}

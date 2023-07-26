@@ -5,6 +5,8 @@ from django.contrib.postgres.forms import SimpleArrayField
 from .models import TimeSlot
 from django.utils import timezone, dateformat
 
+from tinymce.widgets import TinyMCE
+
 class TimeslotGenerationForm(forms.Form):
     # This bit takes the current UTC time, 
     # rounds to the nearest half hour,
@@ -96,10 +98,9 @@ class CopyTimeslotsForm(forms.Form):
             map(lambda x: TimeSlot.objects.get(pk=int(x)), cleaned_data["timeslots"].split(",")))
         return cleaned_data
 
-
 class ScheduleCreationForm(forms.Form):
     name = forms.CharField(max_length=64, label="Event name")
-    schedule_description = forms.CharField(max_length=1000, widget=forms.Textarea())
+    schedule_description = forms.CharField(max_length=1000, required=False, widget=TinyMCE())
     # should_lock_automatically = forms.BooleanField()
     # auto_lock_after = forms.DateTimeField(required=False)
     VISIBILITY_CHOICES = [

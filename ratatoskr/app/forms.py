@@ -59,7 +59,7 @@ class TimeslotGenerationForm(forms.Form):
         if start_date > end_date:
             errors['to_date'] = 'The End Date cannot be earlier than the Start Date'
 
-        if start_time < current_time.time():
+        if start_date <= datetime.date.today() and start_time < current_time.time():
             errors['from_time'] = 'The start time cannot be in the past'
 
         if start_time >= end_time:
@@ -98,11 +98,16 @@ class CopyTimeslotsForm(forms.Form):
 
 
 class ScheduleCreationForm(forms.Form):
-    name = forms.CharField(max_length=64)
+    name = forms.CharField(max_length=64, label="Event name")
+    schedule_description = forms.CharField(max_length=1000, widget=forms.Textarea())
     # should_lock_automatically = forms.BooleanField()
-    auto_lock_after = forms.DateTimeField(required=False)
-    visibility_select = forms.CharField(max_length=1)
-    schedule_description = forms.CharField(max_length=1000)
+    # auto_lock_after = forms.DateTimeField(required=False)
+    VISIBILITY_CHOICES = [
+        ('A', 'Public'),
+        ('U', 'Unlisted'),
+        ('P', 'Private'),
+    ]
+    visibility_select = forms.ChoiceField(choices=VISIBILITY_CHOICES)
 
 
 class MessageForm(forms.Form):

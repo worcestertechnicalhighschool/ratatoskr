@@ -25,7 +25,7 @@ class Schedule(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     visibility = models.CharField(max_length=1, choices=Visibility.choices, default=Visibility.PUBLIC)
     name = models.CharField(max_length=64)
-    description = models.CharField(max_length=1000, default="")
+    description = models.CharField(max_length=1000, default="", blank=True)
     is_locked = models.BooleanField()
     auto_lock_after = models.DateTimeField()
     # These fields are filled automatically

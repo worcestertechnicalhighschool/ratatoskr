@@ -94,24 +94,23 @@ def contact(request):
 @require_http_methods(["GET", "POST"])
 def create_schedule(request):
     refresh_token(request.user)
+    
+    form = ScheduleCreationForm()
+
     if request.method == "POST":
         form = ScheduleCreationForm(request.POST)
-        if not form.is_valid():
-            return render(request, 'app/pages/form_error.html', {
-                "errors": form.errors
-            })  # TODO: Render form errors in template or something
-
-        new_schedule = Schedule.objects.create(
-            owner=request.user,
-            name=form.cleaned_data["name"],
-            visibility=form.cleaned_data["visibility_select"],
-            auto_lock_after=form.cleaned_data.get("auto_lock_after") or (datetime.datetime.now() + datetime.timedelta(days=99999)),
-            is_locked=False,
-            description=form.cleaned_data['schedule_description'],
-        )
-        messages.add_message(request, messages.INFO, 'Successfully created schedule!')
-        return redirect("schedule", new_schedule.id)
-    return render(request, 'app/pages/create_schedule.html', {})
+        if form.is_valid():
+            new_schedule = Schedule.objects.create(
+                owner=request.user,
+                name=form.cleaned_data["name"],
+                visibility=form.cleaned_data["visibility_select"],
+                auto_lock_after=(datetime.datetime.now() + datetime.timedelta(days=99999)),
+                is_locked=False,
+                description=form.cleaned_data['schedule_description'],
+            )
+            messages.add_message(request, messages.INFO, 'Successfully created schedule!')
+            return redirect("schedule", new_schedule.id)
+    return render(request, 'app/pages/create_schedule.html', {'form':form})
 
 
 
@@ -155,20 +154,22 @@ def update_schedule(request, schedule):
                 "timeslots": sorted(timeslots, key=lambda x: x.time_from)
             })
         case "delete_schedule":
+            print('hello')
             schedule.delete()
-            return redirect(f"/schedules/{schedule.owner.id}")
+            # return redirect(f"/schedules/{schedule.owner.id}")
+            return redirect('dashboard')
     return None
 
 # view schedule
 @require_http_methods(["GET", "POST"])
 def schedule(request, schedule):
-    response = None
     if request.POST:
         refresh_token(request.user)
         if schedule.owner != request.user:
             raise PermissionDenied()
         response = update_schedule(request, schedule)
-
+        return response
+    
     if schedule.visibility == Schedule.Visibility.PRIVATE and schedule.owner != request.user:
         raise PermissionDenied()
 
@@ -201,7 +202,7 @@ def schedule(request, schedule):
         } for k, v in timeslots.items()
     }
 
-    return response or render(request, 'app/pages/schedule.html', {
+    return render(request, 'app/pages/schedule.html', {
         "schedule": schedule,
         "timeslots": timeslot_meta
     })

@@ -22,7 +22,7 @@ from app.emailutil import send_confirmation_email, send_message_email, send_succ
 from django.contrib.auth.decorators import login_required
 
 # from ratatoskr.celery import debug_task, send_mail_task
-from .forms import MessageForm, ReservationForm, ScheduleCreationForm, TimeslotGenerationForm, CopyTimeslotsForm
+from .forms import MessageForm, ReservationForm, ScheduleForm, TimeslotGenerationForm, CopyTimeslotsForm
 from .models import Schedule, TimeSlot, Reservation, ScheduleSubscription
 
 from django.contrib import messages
@@ -95,18 +95,19 @@ def contact(request):
 def create_schedule(request):
     refresh_token(request.user)
     
-    form = ScheduleCreationForm()
+    # form = ScheduleCreationForm()
+    form = ScheduleForm()
 
     if request.method == "POST":
-        form = ScheduleCreationForm(request.POST)
+        form = ScheduleForm(request.POST)
         if form.is_valid():
             new_schedule = Schedule.objects.create(
                 owner=request.user,
                 name=form.cleaned_data["name"],
-                visibility=form.cleaned_data["visibility_select"],
+                visibility=form.cleaned_data["visibility"],
                 auto_lock_after=(datetime.datetime.now() + datetime.timedelta(days=99999)),
                 is_locked=False,
-                description=form.cleaned_data['schedule_description'],
+                description=form.cleaned_data['description'],
             )
             messages.add_message(request, messages.INFO, 'Successfully created schedule!')
             return redirect("schedule", new_schedule.id)
@@ -479,8 +480,10 @@ def edit_schedule(request, schedule):
 
         return redirect("schedule", schedule.id)
 
-    return render(request, "app/pages/schedule_edit.html", {
-        "schedule": schedule
+    form = ScheduleForm(instance = schedule)
+    
+    return render(request, "app/pages/create_schedule.html", {
+        "form": form
     })
 
 

@@ -2,7 +2,7 @@ import datetime
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 
-from .models import TimeSlot
+from .models import TimeSlot, Schedule
 from django.utils import timezone, dateformat
 
 from tinymce.widgets import TinyMCE
@@ -98,18 +98,39 @@ class CopyTimeslotsForm(forms.Form):
             map(lambda x: TimeSlot.objects.get(pk=int(x)), cleaned_data["timeslots"].split(",")))
         return cleaned_data
 
-class ScheduleCreationForm(forms.Form):
-    name = forms.CharField(max_length=64, label="Event name")
-    schedule_description = forms.CharField(max_length=1000, required=False, widget=TinyMCE())
-    # should_lock_automatically = forms.BooleanField()
-    # auto_lock_after = forms.DateTimeField(required=False)
-    VISIBILITY_CHOICES = [
-        ('A', 'Public'),
-        ('U', 'Unlisted'),
-        ('P', 'Private'),
-    ]
-    visibility_select = forms.ChoiceField(choices=VISIBILITY_CHOICES)
+# # This should really be a model form
+# class ScheduleCreationForm(forms.Form):
+#     name = forms.CharField(max_length=64, label="Event name")
+#     schedule_description = forms.CharField(max_length=1000, required=False, widget=TinyMCE())
+#     # should_lock_automatically = forms.BooleanField()
+#     # auto_lock_after = forms.DateTimeField(required=False)
+#     VISIBILITY_CHOICES = [
+#         ('A', 'Public'),
+#         ('U', 'Unlisted'),
+#         ('P', 'Private'),
+#     ]
+#     visibility_select = forms.ChoiceField(choices=VISIBILITY_CHOICES)
 
+# Use a model form for creation and edits. 
+# You get validation and error reporting for free
+class ScheduleForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields = ["name", "description", "visibility"]
+        labels = {
+            "name": "Event Name",
+        }
+        help_texts = {
+            "visibility": "Choose your visibility to restrict access to your schedule.",
+        }
+        widgets = {
+            "description": TinyMCE(
+                mce_attrs = {
+                    'height': '200',
+                    'toolbar': 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
+                }
+            ),
+        }
 
 class MessageForm(forms.Form):
     message = forms.CharField(max_length=8192)

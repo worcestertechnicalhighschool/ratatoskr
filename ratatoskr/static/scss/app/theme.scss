@@ -20,6 +20,17 @@
         color: #688B58;
     }
 }
+.btn-secondary {
+    border-color: #6c757d;
+    background-color: #6c757d;
+    color: white;
+    // need other psuedo-classes
+    &:hover, &:active, &:focus, &:focus-visible {
+        background-color: transparent;
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+}
 
 .schedule-header-controls {
     padding: 15px 0;

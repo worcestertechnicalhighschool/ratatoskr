@@ -19,9 +19,10 @@
             <form action="{% url 'create-schedule' %}" class="form" method="post">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary w-50 d-block m-auto" type="submit">Create</button>
-                {% endbuttons %}
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary w-50 d-block m-1" type="submit">Cancel</a>
+                    <button type="submit" class="btn btn-primary w-50 d-block m-1" type="submit">Create</button>
+                </div>
             </form>
         </div>
     </div>

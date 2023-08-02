@@ -74,6 +74,8 @@ INSTALLED_APPS = [
     'sass_processor',
     "mathfilters",
     'simple_history',
+    "bootstrap5",
+    "tinymce",
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
@@ -224,9 +226,6 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_ADAPTER = 'app.adapter.RatatoskrAccountAdapter' # Not working at all
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-
-
-
 
 
 # Celery

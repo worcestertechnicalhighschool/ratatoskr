@@ -1,96 +1,30 @@
 {% extends 'app/layouts/base.html' %}
 {% load socialaccount %}
+{% load bootstrap5 %}
 
 {% block title %}Create Schedule{% endblock title %}
 
 {% block head %}
-<script src='https://cdn.tiny.cloud/1/caeyxgo4fa2jxe88pszl10kub0l48pdc15dze2r3dwd10k0m/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+    <!-- TinyMCE JS required for description field -->
+    {{ form.media }}
 {% endblock head %}
 
-{% block body %}
-    {% comment %} autoLockEnabled is what handles the disabled state of the auto lock date input {% endcomment %}
+{% block body %}    
 <div class="d-flex justify-content-center align-items-center h-75">
     <div class="card w-100" style="max-width: 750px;">
         <div class="card-header text-center">
             <h2 class="mt-2">Create Schedule</h2>
         </div>
         <div class="card-body">
-            <form action="{% url 'create-schedule' %}" method="POST" v-scope="{ autoLockEnabled: false, loading: false }" @submit="loading = true">
+            <form action="{% url 'create-schedule' %}" class="form" method="post">
                 {% csrf_token %}
-                <div class="form-floating mb-3">
-                    <input type="text" id="name" name="name" class="form-control" placeholder="My New Schedule" />
-                    <label for="name">Name</label>
+                {% bootstrap_form form %}
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary w-50 d-block m-1" type="submit">Cancel</a>
+                    <button type="submit" class="btn btn-primary w-50 d-block m-1" type="submit">Create</button>
                 </div>
-                <fieldset>
-                    {% comment %} Checkbox controls the expansion of the autoLockAfter form field {% endcomment %}
-                    {% comment %} <input type="hidden" name="should_lock_automatically" value="on"> {% endcomment %}
-                    {% comment %} <div class="form-check">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="should_lock_automatically"
-                            name="should_lock_automatically"
-                            @click="autoLockEnabled = $el.checked">
-                        <label class="form-check-label" for="should_lock_automatically">
-                            Lock schedule automatically
-                        </label>
-                    </div>
-                    <div class="mt-2" id="autoLock">
-                        <h5><label for="auto_lock_after">Lock Automatically After</label></h5>
-                        <input type="datetime-local" id="auto_lock_after" name="auto_lock_after" v-bind:disabled="!autoLockEnabled" class="form-control" />
-                    </div> {% endcomment %}
-                </fieldset>
-                <fieldset>
-                    <div v-cloak v-show="!darkmode">
-                        <label for="schedule-desc" class="form-label">Schedule Description</label>
-                        <textarea class="form-control m-0" id="schedule-desc" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="darkmode" required="">
-                            {{ schedule.description }} 
-                        </textarea>
-                    </div>
-                    <div v-cloak v-show="darkmode">
-                        <label for="schedule-desc-dark" class="form-label">Schedule Description</label>
-                        <textarea class="form-control m-0" id="schedule-desc-dark" aria-describedby="descHelp" name="schedule_description" maxlength="1000" v-bind:disabled="!darkmode" required="">
-                            {{ schedule.description }}
-                        </textarea>
-                    </div>
-                </fieldset>
-                <div class="my-3">
-                    <label for="visibility-select" class="form-label">Visibility</label>
-                    <select class="form-select" aria-label="Schedule Visibility" id="visibility-select" aria-describedby="visibilityHelp" name="visibility_select">
-                    <option selected value="A">Public</option>
-                    <option value="U">Unlisted</option>
-                    <option value="P">Private</option>
-                    </select>
-                    <div id="visibilityHelp" class="form-text">Choose your visibility to restrict access to your schedule.</div>
-                </div>
-                <br>
-                <fieldset class="text-center">
-                    <button class="btn btn-primary w-50" name="submit" type="submit" v-bind:disabled="loading">
-                        <template v-if="loading">
-                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                            Loading...
-                        </template>
-                        <span v-else>Create</span>
-                    </button>
-                </fieldset>
             </form>
         </div>
     </div>
 </div>
 {% endblock body %}
-
-{% block scripts %}
-<script>
-    tinymce.init({
-        selector: '#schedule-desc',
-        menubar: '',
-        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
-    });
-    tinymce.init({
-        selector: '#schedule-desc-dark',
-        menubar: '',
-        content_css: "dark",
-        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
-    });
-</script>
-{% endblock scripts %}

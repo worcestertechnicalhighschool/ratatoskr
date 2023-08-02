@@ -4,7 +4,7 @@
 {% block schedule_head %}
     {% if schedule.owner == user %}
         <div class="d-flex flex-column flex-md-row align-items-center p-2 justify-content-between">
-            <h3 class="mb-0">Dates</h3>
+            <h3 class="mb-0">Event Dates</h3>
             <span style="font-size: 6px;">&nbsp;</span>
             <a href="{% url 'create-timeslots' schedule.id %}" class="btn btn-primary d-inline-block">
                 Add Timeslots +
@@ -12,60 +12,45 @@
         </div>
         <div class="schedule-header-controls ">
             <ul class="nav d-flex justify-content-between">
-                <li>
+                <li class="mb-3">
                     <a class="link-secondary" href="{% url 'view-schedule-reservations' schedule.id %}" title="View Reservations">
                         <i class="fa-solid fa-calendar-day"></i>
-                        <span class="d-none d-lg-inline">View Reservations</span>
+                        <span class="d-none d-md-inline">View </span>Reservations
                     </a>
                 </li>
                 {% comment %} vue @click does not work here for some reason {% endcomment %}
-                <li>
+                <li class="mb-3">
                     <button type="button" title="Copy Share Link" class="link-secondary" onclick="navigator.clipboard.writeText(window.location.href)">
                         <i class="fas fa-link"></i>
-                        <span class="d-none d-lg-inline">Copy Share Link</span>
+                        <span class="d-none d-md-inline">Copy Share </span>Link
                     </button>
                 </li>
-                <li>
+                <li class="mb-3">
                     <a class="link-secondary" title="Google Calendar" href="{{ schedule.get_calendar_url }}">
                         <!-- <i class="fa-solid fa-calendar-days"></i> -->
                         <img 
                                 src="{% static 'assets/google_calendar.png' %}" 
                                 style="height:32px; padding-bottom:5px;"
                                 alt="Launch Google Calendar" title="launch Google Calendar">
-                        <span class="d-none d-lg-inline">Google Calendar</span>
+                        <span class="d-none d-md-inline">Google </span>Calendar
                     </a>
                 </li>
                 {% if schedule.get_meet_url is not None %}
-                    <li>
+                    <li class="mb-3">
                         <a class="link-secondary" title="Google Meet" href="{{ schedule.get_meet_url }}">
-                            <!-- <i class="fa-solid fa-phone"></i> -->
                             <img 
                                 src="{% static 'assets/google_meet.png' %}" 
                                 style="height:32px; padding-bottom:5px;"
                                 alt="Launch Google Meet" title="launch Google Meet">
-                            <span class="d-none d-lg-inline">Google Meet</span>
+                            <span class="d-none d-md-inline">Google </span>Meet
                         </a>
                     </li>
                 {% endif %}
-                <li>
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <button
-                            title="Delete Schedule"
-                            class="link-danger"
-                            onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
-                            name="action"
-                            value="delete_schedule">
-                            <i class="fa-solid fa-trash-can"></i>
-                            <span class="d-none d-lg-inline">Delete Schedule</span>
-                        </button>
-                    </form>
-                </li>
             </ul>  
         </div>
     {% else %}
         <div class="d-flex flex-column flex-lg-row align-items-center p-2 justify-content-between">
-            <h3 class="mb-0">Dates</h3>
+            <h3 class="mb-0">Event Dates</h3>
         </div>
     {% endif %}
 {% endblock schedule_head %}

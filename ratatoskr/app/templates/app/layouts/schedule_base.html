@@ -1,5 +1,4 @@
 {% extends 'app/layouts/base.html' %}
-
 {% block title %}{{ schedule.name }}{% endblock title %}
 
 {% block body %}
@@ -12,19 +11,42 @@
 </h1>
 <div>{{ schedule.description|safe }}</div>
 
-<div class="d-flex flex-column flex-md-row">
+
+<ul class="nav nav-pills">
     {% if user == schedule.owner %}
-        <a class="btn btn-link p-0" aria-label="Edit Schedule" href="{% url 'edit-schedule' schedule.id %}">
-            <i class="fas fa-pencil float-right"></i> Edit Schedule</a>
+        <li class="nav-item me-3">
+            <a class="btn btn-primary" aria-label="Edit Schedule" href="{% url 'edit-schedule' schedule.id %}">
+                <i class="fas fa-pencil float-right"></i> Edit Schedule</a>
+        </li>
+        <li class="nav-item">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <button
+                    title="Delete Schedule"
+                    class="btn btn-danger"
+                    onclick="return confirm(`Are you sure that you want to delete your schedule? This cannot be undone.`);"
+                    name="action"
+                    value="delete_schedule">
+                    <i class="fa-solid fa-trash-can"></i> Delete Schedule
+                </button>
+            </form>
+        </li>
     {% else %}
-        <a class="btn btn-outline-primary m-1" href="mailto:{{ schedule.owner.email }}">
-            <i class="fa-solid fa-envelope"></i>&nbsp;Contact Organizer</a>
-        <a class="btn btn-outline-secondary m-1" href="{% url 'find-reservation' %}">
-            <i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;Find Reservation</a>
-        <a class="btn btn-outline-secondary m-1" href="{% url 'help' %}">
-            <i class="fa-solid fa-circle-question"></i>&nbsp;Help</a>
+        <li class="nav-item">
+            <a class="btn btn-outline-primary m-1" href="mailto:{{ schedule.owner.email }}">
+                <i class="fa-solid fa-envelope"></i>&nbsp;Contact Organizer</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-secondary m-1" href="{% url 'find-reservation' %}">
+                <i class="fa-solid fa-magnifying-glass-arrow-right"></i>&nbsp;Find Reservation</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-outline-secondary m-1" href="{% url 'help' %}">
+                <i class="fa-solid fa-circle-question"></i>&nbsp;Help</a>
+        </li>
     {% endif %}
-</div>
+</ul>
+
     {% if user.is_authenticated and user != schedule.owner %}
         <form class="m-0 p-0 d-inline" method="POST" action="{% url 'subscription' schedule.id %}">
             {% csrf_token %}
@@ -45,7 +67,7 @@
     {% endif %}
 
     {% if user == schedule.owner %}
-        <p class="text-muted mt-3">
+        <small class="text-muted mt-3"><em>
             This schedule is currently 
             {% if schedule.visibility == 'A' %}
                 public. This means that this schedule is visible on your <a href="{% url 'user-schedules' user.id %}">profile page</a>.
@@ -54,7 +76,7 @@
             {% elif schedule.visibility == 'P' %}
                 private. This means that, even with a share link, nobody but you can see this schedule.
             {% endif %}
-        </p>
+        </em></small>
     {% endif %}
 
     <div class="card mt-4">
@@ -71,19 +93,3 @@
     </div>
 
 {% endblock body %}
-
-{% block scripts %}
-<script>
-    tinymce.init({
-        selector: '#schedule-desc',
-        menubar: '',
-        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
-    });
-    tinymce.init({
-        selector: '#schedule-desc-dark',
-        menubar: '',
-        content_css: "dark",
-        toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
-    });
-</script>
-{% endblock scripts %}
